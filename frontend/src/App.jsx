@@ -9,6 +9,7 @@ import NotFound from "./NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
 import Details from "./pages/Details";
+import Profile from "./pages/Profile";
 
 const App = () => {
   return (
@@ -66,6 +67,14 @@ const App = () => {
         element={
           <ProtectedRoute>
             <Details />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
           </ProtectedRoute>
         }
       />

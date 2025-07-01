@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 const Header = () => {
   const linkClass = ({ isActive }) =>
@@ -37,13 +37,13 @@ const Header = () => {
             </NavLink>
           </nav>
 
-          <div>
+          <Link to="/profile">
             <img
               className="h-9 w-9 rounded-full hover:scale-105 transition object-cover"
               src="/profile/profile.png"
               alt="profile"
             />
-          </div>
+          </Link>
         </div>
       </header>
 

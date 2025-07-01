@@ -27,7 +27,7 @@ const Details = () => {
         type: media,
         poster: item.poster_path,
         year: new Date(item.release_date || item.first_air_date).getFullYear(),
-        genre: item.genre_ids || [],
+        genre: item.genres?.map((g) => g.name) || [],
         rating: item.vote_average,
       };
       await addToWishlist(data);
@@ -51,7 +51,12 @@ const Details = () => {
     fetchDetails();
   }, [media, id]);
 
-  if (loading) return <div className="text-white p-4 h-screen flex justify-center items-center">Loading...</div>;
+  if (loading)
+    return (
+      <div className="text-white p-4 h-screen flex justify-center items-center">
+        Loading...
+      </div>
+    );
   if (!item)
     return (
       <div className="text-white p-4 h-screen flex flex-col justify-center items-center">
@@ -67,27 +72,87 @@ const Details = () => {
 
   return (
     <>
-      <div className="p-4 text-white max-w-4xl mx-auto">
-        <h2 className="text-2xl font-bold mb-2">{item.title || item.name}</h2>
-        <p className="text-sm text-gray-400 mb-4">{item.overview}</p>
-        <img
-          className="rounded-xl mb-4"
-          src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-          alt="poster"
-        />
-        <div className="flex items-center justify-between">
-          <p className="text-teal-400 mb-4">Rating: {item.vote_average}</p>
-          <button
-            onClick={handleAdd}
-            disabled={isInWishlist}
-            className="bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded"
-          >
-            {isInWishlist ? (
-              <span className="material-symbols-outlined">bookmark_added</span>
-            ) : (
-              <span className="material-symbols-outlined">bookmark_add</span>
+      <div className="absolute z-0 h-screen w-screen">
+        <img className="w-full h-full object-cover object-center" src={`https://image.tmdb.org/t/p/original/${item.backdrop_path}`} alt="" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#000000bb] to-[#000000a3]"></div>
+      </div>
+      <div className="relative z-10 p-4 max-w-4xl mx-auto text-white">
+        <h2 className="text-3xl font-bold mb-1">{item.title || item.name}</h2>
+        <p className="text-sm text-gray-400 mb-4">{item.tagline}</p>
+
+        <div className="flex flex-col md:flex-row gap-4">
+          <img
+            className="rounded-xl w-full max-w-[300px] h-auto object-cover"
+            src={
+              item.poster_path
+                ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+                : "https://via.placeholder.com/300x450?text=No+Image"
+            }
+            alt="poster"
+          />
+
+          <div className="flex-1">
+            <p className="mb-3 text-gray-300">{item.overview}</p>
+
+            <ul className="text-sm text-gray-400 space-y-1">
+              <li>
+                <span className="text-white">Release:</span>{" "}
+                {item.release_date || item.first_air_date}
+              </li>
+              <li>
+                <span className="text-white">Language:</span>{" "}
+                {item.original_language.toUpperCase()}
+              </li>
+              <li>
+                <span className="text-white">Genres:</span>{" "}
+                {item.genres?.map((g) => g.name).join(", ")}
+              </li>
+              <li>
+                <span className="text-white">Runtime:</span>{" "}
+                {item.runtime || "-"} min
+              </li>
+              <li>
+                <span className="text-white">Rating:</span> IMDb{" "}
+                {item.vote_average.toFixed(1)} ({item.vote_count} votes)
+              </li>
+              <li>
+                <span className="text-white">Production:</span>{" "}
+                {item.production_companies
+                  ?.slice(0, 3)
+                  .map((c) => c.name)
+                  .join(", ")}
+              </li>
+              <li>
+                <span className="text-white">Box Office:</span> $
+                {item.revenue.toLocaleString()}
+              </li>
+              <li>
+                <span className="text-white">Status:</span> {item.status}
+              </li>
+            </ul>
+
+            <button
+              onClick={handleAdd}
+              disabled={isInWishlist}
+              className="mt-5 flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded disabled:opacity-60"
+            >
+              <span className="material-symbols-outlined">
+                {isInWishlist ? "bookmark_added" : "bookmark_add"}
+              </span>
+              {isInWishlist ? "Added to Wishlist" : "Add to Wishlist"}
+            </button>
+
+            {item.homepage && (
+              <a
+                href={item.homepage}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-block text-teal-400 hover:text-teal-300 text-sm"
+              >
+                Official Website ↗
+              </a>
             )}
-          </button>
+          </div>
         </div>
       </div>
     </>

@@ -85,7 +85,7 @@ const Search = () => {
                     : "/placeholder.png"
                 }
                 alt={item.title || item.name}
-                className="h-60 w-full object-cover"
+                className="h-60 w-full object-cover object-top"
               />
               <div className="p-3">
                 <h3 className="text-sm font-semibold truncate">
@@ -96,6 +96,7 @@ const Search = () => {
                     item.first_air_date?.slice(0, 4) ||
                     "N/A"}
                 </p>
+                <p className="text-xs text-teal-400 mt-1">Rating: {parseFloat(item.vote_average.toFixed(1)) || "N/A"}</p>
               </div>
               <span className="absolute top-2 right-2 bg-teal-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase shadow-md">
                 {item.media_type}

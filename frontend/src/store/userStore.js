@@ -16,9 +16,15 @@ const userStore = create((set, get) => {
       localStorage.setItem("user", JSON.stringify(data));
     },
 
-    logoutUser: () => {
-      set({ user: null });
-      localStorage.removeItem("user");
+    logoutUser: async () => {
+      try {
+        const res = await API.post("/auth/logout", formData);
+        set({ user: null });
+        localStorage.removeItem("user");
+        alert(res.data.message)
+      } catch (err) {
+        throw err?.res?.data?.message || "Logout failed";
+      }
     },
 
     registerUser: async (formData) => {
@@ -42,7 +48,7 @@ const userStore = create((set, get) => {
       }
     },
 
-    // TMDB 
+    // TMDB
     fetchTrending: async () => {
       try {
         const res = await API.get("/tmdb/trending?type=all&time=day");
@@ -62,8 +68,8 @@ const userStore = create((set, get) => {
     },
 
     setSearchResult: (data) => {
-      set({ searchResult: data })
-    }
+      set({ searchResult: data });
+    },
   };
 });
 
