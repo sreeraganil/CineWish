@@ -7,6 +7,7 @@ import authRoutes from './routes/authRoutes.js'
 import tmdbRoutes from './routes/tmdbRoutes.js'
 import wishListRoutes from './routes/wishlistRoutes.js'
 import './utilities/fetchFrequently.js';
+import './utilities/sleepPreventer.js'
 
 const PORT = process.env.PORT || 4000
 
