@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Header from "../components/Header";
 import API from "../config/axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -7,13 +7,15 @@ import userStore from "../store/userStore";
 const Search = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
+  const [type, setType] = useState("multi");
   const navigate = useNavigate();
+  const dropRef = useRef(null);
   const { searchResult, setSearchResult } = userStore();
 
-  useEffect(()=>{
+  useEffect(() => {
     const query = searchParams.get("q") || "";
-    !query && setSearchResult([])
-  },[])
+    !query && setSearchResult([]);
+  }, []);
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -24,7 +26,7 @@ const Search = () => {
     setSearchResult([]);
     try {
       const { data } = await API.get(`/tmdb/search`, {
-        params: { query },
+        params: { query, type },
       });
       setSearchResult(data.data || []);
     } catch (err) {
@@ -35,31 +37,54 @@ const Search = () => {
   };
 
   const handleClick = (media, id) => {
-    navigate(`/details/${media}/${id}`)
-  }
+    navigate(`/details/${media}/${id}`);
+  };
 
   const handleChange = (e) => {
-    setSearchParams({ q: e.target.value })
-  }
+    setSearchParams({ q: e.target.value }, { replace: true });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black text-white pb-20 md:pb-0">
       <Header />
       <form
         onSubmit={handleSearch}
-        className="relative max-w-xl mx-2 sm:mx-auto my-6"
+        className="relative max-w-xl mx-2 sm:mx-auto my-6 flex flex-col sm:flex-row gap-2 items-center"
       >
-        <input
-          type="text"
-          autoFocus
-          value={searchParams.get("q") || ""}
-          onChange={handleChange}
-          placeholder="Search for movies or series..."
-          className="w-full px-4 pr-12 py-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
-        />
-        <span onClick={handleSearch} className="material-symbols-outlined absolute top-1/2 right-4 transform translate-y-[-50%] cursor-pointer">
-          search
-        </span>
+        <div className="relative w-full">
+          <input
+            type="text"
+            autoFocus
+            value={searchParams.get("q") || ""}
+            onChange={handleChange}
+            placeholder="Search for movies or series..."
+            className="w-full px-4 pr-12 py-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+          />
+          <span
+            onClick={handleSearch}
+            className="material-symbols-outlined absolute top-1/2 right-4 transform -translate-y-1/2 cursor-pointer text-gray-400 hover:text-white"
+          >
+            search
+          </span>
+        </div>
+
+        <div
+          tabIndex={0}
+          onFocus={()=>dropRef?.current?.focus()}
+          className="px-2 py-1 bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+        >
+          <select
+            name="type"
+            value={type}
+            ref={dropRef}
+            onChange={(e) => setType(e.target.value)}
+            className="bg-gray-800 text-white py-2 border-none outline-none"
+          >
+            <option value="multi">All</option>
+            <option value="movie">Movies</option>
+            <option value="tv">TV</option>
+          </select>
+        </div>
       </form>
 
       {loading && <p className="text-center text-gray-400">Loading...</p>}
@@ -69,13 +94,14 @@ const Search = () => {
       )}
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4 px-4 pb-4">
-        {searchResult?.filter(
-            (item) => item.media_type == "tv" || item.media_type == "movie"
+        {searchResult
+          ?.filter(
+            (item) => type !== "multi" || (item.media_type == "tv" || item.media_type == "movie")
           )
           .map((item) => (
             <div
               key={item.id}
-              onClick={()=>handleClick(item.media_type, item.id)}
+              onClick={() => handleClick(item.media_type, item.id)}
               className="relative bg-gray-900 border border-gray-800 rounded-lg overflow-hidden shadow hover:shadow-teal-500/10 transition"
             >
               <img
@@ -96,7 +122,9 @@ const Search = () => {
                     item.first_air_date?.slice(0, 4) ||
                     "N/A"}
                 </p>
-                <p className="text-xs text-teal-400 mt-1">Rating: {parseFloat(item.vote_average.toFixed(1)) || "N/A"}</p>
+                <p className="text-xs text-teal-400 mt-1">
+                  Rating: {parseFloat(item.vote_average.toFixed(1)) || "N/A"}
+                </p>
               </div>
               <span className="absolute top-2 right-2 bg-teal-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase shadow-md">
                 {item.media_type}

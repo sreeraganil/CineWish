@@ -9,7 +9,7 @@ const UpcomingCard = ({ id, title, release_date, poster_path, media_type="movie"
   }
 
   return (
-    <div className="min-w-[160px] relative bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow hover:shadow-teal-500/10 transition" onClick={()=>handleClick(media_type, id)}>
+    <div className="min-w-[160px] relative bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow hover:shadow-teal-500/10 hover:scale-105 transition" onClick={()=>handleClick(media_type, id)}>
       <img src={`https://image.tmdb.org/t/p/w500${poster_path}`} alt={title} className="h-48 w-full object-cover" />
       <div className="p-3 text-white">
         <h3 className="text-sm font-semibold truncate">{title}</h3>

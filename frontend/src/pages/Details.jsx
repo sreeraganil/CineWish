@@ -2,25 +2,29 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import API from "../config/axios";
 import wishlistStore from "../store/wishlistStore";
+import toast from "react-hot-toast";
+import BackHeader from "../components/Backheader";
 
 const Details = () => {
   const { media, id } = useParams();
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isInWishlist, setIsInWishlist] = useState(false);
-  const { addToWishlist, wishlist, fetchWishlist } = wishlistStore();
+  const [clicked, setClicked] = useState(false);
+  const { addToWishlist, wishlist, watched, fetchWishlist } = wishlistStore();
 
   useEffect(() => {
     fetchWishlist();
   }, []);
 
   useEffect(() => {
-    setIsInWishlist(wishlist?.some((multimedia) => multimedia.tmdbId == id));
+    setIsInWishlist(wishlist?.some((multimedia) => multimedia.tmdbId == id) || watched?.some((multimedia) => multimedia.tmdbId == id));
     console.log(wishlist);
   }, [wishlist]);
 
   const handleAdd = async () => {
     try {
+      setClicked(true);
       const data = {
         tmdbId: item.id,
         title: item.title || item.name,
@@ -31,9 +35,11 @@ const Details = () => {
         rating: item.vote_average,
       };
       await addToWishlist(data);
-      alert("Added to wishlist");
+      toast.success("Added to wishlist");
     } catch (err) {
-      alert(err);
+      toast.error(err.message || "Failed to add");
+    } finally {
+      setClicked(false);
     }
   };
 
@@ -72,8 +78,13 @@ const Details = () => {
 
   return (
     <>
-      <div className="absolute z-0 h-screen w-screen">
-        <img className="w-full h-full object-cover object-center" src={`https://image.tmdb.org/t/p/original/${item.backdrop_path}`} alt="" />
+      <BackHeader title={"Details"} />
+      <div className="fixed top-0 left-0 z-0 h-screen w-screen">
+        <img
+          className="w-full h-full object-cover object-center"
+          src={`https://image.tmdb.org/t/p/original/${item.backdrop_path}`}
+          alt=""
+        />
         <div className="absolute inset-0 bg-gradient-to-b from-[#000000bb] to-[#000000a3]"></div>
       </div>
       <div className="relative z-10 p-4 max-w-4xl mx-auto text-white">
@@ -82,7 +93,7 @@ const Details = () => {
 
         <div className="flex flex-col md:flex-row gap-4">
           <img
-            className="rounded-xl w-full max-w-[300px] h-auto object-cover"
+            className="rounded-xl w-full max-w-[300px] h-auto object-cover mx-auto md:mx-0"
             src={
               item.poster_path
                 ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
@@ -101,7 +112,7 @@ const Details = () => {
               </li>
               <li>
                 <span className="text-white">Language:</span>{" "}
-                {item.original_language.toUpperCase()}
+                {item.original_language?.toUpperCase()}
               </li>
               <li>
                 <span className="text-white">Genres:</span>{" "}
@@ -112,8 +123,8 @@ const Details = () => {
                 {item.runtime || "-"} min
               </li>
               <li>
-                <span className="text-white">Rating:</span> IMDb{" "}
-                {item.vote_average.toFixed(1)} ({item.vote_count} votes)
+                <span className="text-white">Rating:</span>
+                {item.vote_average?.toFixed(1)} ({item.vote_count} votes)
               </li>
               <li>
                 <span className="text-white">Production:</span>{" "}
@@ -123,8 +134,9 @@ const Details = () => {
                   .join(", ")}
               </li>
               <li>
-                <span className="text-white">Box Office:</span> $
-                {item.revenue.toLocaleString()}
+                <span className="text-white">Box Office:</span>{" "}
+                {item.revenue && "$"}
+                {item.revenue?.toLocaleString() || "N/A"}
               </li>
               <li>
                 <span className="text-white">Status:</span> {item.status}
@@ -133,7 +145,7 @@ const Details = () => {
 
             <button
               onClick={handleAdd}
-              disabled={isInWishlist}
+              disabled={isInWishlist || clicked}
               className="mt-5 flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded disabled:opacity-60"
             >
               <span className="material-symbols-outlined">

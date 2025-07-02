@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import userStore from "../store/userStore";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const [registerData, setRegisterData] = useState({
@@ -8,21 +9,27 @@ const Register = () => {
     email: "",
     password: ""
   });
+  const [loading, setLoading] = useState(false);
 
-  const [error, setError] = useState("");
   const { registerUser } = userStore();
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setError("");
 
     try {
+      setLoading(true);
       const res = await registerUser(registerData);
-      alert(res.message || "Registration successful");
-      if(res.success) navigate("/login");
+      if(res.success){
+        toast.success(res.message)
+        navigate("/login")
+      } else {
+        toast.error(res.message)
+      }
     } catch (err) {
-      setError(err);
+      toast.error(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -37,7 +44,6 @@ const Register = () => {
         </div>
 
         <form onSubmit={handleRegister} className="flex flex-col space-y-5">
-          {error && <p className="text-red-500 text-sm">{error}</p>}
           <div>
             <label className="block text-sm mb-1 text-gray-300">Name</label>
             <input
@@ -82,9 +88,9 @@ const Register = () => {
 
           <button
             type="submit"
-            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-3 rounded-md transition duration-200"
+            className="w-full flex justify-center items-center bg-teal-500 hover:bg-teal-600 text-white font-semibold py-3 rounded-md transition duration-200"
           >
-            Register
+            {loading ? <div className="h-4 w-4 border-2 rounded-full border-white border-t-[transparent] animate-spin"></div> : "Register"}
           </button>
         </form>
 

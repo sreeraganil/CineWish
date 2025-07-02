@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import API from "../config/axios";
+import toast from "react-hot-toast";
 
 const userStore = create((set, get) => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -9,6 +10,7 @@ const userStore = create((set, get) => {
     trending: [],
     upcoming: [],
     searchResult: [],
+    stats: null,
 
     // Auth Actions
     setUser: (data) => {
@@ -18,10 +20,10 @@ const userStore = create((set, get) => {
 
     logoutUser: async () => {
       try {
-        const res = await API.post("/auth/logout", formData);
+        const res = await API.post("/auth/logout");
         set({ user: null });
         localStorage.removeItem("user");
-        alert(res.data.message)
+        toast.success(res.data.message);
       } catch (err) {
         throw err?.res?.data?.message || "Logout failed";
       }
@@ -69,6 +71,18 @@ const userStore = create((set, get) => {
 
     setSearchResult: (data) => {
       set({ searchResult: data });
+    },
+
+    fetchStats: async () => {
+      try {
+        set({ loading: true });
+        const { data } = await API.get("/user/stats");
+        set({ stats: data });
+      } catch (err) {
+        console.error("Failed to fetch stats:", err);
+      } finally {
+        set({ loading: false });
+      }
     },
   };
 });

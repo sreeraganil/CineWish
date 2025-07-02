@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import userStore from "../store/userStore";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [loginData, setLoginData] = useState({
     email: "",
     password: ""
   })
+  const [loading, setLoading] = useState(false);
   const { loginUser } = userStore()
   const navigate = useNavigate();
 
@@ -14,11 +16,18 @@ const Login = () => {
     e.preventDefault();
 
     try {
+      setLoading(true);
       const res = await loginUser(loginData);
-      alert(res.message)
-      if(res.success) navigate("/")
+      if(res.success){
+        toast.success(res.message)
+        navigate("/")
+      } else {
+        toast.error(res.message)
+      }
     } catch (err) {
-      alert(err);
+      toast.error(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -55,9 +64,10 @@ const Login = () => {
           <button
             type="submit"
             onClick={handleLogin}
-            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-3 rounded-md transition duration-200"
+            disabled={loading}
+            className="w-full flex justify-center items-center bg-teal-500 hover:bg-teal-600 text-white font-semibold py-3 rounded-md transition duration-200"
           >
-            Login
+            {loading ? <div className="h-4 w-4 border-2 rounded-full border-white border-t-[transparent] animate-spin"></div> : "Login"}
           </button>
         </form>
 

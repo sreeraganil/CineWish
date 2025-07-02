@@ -59,12 +59,12 @@ export const getUpcoming = async (req, res) => {
 };
 
 export const searchTMDB = async (req, res) => {
-  const { query } = req.query;
+  const { query, type } = req.query;
   if (!query) return res.status(400).json({ message: "Query is required" });
 
   const options = {
     method: "GET",
-    url: `https://api.themoviedb.org/3/search/multi`,
+    url: `https://api.themoviedb.org/3/search/${type}`,
     headers: {
       accept: "application/json",
       Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`,
