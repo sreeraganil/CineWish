@@ -6,6 +6,7 @@ import cors from 'cors';
 import authRoutes from './routes/authRoutes.js'
 import tmdbRoutes from './routes/tmdbRoutes.js'
 import wishListRoutes from './routes/wishlistRoutes.js'
+import userRoutes from './routes/userRoutes.js'
 import './utilities/fetchFrequently.js';
 import './utilities/sleepPreventer.js'
 
@@ -40,6 +41,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/tmdb", tmdbRoutes);
 app.use("/api/wishlist", wishListRoutes);
+app.use("/api/user", userRoutes);
 
 
 app.get("/", (req, res) => {
