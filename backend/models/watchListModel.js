@@ -32,8 +32,8 @@ const watchListSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["Watching", "Completed", "Dropped"],
-      default: "Watching",
+      enum: ["towatch", "watched",],
+      default: "towatch",
     },
   },
   { timestamps: true }
