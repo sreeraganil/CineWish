@@ -12,18 +12,18 @@ const Details = () => {
   const [loading, setLoading] = useState(true);
   const [isInWishlist, setIsInWishlist] = useState(false);
   const [clicked, setClicked] = useState(false);
-  const { addToWishlist, wishlist, watched, fetchWishlist } = wishlistStore();
+  const { addToWishlist, wishlist, watched, fetchWishlist, fetchWatched } = wishlistStore();
 
   useEffect(() => {
     fetchWishlist();
+    fetchWatched();
   }, []);
 
   useEffect(() => {
     setIsInWishlist(
-      wishlist?.some((multimedia) => multimedia.id == id) ||
-        watched?.some((multimedia) => multimedia.id == id)
+      [...wishlist, ...watched].some((multimedia) => multimedia.tmdbId == id)
     );
-    console.log(wishlist);
+    console.log(isInWishlist);
   }, [wishlist]);
 
   const handleAdd = async (status = "towatch") => {
@@ -40,9 +40,10 @@ const Details = () => {
         status,
       };
       await addToWishlist(data);
-      toast.success("Added to wishlist");
+      toast.success(`Added to ${status === "towatch" ? "wishlist" : "watched list"}`);
     } catch (err) {
       toast.error(err.message || "Failed to add");
+      console.log(err);
     } finally {
       setClicked(false);
     }
@@ -148,7 +149,7 @@ const Details = () => {
               </li>
             </ul>
 
-            <div className="flex">
+            <div className="flex gap-3">
               <button
                 onClick={handleAdd}
                 disabled={isInWishlist || clicked}
@@ -159,16 +160,15 @@ const Details = () => {
                 </span>
                 {isInWishlist ? "Added to Wishlist" : "Add to Wishlist"}
               </button>
-              <button
+              { !isInWishlist && <button
                 onClick={() => handleAdd("watched")}
-                disabled={isInWishlist || clicked}
                 className="mt-5 flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded disabled:opacity-60"
               >
                 <span className="material-symbols-outlined">
-                  {isInWishlist ? "bookmark_added" : "bookmark_add"}
+                  preview
                 </span>
-                {isInWishlist ? "Already in List" : "Already watched"}
-              </button>
+                Mark as Watched
+              </button>}
             </div>
 
             {item.homepage && (
