@@ -106,6 +106,7 @@ export const getDetails = async (req, res) => {
     });
 
     let imdbRating = null;
+    let imdbVotes = null;
 
     // Step 2: If IMDb ID exists, fetch rating from OMDb
     if (tmdbData.imdb_id && OMDB_API_KEY) {
@@ -113,14 +114,15 @@ export const getDetails = async (req, res) => {
         const { data: omdbData } = await axios.get(
           `https://www.omdbapi.com/?i=${tmdbData.imdb_id}&apikey=${OMDB_API_KEY}`
         );
-        imdbRating = omdbData?.imdbRating || null;
+        imdbRating = omdbData.imdbRating || null;
+        imdbVotes = omdbData.imdbVotes || null;
       } catch (err) {
         console.warn("OMDb fetch failed:", err.message);
       }
     }
 
     // Step 3: Respond with TMDB + IMDb rating
-    res.json({ ...tmdbData, imdbRating });
+    res.json({ ...tmdbData, imdbRating, imdbVotes });
   } catch (err) {
     console.error("getDetails error:", err.message);
     res.status(500).json({ message: "Failed to fetch detail" });
