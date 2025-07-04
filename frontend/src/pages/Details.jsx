@@ -4,6 +4,7 @@ import API from "../config/axios";
 import wishlistStore from "../store/wishlistStore";
 import toast from "react-hot-toast";
 import BackHeader from "../components/Backheader";
+import Loader from "../components/Loader";
 
 const Details = () => {
   const { media, id } = useParams();
@@ -18,11 +19,14 @@ const Details = () => {
   }, []);
 
   useEffect(() => {
-    setIsInWishlist(wishlist?.some((multimedia) => multimedia.tmdbId == id) || watched?.some((multimedia) => multimedia.tmdbId == id));
+    setIsInWishlist(
+      wishlist?.some((multimedia) => multimedia.id == id) ||
+        watched?.some((multimedia) => multimedia.id == id)
+    );
     console.log(wishlist);
   }, [wishlist]);
 
-  const handleAdd = async () => {
+  const handleAdd = async (status = "towatch") => {
     try {
       setClicked(true);
       const data = {
@@ -33,6 +37,7 @@ const Details = () => {
         year: new Date(item.release_date || item.first_air_date).getFullYear(),
         genre: item.genres?.map((g) => g.name) || [],
         rating: item.vote_average,
+        status,
       };
       await addToWishlist(data);
       toast.success("Added to wishlist");
@@ -59,8 +64,8 @@ const Details = () => {
 
   if (loading)
     return (
-      <div className="text-white p-4 h-screen flex justify-center items-center">
-        Loading...
+      <div className="my-auto h-screen">
+        <Loader />
       </div>
     );
   if (!item)
@@ -143,16 +148,28 @@ const Details = () => {
               </li>
             </ul>
 
-            <button
-              onClick={handleAdd}
-              disabled={isInWishlist || clicked}
-              className="mt-5 flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded disabled:opacity-60"
-            >
-              <span className="material-symbols-outlined">
-                {isInWishlist ? "bookmark_added" : "bookmark_add"}
-              </span>
-              {isInWishlist ? "Added to Wishlist" : "Add to Wishlist"}
-            </button>
+            <div className="flex">
+              <button
+                onClick={handleAdd}
+                disabled={isInWishlist || clicked}
+                className="mt-5 flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded disabled:opacity-60"
+              >
+                <span className="material-symbols-outlined">
+                  {isInWishlist ? "bookmark_added" : "bookmark_add"}
+                </span>
+                {isInWishlist ? "Added to Wishlist" : "Add to Wishlist"}
+              </button>
+              <button
+                onClick={() => handleAdd("watched")}
+                disabled={isInWishlist || clicked}
+                className="mt-5 flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded disabled:opacity-60"
+              >
+                <span className="material-symbols-outlined">
+                  {isInWishlist ? "bookmark_added" : "bookmark_add"}
+                </span>
+                {isInWishlist ? "Already in List" : "Already watched"}
+              </button>
+            </div>
 
             {item.homepage && (
               <a

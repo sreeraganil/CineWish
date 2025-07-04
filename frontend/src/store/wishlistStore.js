@@ -25,14 +25,17 @@ const wishlistStore = create((set, get) => ({
     }
   },
 
-  removeFromWishlist: async (id) => {
+  removeFromWishlist: async (id, tag) => {
     try {
       await API.delete(`/wishlist/${id}`);
       set((state) => ({
-        wishlist: state.wishlist.filter((item) => item.tmdbId !== tmdbId),
+        wishlist: state.wishlist.filter((item) => item._id !== id),
+        watched: state.watched.filter((item) => item._id !== id),
       }));
+      toast.success(`Item removed from ${tag}`)
     } catch (err) {
-      console.error("Failed to remove from wishlist", err);
+      toast.error(`Failed to remove from ${tag}`);
+      console.error(`Failed to remove from ${tag}`, err);
     }
   },
 

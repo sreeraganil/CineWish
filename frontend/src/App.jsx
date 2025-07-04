@@ -5,7 +5,7 @@ import Home from "./pages/Home";
 import WishList from "./pages/WishList";
 import Watched from "./pages/Watched";
 import Search from "./pages/Search";
-import NotFound from "./NotFound";
+import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
 import Details from "./pages/Details";

@@ -17,7 +17,7 @@ const Loader = () => {
   const duplicatedIcons = [...movieIcons, ...movieIcons];
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-3/4 text-white p-4">
+    <div className="flex flex-col items-center justify-center h-full text-white p-4">
       <div className="relative w-full max-w-lg h-40 mb-12 overflow-hidden scale-80">
         <div className="absolute top-0 left-0 w-full h-3 bg-gray-700 rounded-t-lg z-10">
           <div className="absolute top-0 left-0 w-200 h-full bg-gray-600 opacity-70 animate-[filmEdgeScroll_4s_linear_infinite]"></div>

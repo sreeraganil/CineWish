@@ -3,10 +3,15 @@ import Header from "../components/Header";
 import wishlistStore from "../store/wishlistStore";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
+import DeleteConfirmModal from "../components/DeleteConfirmModal";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 const WishList = () => {
   const [loading, setLoading] = useState(true);
-  const { wishlist, fetchWishlist, markAsWatched } = wishlistStore();
+  const { wishlist, fetchWishlist, markAsWatched, removeFromWishlist } =
+    wishlistStore();
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
+  const [idToDelete, setIdToDelete] = useState(null);
 
   const handleClick = (media, id) => {
     navigate(`/details/${media}/${id}`);
@@ -21,6 +26,13 @@ const WishList = () => {
     fetchData();
   }, []);
 
+  const handleDelete = async () => {
+    await removeFromWishlist(idToDelete, "wishlist");
+    console.log("Deleted!");
+    setIdToDelete(null);
+    setShowModal(false);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black text-white">
       <Header />
@@ -31,7 +43,26 @@ const WishList = () => {
         {loading ? (
           <Loader />
         ) : wishlist.length === 0 ? (
-          <p className="text-gray-500">Your wishlist is empty.</p>
+          <>
+            <div className="relative w-full flex flex-col items-center justify-center gap-4">
+              <DotLottieReact
+                // src="https://lottie.host/9d2b2f06-56f3-48e6-a778-513d8f97fb34/SdOaUoj0vE.lottie"
+                src="/lottie/no_data_found.lottie"
+                loop
+                autoplay
+                style={{
+                  width: "clamp(100px, 40vw, 200px)",
+                  height: "clamp(100px, 40vw, 200px)",
+                  borderRadius: "50%",
+                  overflow: "hidden",
+                  marginTop: "100px",
+                }}
+              />
+              <p className="text-gray-500 text-center">
+                Your wishlist is empty.
+              </p>
+            </div>
+          </>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4">
             {wishlist.map((item) => (
@@ -51,24 +82,44 @@ const WishList = () => {
                   </h3>
                   <p className="text-xs text-gray-400">{item.year}</p>
                   <p className="text-xs text-teal-400 mt-1">
-                    IMDb: {item.rating || "N/A"}
+                    Rating: {parseFloat(item.rating).toFixed(1) || "N/A"}
                   </p>
 
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation(); 
-                      markAsWatched(item._id);
-                    }}
-                    className="mt-2 w-full bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold py-1.5 rounded"
-                  >
-                    Mark as Watched
-                  </button>
+                  <div className="relative mt-2 flex items-center justify-between">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        markAsWatched(item._id);
+                      }}
+                      className="w-3/4 bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold py-1.5 rounded"
+                    >
+                      Watched
+                    </button>
+                    <button
+                      className="bg-red-500 p-0.5 rounded flex items-center justify-center hover:bg-red-800"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIdToDelete(item._id);
+                        setShowModal(true);
+                      }}
+                    >
+                      <span className="material-symbols-outlined">delete</span>
+                    </button>
+                  </div>
                 </div>
+                <span className="absolute top-2 right-2 bg-teal-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase shadow-md">
+                  {item.type}
+                </span>
               </div>
             ))}
           </div>
         )}
       </div>
+      <DeleteConfirmModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 };

@@ -1,15 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import API from "../config/axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import userStore from "../store/userStore";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const Search = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState("multi");
   const navigate = useNavigate();
-  const dropRef = useRef(null);
   const { searchResult, setSearchResult } = userStore();
 
   useEffect(() => {
@@ -17,8 +17,12 @@ const Search = () => {
     !query && setSearchResult([]);
   }, []);
 
+  useEffect(() => {
+    handleSearch();
+  }, [type]);
+
   const handleSearch = async (e) => {
-    e.preventDefault();
+    e && e.preventDefault();
     const query = searchParams.get("q") || "";
     if (!query.trim()) return;
 
@@ -47,18 +51,24 @@ const Search = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black text-white pb-20 md:pb-0">
       <Header />
-      <form
-        onSubmit={handleSearch}
-        className="relative max-w-xl mx-2 sm:mx-auto my-6 flex flex-col sm:flex-row gap-2 items-center"
-      >
-        <div className="relative w-full">
+      <div className="relative max-w-xl mx-1 sm:mx-auto my-6 flex gap-1 sm:gap-2 items-center">
+        <form
+          onSubmit={handleSearch}
+          className="relative flex items-center flex-1"
+        >
           <input
             type="text"
             autoFocus
             value={searchParams.get("q") || ""}
             onChange={handleChange}
-            placeholder="Search for movies or series..."
-            className="w-full px-4 pr-12 py-3 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+            placeholder={
+              type == "multi"
+                ? "Search for movies or series..."
+                : type == "movie"
+                ? "Search for movies..."
+                : "Search for series..."
+            }
+            className="flex-1 px-4 pr-12 py-2 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
           />
           <span
             onClick={handleSearch}
@@ -66,37 +76,49 @@ const Search = () => {
           >
             search
           </span>
-        </div>
+        </form>
 
-        <div
-          tabIndex={0}
-          onFocus={()=>dropRef?.current?.focus()}
-          className="px-2 py-1 bg-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
-        >
+        <div className="sm:px-2 bg-gray-800 rounded-lg overflow-hidden focus:outline-none hover:ring-2 hover:ring-teal-500">
           <select
             name="type"
             value={type}
-            ref={dropRef}
             onChange={(e) => setType(e.target.value)}
-            className="bg-gray-800 text-white py-2 border-none outline-none"
+            className="bg-gray-800 text-white py-[10px] text-sm border-none outline-none"
           >
             <option value="multi">All</option>
             <option value="movie">Movies</option>
             <option value="tv">TV</option>
           </select>
         </div>
-      </form>
+      </div>
 
       {loading && <p className="text-center text-gray-400">Loading...</p>}
 
       {!loading && searchResult?.length === 0 && (
-        <p className="text-center text-gray-600">No results</p>
+        <div className="relative w-full flex flex-col items-center justify-center gap-4">
+          <DotLottieReact
+            src="/lottie/no_result.lottie"
+            loop
+            autoplay
+            style={{
+              width: "clamp(100px, 40vw, 200px)",
+              height: "clamp(100px, 40vw, 200px)",
+              borderRadius: "50%",
+              overflow: "hidden",
+              marginTop: "100px",
+            }}
+          />
+          <p className="text-center text-gray-600">No results</p>
+        </div>
       )}
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4 px-4 pb-4">
         {searchResult
           ?.filter(
-            (item) => type !== "multi" || (item.media_type == "tv" || item.media_type == "movie")
+            (item) =>
+              type !== "multi" ||
+              item.media_type == "tv" ||
+              item.media_type == "movie"
           )
           .map((item) => (
             <div
@@ -123,7 +145,7 @@ const Search = () => {
                     "N/A"}
                 </p>
                 <p className="text-xs text-teal-400 mt-1">
-                  Rating: {parseFloat(item.vote_average.toFixed(1)) || "N/A"}
+                  Rating: {parseFloat(item.vote_average?.toFixed(1)) || "N/A"}
                 </p>
               </div>
               <span className="absolute top-2 right-2 bg-teal-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase shadow-md">
