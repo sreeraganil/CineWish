@@ -96,7 +96,6 @@ export const getDetails = async (req, res) => {
   try {
     const { media, id } = req.params;
 
-    // Step 1: Fetch from TMDB
     const { data: tmdbData } = await axios.get(`${BASE_URL}/${media}/${id}`, {
       headers: {
         Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
@@ -108,20 +107,18 @@ export const getDetails = async (req, res) => {
     let imdbRating = null;
     let imdbVotes = null;
 
-    // Step 2: If IMDb ID exists, fetch rating from OMDb
     if (tmdbData.imdb_id && OMDB_API_KEY) {
       try {
         const { data: omdbData } = await axios.get(
           `https://www.omdbapi.com/?i=${tmdbData.imdb_id}&apikey=${OMDB_API_KEY}`
         );
-        imdbRating = omdbData.imdbRating || null;
-        imdbVotes = omdbData.imdbVotes || null;
+        imdbRating = omdbData.imdbRating || 0;
+        imdbVotes = omdbData.imdbVotes || 0;
       } catch (err) {
         console.warn("OMDb fetch failed:", err.message);
       }
     }
 
-    // Step 3: Respond with TMDB + IMDb rating
     res.json({ ...tmdbData, imdbRating, imdbVotes });
   } catch (err) {
     console.error("getDetails error:", err.message);
