@@ -18,11 +18,10 @@ const wishlistStore = create((set, get) => ({
   addToWishlist: async (item) => {
     try {
       const { data } = await API.post("/wishlist", item);
-      await get.fetchWatched();
       set((state) => ({ wishlist: [...state.wishlist, data] }));
       return data;
     } catch (err) {
-      throw err?.response?.data?.message || "Failed to add to wishlist";
+      throw err || "Failed to add to wishlist";
     }
   },
 

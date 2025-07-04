@@ -1,12 +1,9 @@
 import axios from "axios";
 import Trending from "../models/trendingModel.js";
 import Upcoming from "../models/upcomingModel.js";
-import axiosRetry from "axios-retry";
 
-// Optional: retry failed requests automatically
-axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
 
-const TMDB_ACCESS_TOKEN = process.env.TMDB_ACCESS_TOKEN; // This is the Bearer Token
+const TMDB_ACCESS_TOKEN = process.env.TMDB_ACCESS_TOKEN; 
 const BASE_URL = "https://api.themoviedb.org/3";
 
 // Helper function using Bearer Token
@@ -92,44 +89,41 @@ export const searchTMDB = async (req, res) => {
   }
 };
 
-// export const searchTMDB = async (req, res) => {
-//   try {
-//     const { query } = req.query;
-//     if (!query) return res.status(400).json({ message: "Query is required" });
 
-//     const { data } = await axios.get("https://api.themoviedb.org/3/search/multi", {
-//       headers: {
-//         Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
-//         accept: "application/json",
-//       },
-//       params: {
-//         query,
-//         language: "en-US",
-//       },
-//     });
-
-//     res.json({message: "Search result", data: data.results || []});
-//   } catch (err) {
-//     console.error("TMDB search error:", err.code || err.message);
-//     res.status(500).json({ message: `Failed to search from TMDB: ${err.message}` });
-//   }
-// };
+const OMDB_API_KEY = process.env.OMDB_KEY;
 
 export const getDetails = async (req, res) => {
   try {
     const { media, id } = req.params;
 
-    const { data } = await axios.get(`${BASE_URL}/${media}/${id}`, {
+    // Step 1: Fetch from TMDB
+    const { data: tmdbData } = await axios.get(`${BASE_URL}/${media}/${id}`, {
       headers: {
         Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
         accept: "application/json",
       },
-      params: {
-        language: "en-US",
-      },
+      params: { language: "en-US" },
     });
-    res.json(data);
+
+    let imdbRating = null;
+
+    // Step 2: If IMDb ID exists, fetch rating from OMDb
+    if (tmdbData.imdb_id && OMDB_API_KEY) {
+      try {
+        const { data: omdbData } = await axios.get(
+          `https://www.omdbapi.com/?i=${tmdbData.imdb_id}&apikey=${OMDB_API_KEY}`
+        );
+        imdbRating = omdbData?.imdbRating || null;
+      } catch (err) {
+        console.warn("OMDb fetch failed:", err.message);
+      }
+    }
+
+    // Step 3: Respond with TMDB + IMDb rating
+    res.json({ ...tmdbData, imdbRating });
   } catch (err) {
+    console.error("getDetails error:", err.message);
     res.status(500).json({ message: "Failed to fetch detail" });
   }
 };
+

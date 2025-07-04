@@ -29,7 +29,6 @@ const Watched = () => {
 
   const handleDelete = async () => {
     await removeFromWishlist(idToDelete, "watched");
-    console.log("Deleted!");
     setIdToDelete(null);
     setShowModal(false);
   };

@@ -23,10 +23,9 @@ const Details = () => {
     setIsInWishlist(
       [...wishlist, ...watched].some((multimedia) => multimedia.tmdbId == id)
     );
-    console.log(isInWishlist);
   }, [wishlist]);
 
-  const handleAdd = async (status = "towatch") => {
+  const handleAdd = async (status) => {
     try {
       setClicked(true);
       const data = {
@@ -151,7 +150,7 @@ const Details = () => {
 
             <div className="flex gap-3">
               <button
-                onClick={handleAdd}
+                onClick={() => handleAdd("towatch")}
                 disabled={isInWishlist || clicked}
                 className="mt-5 flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded disabled:opacity-60"
               >
@@ -162,6 +161,7 @@ const Details = () => {
               </button>
               { !isInWishlist && <button
                 onClick={() => handleAdd("watched")}
+                disabled={clicked}
                 className="mt-5 flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded disabled:opacity-60"
               >
                 <span className="material-symbols-outlined">

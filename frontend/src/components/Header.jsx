@@ -1,6 +1,8 @@
 import { Link, NavLink } from "react-router-dom";
+import userStore from "../store/userStore";
 
 const Header = () => {
+  const { user } = userStore();
   const linkClass = ({ isActive }) =>
     isActive
       ? "text-teal-400 underline underline-offset-4"
@@ -38,11 +40,14 @@ const Header = () => {
           </nav>
 
           <Link to="/profile">
-            <img
+            {/* <img
               className="h-9 w-9 rounded-full hover:scale-105 transition object-cover"
               src="/profile/profile.png"
               alt="profile"
-            />
+            /> */}
+            <div className="w-9 h-9 bg-teal-600 text-white rounded-full flex items-center justify-center text-2xl font-semibold uppercase">
+              {user.username?.charAt(0)}
+            </div>
           </Link>
         </div>
       </header>
