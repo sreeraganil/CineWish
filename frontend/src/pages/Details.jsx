@@ -104,8 +104,8 @@ const Details = () => {
       </div>
 
       <div className="relative z-10 p-4 max-w-4xl mx-auto text-white">
-        <div className="mt-8 md:mt-5 p-6  bg-opacity-70 rounded-xl backdrop-blur-sm">
-          {item?.imdbRating !== 0 && (
+        <div className="mt-8 md:mt-5 p-6 bg-opacity-70 rounded-xl backdrop-blur-sm">
+          {item.imdbRating && item?.imdbRating !== 0 && (
             <div className="absolute z-20 flex justify-center top-[-15px] right-2">
               <div className="flex items-center gap-2 bg-[#f5c518] text-black px-2 py-1 rounded-lg shadow-md text-lg font-semibold">
                 <img
@@ -114,9 +114,9 @@ const Details = () => {
                   className="h-5 w-auto"
                 />
                 <span className="text-sm font-bold">{parseFloat(item.imdbRating).toFixed(1)}</span>
-                <span className="text-xs sm:text-sm font-medium text-gray-700 ml-1">
+                {item?.imdbVotes && <span className="text-xs sm:text-sm font-medium text-gray-700 ml-1">
                   ({formatVotes(item.imdbVotes)} votes)
-                </span>
+                </span>}
               </div>
             </div>
           )}
@@ -153,15 +153,27 @@ const Details = () => {
               )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                {/* Release/First Air Date */}
                 {item.release_date || item.first_air_date ? (
                   <div>
-                    <span className="text-gray-400">Release:</span>{" "}
+                    <span className="text-gray-400">
+                      {item.release_date ? 'Release Date:' : 'First Air Date:'}
+                    </span>{" "}
                     <span className="text-white">
                       {item.release_date || item.first_air_date}
                     </span>
                   </div>
                 ) : null}
 
+                {/* Last Air Date (for TV shows) */}
+                {item.last_air_date && (
+                  <div>
+                    <span className="text-gray-400">Last Air Date:</span>{" "}
+                    <span className="text-white">{item.last_air_date}</span>
+                  </div>
+                )}
+
+                {/* Original Language */}
                 {item.original_language && (
                   <div>
                     <span className="text-gray-400">Language:</span>{" "}
@@ -171,6 +183,7 @@ const Details = () => {
                   </div>
                 )}
 
+                {/* Genres */}
                 {item.genres?.length > 0 && (
                   <div>
                     <span className="text-gray-400">Genres:</span>{" "}
@@ -180,13 +193,36 @@ const Details = () => {
                   </div>
                 )}
 
-                {item.runtime && (
+                {/* Runtime/Episode Runtime */}
+                {item.runtime ? (
                   <div>
                     <span className="text-gray-400">Runtime:</span>{" "}
                     <span className="text-white">{item.runtime} min</span>
                   </div>
+                ) : item.episode_run_time?.length > 0 ? (
+                  <div>
+                    <span className="text-gray-400">Episode Runtime:</span>{" "}
+                    <span className="text-white">
+                      {item.episode_run_time.join(", ")} min
+                    </span>
+                  </div>
+                ) : null}
+
+                {/* Number of Seasons/Episodes (for TV shows) */}
+                {item.number_of_seasons && (
+                  <div>
+                    <span className="text-gray-400">Seasons:</span>{" "}
+                    <span className="text-white">{item.number_of_seasons}</span>
+                  </div>
+                )}
+                {item.number_of_episodes && (
+                  <div>
+                    <span className="text-gray-400">Episodes:</span>{" "}
+                    <span className="text-white">{item.number_of_episodes}</span>
+                  </div>
                 )}
 
+                {/* Production Companies */}
                 {item.production_companies?.length > 0 && (
                   <div>
                     <span className="text-gray-400">Production:</span>{" "}
@@ -199,7 +235,18 @@ const Details = () => {
                   </div>
                 )}
                 
-                {item.revenue !== 0 && (
+                {/* Networks (for TV shows) */}
+                {item.networks?.length > 0 && (
+                  <div>
+                    <span className="text-gray-400">Network:</span>{" "}
+                    <span className="text-white">
+                      {item.networks.map((n) => n.name).join(", ")}
+                    </span>
+                  </div>
+                )}
+
+                {/* Revenue (for movies) */}
+                {item.revenue && item.revenue !== 0 && (
                   <div>
                     <span className="text-gray-400">Box Office:</span>{" "}
                     <span className="text-white">
@@ -208,10 +255,21 @@ const Details = () => {
                   </div>
                 )}
 
+                {/* Status */}
                 {item.status && (
                   <div>
                     <span className="text-gray-400">Status:</span>{" "}
                     <span className="text-white">{item.status}</span>
+                  </div>
+                )}
+
+                {/* Created By (for TV shows) */}
+                {item.created_by?.length > 0 && (
+                  <div>
+                    <span className="text-gray-400">Created By:</span>{" "}
+                    <span className="text-white">
+                      {item.created_by.map((c) => c.name).join(", ")}
+                    </span>
                   </div>
                 )}
               </div>

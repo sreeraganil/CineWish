@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import API from "../config/axios";
 import toast from "react-hot-toast";
+import wishlistStore from "./wishlistStore";
 
 const userStore = create((set, get) => {
   const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -89,7 +90,19 @@ const userStore = create((set, get) => {
     fetchRecommendations: async (media, id) => {
       try {
         const { data } = await API.get(`/tmdb/recommendations/${media}/${id}`);
-        set({ recommended: data});
+
+        const { wishlist, watched } = wishlistStore.getState();
+
+        const excludedIds = new Set([
+          ...wishlist?.map((item) => item.tmdbId),
+          ...watched?.map((item) => item.tmdbId),
+        ]);
+
+        const filtered = data.filter((item) => !excludedIds.has(item.id));
+
+        const shuffled = [...filtered].sort(() => 0.5 - Math.random());
+
+        set({ recommended: shuffled.slice(0, 3) });
       } catch (err) {
         console.error("Failed to fetch recommendations:", err);
         return [];

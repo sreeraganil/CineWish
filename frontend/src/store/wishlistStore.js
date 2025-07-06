@@ -43,6 +43,7 @@ const wishlistStore = create((set, get) => ({
     try {
       const { data } = await API.get("/wishlist?status=watched");
       set({ watched: data });
+      return data
     } catch (err) {
       console.error("Failed to fetch wishlist", err);
     }
