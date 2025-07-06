@@ -5,9 +5,11 @@ import authMiddleware from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", authMiddleware, addToWishlist);
-router.get("/", authMiddleware, getWishlist);
-router.delete("/:id", authMiddleware, removeFromWishlist);
-router.put("/:id", authMiddleware, markAsWatched);
+router.use(authMiddleware);
+
+router.post("/", addToWishlist);
+router.get("/", getWishlist);
+router.delete("/:id", removeFromWishlist);
+router.put("/:id", markAsWatched);
 
 export default router;
