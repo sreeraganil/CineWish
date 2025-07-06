@@ -24,6 +24,7 @@ const dummyRecommendations = [
   },
 ];
 
+
 const RecommendationSection = () => {
   return (
     <section className="bg-gray-950 py-8 px-4 text-white">

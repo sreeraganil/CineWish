@@ -9,6 +9,7 @@ const userStore = create((set, get) => {
     user: storedUser || null,
     trending: [],
     upcoming: [],
+    recommended: [],
     searchResult: [],
     stats: null,
 

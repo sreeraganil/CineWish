@@ -112,8 +112,8 @@ export const getDetails = async (req, res) => {
         const { data: omdbData } = await axios.get(
           `https://www.omdbapi.com/?i=${tmdbData.imdb_id}&apikey=${OMDB_API_KEY}`
         );
-        imdbRating = omdbData.imdbRating || 0;
-        imdbVotes = omdbData.imdbVotes || 0;
+        imdbRating = omdbData.imdbRating == "N/A" ? 0 : omdbData.imdbRating;
+        imdbVotes = omdbData.imdbVotes == "N/A" ? 0 : omdbData.imdbVotes;
       } catch (err) {
         console.warn("OMDb fetch failed:", err.message);
       }
