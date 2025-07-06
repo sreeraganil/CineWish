@@ -20,6 +20,9 @@ const UpcomingSection = () => {
     }
   };
 
+  if(upcoming?.length == 0)
+    return null
+
   return (
     <section className="bg-gray-950 py-8 px-4 text-white relative">
       <div className="max-w-7xl mx-auto">

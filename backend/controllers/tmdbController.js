@@ -126,3 +126,24 @@ export const getDetails = async (req, res) => {
   }
 };
 
+export const getRecommendations = async (req, res) => {
+  try {
+    const { media, id } = req.params;
+
+    const { data } = await axios.get(`${BASE_URL}/${media}/${id}/recommendations`, {
+      headers: {
+        Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+        accept: "application/json",
+      },
+      params: {
+        language: "en-US",
+      },
+    });
+
+    res.json(data.results || []);
+  } catch (err) {
+    console.error("TMDB Recommendations Error:", err.message);
+    res.status(500).json({ message: "Failed to fetch recommendations" });
+  }
+};
+

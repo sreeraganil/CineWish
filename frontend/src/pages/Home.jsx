@@ -6,16 +6,15 @@ import TrendingSection from "../components/TrendingSection"
 import UpcomingSection from "../components/UpcomingSection"
 
 const Home = () => {
-  const { recommended } = userStore();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black text-white pb-20 md:pb-0">
         <Header />
         <HeroSection />
         <StatsSection />
-        { recommended?.length && <RecommendationSection /> }
-        <TrendingSection />
-        <UpcomingSection />
+        <RecommendationSection />
+        <TrendingSection /> 
+        <UpcomingSection /> 
     </div>
   )
 }

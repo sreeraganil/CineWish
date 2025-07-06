@@ -105,7 +105,7 @@ const Details = () => {
 
       <div className="relative z-10 p-4 max-w-4xl mx-auto text-white">
         <div className="mt-8 md:mt-5 p-6  bg-opacity-70 rounded-xl backdrop-blur-sm">
-          {item.imdbRating && (
+          {item?.imdbRating !== 0 && (
             <div className="absolute z-20 flex justify-center top-[-15px] right-2">
               <div className="flex items-center gap-2 bg-[#f5c518] text-black px-2 py-1 rounded-lg shadow-md text-lg font-semibold">
                 <img
@@ -198,8 +198,8 @@ const Details = () => {
                     </span>
                   </div>
                 )}
-
-                {item.revenue && (
+                
+                {item.revenue !== 0 && (
                   <div>
                     <span className="text-gray-400">Box Office:</span>{" "}
                     <span className="text-white">

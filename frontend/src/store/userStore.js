@@ -85,6 +85,16 @@ const userStore = create((set, get) => {
         set({ loading: false });
       }
     },
+
+    fetchRecommendations: async (media, id) => {
+      try {
+        const { data } = await API.get(`/tmdb/recommendations/${media}/${id}`);
+        set({ recommended: data});
+      } catch (err) {
+        console.error("Failed to fetch recommendations:", err);
+        return [];
+      }
+    },
   };
 });
 

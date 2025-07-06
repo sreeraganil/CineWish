@@ -61,5 +61,6 @@ const wishlistStore = create((set, get) => ({
       console.error(err);
     }
   },
+
 }));
 export default wishlistStore;
