@@ -36,7 +36,7 @@ const Details = () => {
         poster: item.poster_path,
         year: new Date(item.release_date || item.first_air_date).getFullYear(),
         genre: item.genres?.map((g) => g.name) || [],
-        rating: item.imdbRating,
+        rating: item.imdbRating || item.vote_average,
         status,
       };
       await addToWishlist(data);
@@ -103,9 +103,9 @@ const Details = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-[#000000bb] via-[#00000088] to-[#000000dd]"></div>
       </div>
 
-      <div className="relative z-10 p-4 max-w-4xl mx-auto text-white">
+      <div className="relative z-10 p-0 sm:p-4 max-w-4xl mx-auto text-white">
         <div className="mt-8 md:mt-5 p-6 bg-opacity-70 rounded-xl backdrop-blur-sm">
-          {item.imdbRating && item?.imdbRating !== 0 && (
+          {item.imdbRating && item?.imdbRating !== 0 ? (
             <div className="absolute z-20 flex justify-center top-[-15px] right-2">
               <div className="flex items-center gap-2 bg-[#f5c518] text-black px-2 py-1 rounded-lg shadow-md text-lg font-semibold">
                 <img
@@ -113,10 +113,28 @@ const Details = () => {
                   alt="IMDb"
                   className="h-5 w-auto"
                 />
-                <span className="text-sm font-bold">{parseFloat(item.imdbRating).toFixed(1)}</span>
-                {item?.imdbVotes && <span className="text-xs sm:text-sm font-medium text-gray-700 ml-1">
-                  ({formatVotes(item.imdbVotes)} votes)
-                </span>}
+                <span className="text-sm font-bold">
+                  {parseFloat(item.imdbRating).toFixed(1)}
+                </span>
+                {item?.imdbVotes && (
+                  <span className="text-xs sm:text-sm font-medium text-gray-700 ml-1">
+                    ({formatVotes(item.imdbVotes)} votes)
+                  </span>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="absolute z-20 flex justify-center top-[-15px] right-2">
+              <div className="flex items-center gap-2 bg-[#032541] px-2 py-1 rounded-lg shadow-md text-lg font-semibold text-white">
+                <span className="text-sm font-bold bg-gradient-to-r from-[#9cccb6] to-[#00bae1] text-transparent bg-clip-text">TMDB</span>
+                <span className="text-sm font-bold">
+                  {parseFloat(item.vote_average).toFixed(1)}
+                </span>
+                {item?.vote_count && (
+                  <span className="text-xs sm:text-sm font-medium text-white-100 opacity-70 ml-1">
+                    ({formatVotes(item.vote_count)} votes)
+                  </span>
+                )}
               </div>
             </div>
           )}
@@ -153,11 +171,10 @@ const Details = () => {
               )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                {/* Release/First Air Date */}
                 {item.release_date || item.first_air_date ? (
                   <div>
                     <span className="text-gray-400">
-                      {item.release_date ? 'Release Date:' : 'First Air Date:'}
+                      {item.release_date ? "Release Date:" : "First Air Date:"}
                     </span>{" "}
                     <span className="text-white">
                       {item.release_date || item.first_air_date}
@@ -165,7 +182,6 @@ const Details = () => {
                   </div>
                 ) : null}
 
-                {/* Last Air Date (for TV shows) */}
                 {item.last_air_date && (
                   <div>
                     <span className="text-gray-400">Last Air Date:</span>{" "}
@@ -173,7 +189,6 @@ const Details = () => {
                   </div>
                 )}
 
-                {/* Original Language */}
                 {item.original_language && (
                   <div>
                     <span className="text-gray-400">Language:</span>{" "}
@@ -183,7 +198,6 @@ const Details = () => {
                   </div>
                 )}
 
-                {/* Genres */}
                 {item.genres?.length > 0 && (
                   <div>
                     <span className="text-gray-400">Genres:</span>{" "}
@@ -193,7 +207,6 @@ const Details = () => {
                   </div>
                 )}
 
-                {/* Runtime/Episode Runtime */}
                 {item.runtime ? (
                   <div>
                     <span className="text-gray-400">Runtime:</span>{" "}
@@ -208,7 +221,7 @@ const Details = () => {
                   </div>
                 ) : null}
 
-                {/* Number of Seasons/Episodes (for TV shows) */}
+               
                 {item.number_of_seasons && (
                   <div>
                     <span className="text-gray-400">Seasons:</span>{" "}
@@ -218,11 +231,12 @@ const Details = () => {
                 {item.number_of_episodes && (
                   <div>
                     <span className="text-gray-400">Episodes:</span>{" "}
-                    <span className="text-white">{item.number_of_episodes}</span>
+                    <span className="text-white">
+                      {item.number_of_episodes}
+                    </span>
                   </div>
                 )}
 
-                {/* Production Companies */}
                 {item.production_companies?.length > 0 && (
                   <div>
                     <span className="text-gray-400">Production:</span>{" "}
@@ -234,8 +248,7 @@ const Details = () => {
                     </span>
                   </div>
                 )}
-                
-                {/* Networks (for TV shows) */}
+
                 {item.networks?.length > 0 && (
                   <div>
                     <span className="text-gray-400">Network:</span>{" "}
@@ -245,7 +258,6 @@ const Details = () => {
                   </div>
                 )}
 
-                {/* Revenue (for movies) */}
                 {item.revenue && item.revenue !== 0 && (
                   <div>
                     <span className="text-gray-400">Box Office:</span>{" "}
@@ -255,7 +267,6 @@ const Details = () => {
                   </div>
                 )}
 
-                {/* Status */}
                 {item.status && (
                   <div>
                     <span className="text-gray-400">Status:</span>{" "}
@@ -263,7 +274,6 @@ const Details = () => {
                   </div>
                 )}
 
-                {/* Created By (for TV shows) */}
                 {item.created_by?.length > 0 && (
                   <div>
                     <span className="text-gray-400">Created By:</span>{" "}

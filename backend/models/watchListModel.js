@@ -27,10 +27,7 @@ const watchListSchema = new mongoose.Schema(
       type: Number,
     },
     genre: [String],
-    imdbRating: {
-      type: Number,
-    },
-    tmdbRating: {
+    rating: {
       type: Number,
     },
     status: {
