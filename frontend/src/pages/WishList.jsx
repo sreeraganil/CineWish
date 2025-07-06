@@ -15,7 +15,7 @@ const WishList = () => {
   const [showModal, setShowModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
   const [showFilter, setShowFilter] = useState(false);
-  const [filterData, setFilterData] = useState([]);
+  const [filterData, setFilterData] = useState(wishlist);
 
   const [typeFilter, setTypeFilter] = useState("");
   const [genreFilter, setGenreFilter] = useState("");
@@ -53,7 +53,7 @@ const WishList = () => {
     });
 
     setFilterData(filteredWishlist);
-  }, [typeFilter, genreFilter, yearFilter, ratingFilter]);
+  }, [typeFilter, genreFilter, yearFilter, ratingFilter, wishlist]);
 
   const handleDelete = async () => {
     await removeFromWishlist(idToDelete, "wishlist");

@@ -2,7 +2,7 @@ import WatchList from "../models/watchListModel.js";
 
 export const addToWishlist = async (req, res) => {
   try {
-    const { tmdbId, type, title, poster, year, rating, status } = req.body;
+    const { tmdbId, type, title, poster, year, rating, status, genre } = req.body;
     const userId = req.user._id;
 
     const exists = await WatchList.findOne({ userId, tmdbId });
@@ -17,6 +17,7 @@ export const addToWishlist = async (req, res) => {
       year,
       rating,
       status,
+      genre
     });
 
     res.status(201).json(item);
