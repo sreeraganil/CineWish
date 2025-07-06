@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+
+
 const WishList = () => {
   const [loading, setLoading] = useState(true);
   const { wishlist, fetchWishlist, markAsWatched, removeFromWishlist } =
@@ -12,6 +14,20 @@ const WishList = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
+  const [showFilter, setShowFilter] = useState(false);
+  const [filterData, setFilterData] = useState([]);
+
+  const [typeFilter, setTypeFilter] = useState("");
+  const [genreFilter, setGenreFilter] = useState("");
+  const [yearFilter, setYearFilter] = useState("");
+  const [ratingFilter, setRatingFilter] = useState("");
+
+  const clearFilters = () => {
+    setTypeFilter("");
+    setGenreFilter("");
+    setYearFilter("");
+    setRatingFilter("");
+  };
 
   const handleClick = (media, id) => {
     navigate(`/details/${media}/${id}`);
@@ -26,6 +42,19 @@ const WishList = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const filteredWishlist = wishlist.filter((item) => {
+      return (
+        (!typeFilter || item.type === typeFilter) &&
+        (!genreFilter || item.genre.includes(genreFilter)) &&
+        (!yearFilter || item.year === parseInt(yearFilter)) &&
+        (!ratingFilter || item.rating >= parseFloat(ratingFilter))
+      );
+    });
+
+    setFilterData(filteredWishlist);
+  }, [typeFilter, genreFilter, yearFilter, ratingFilter]);
+
   const handleDelete = async () => {
     await removeFromWishlist(idToDelete, "wishlist");
     console.log("Deleted!");
@@ -38,15 +67,92 @@ const WishList = () => {
       <Header />
 
       <div className="max-w-7xl mx-auto px-4 py-6">
-        <h2 className="text-2xl font-bold mb-4">Your Wishlist</h2>
+        <div className="relative mb-4 flex flex-col items-end">
+          <div className="flex items-center justify-between w-full">
+            <h2 className="text-2xl font-bold">Your Wishlist</h2>
+            <span
+              className="material-symbols-outlined"
+              onClick={() => setShowFilter((prev) => !prev)}
+            >
+              tune
+            </span>
+          </div>
+          {showFilter && (
+            <div className="mt-4 bg-gray-800 text-white p-4 rounded-lg space-y-4 max-w-md">
+              <div className="flex gap-4 justify-center flex-wrap">
+                {/* Type Filter */}
+                <div>
+                  <label className="block text-sm mb-1">Type</label>
+                  <select
+                    className="bg-gray-900 px-2 py-1 rounded"
+                    onChange={(e) => setTypeFilter(e.target.value)}
+                    value={typeFilter}
+                  >
+                    <option value="">All</option>
+                    <option value="movie">Movie</option>
+                    <option value="tv">TV</option>
+                  </select>
+                </div>
+
+                {/* Genre Filter */}
+                <div>
+                  <label className="block text-sm mb-1">Genre</label>
+                  <select
+                    className="bg-gray-900 px-2 py-1 rounded"
+                    onChange={(e) => setGenreFilter(e.target.value)}
+                    value={genreFilter}
+                  >
+                    <option value="">All</option>
+                    <option value="Action">Action</option>
+                    <option value="Drama">Drama</option>
+                    <option value="Comedy">Comedy</option>
+                    <option value="Thriller">Thriller</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm mb-1">Year</label>
+                  <input
+                    type="number"
+                    className="bg-gray-900 px-2 py-1 rounded w-24"
+                    placeholder="e.g. 2023"
+                    value={yearFilter}
+                    onChange={(e) => setYearFilter(e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm mb-1">Min Rating</label>
+                  <input
+                    type="number"
+                    className="bg-gray-900 px-2 py-1 rounded w-24"
+                    step="0.1"
+                    min="0"
+                    max="10"
+                    value={ratingFilter}
+                    onChange={(e) => setRatingFilter(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="text-right">
+                <button
+                  onClick={clearFilters}
+                  className="px-3 py-[2px] sm:py-1 bg-red-600 rounded hover:bg-red-700"
+                >
+                  Clear Filters
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
 
         {loading ? (
           <Loader />
-        ) : wishlist.length === 0 ? (
+        ) : filterData.length === 0 ? (
           <>
             <div className="relative w-full flex flex-col items-center justify-center gap-4">
               <DotLottieReact
-                // src="https://lottie.host/9d2b2f06-56f3-48e6-a778-513d8f97fb34/SdOaUoj0vE.lottie"
                 src="/lottie/no_data_found.lottie"
                 loop
                 autoplay
@@ -65,7 +171,7 @@ const WishList = () => {
           </>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4">
-            {wishlist.map((item) => (
+            {filterData.map((item) => (
               <div
                 key={item._id}
                 className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden shadow hover:shadow-teal-500/20 transition hover:scale-105 relative"

@@ -26,7 +26,7 @@ const watchListSchema = new mongoose.Schema(
     year: {
       type: Number,
     },
-    genre: [String],
+    genre: Array,
     rating: {
       type: Number,
     },
