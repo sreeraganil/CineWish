@@ -2,17 +2,14 @@ import { useEffect } from "react";
 import userStore from "../store/userStore";
 
 const StatsSection = () => {
-  const { moviesWatched, seriesWatched, averageRating } = {
-    moviesWatched: 20,
-    seriesWatched: 10,
-    averageRating: 7.7,
-  };
 
-  const { stats, fetchStats } = userStore();
+  const { stats, fetchStats, user } = userStore();
 
   useEffect(()=>{
     fetchStats();
   },[])
+
+  if(!user) return null
 
   return (
     <section className="bg-gray-950 text-white py-8 px-4">

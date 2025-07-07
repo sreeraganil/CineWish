@@ -39,16 +39,11 @@ const Header = () => {
             </NavLink>
           </nav>
 
-          <Link to="/profile">
-            {/* <img
-              className="h-9 w-9 rounded-full hover:scale-105 transition object-cover"
-              src="/profile/profile.png"
-              alt="profile"
-            /> */}
+          {user ? <Link to="/profile">
             <div className="w-9 h-9 bg-teal-600 text-white rounded-full flex items-center justify-center text-2xl font-semibold uppercase">
               {user.username?.charAt(0)}
             </div>
-          </Link>
+          </Link> : <button>Login</button>}
         </div>
       </header>
 

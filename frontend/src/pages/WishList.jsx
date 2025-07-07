@@ -71,14 +71,14 @@ const WishList = () => {
           <div className="flex items-center justify-between w-full">
             <h2 className="text-2xl font-bold">Your Wishlist</h2>
             <span
-              className="material-symbols-outlined"
+              className={`material-symbols-outlined cursor-pointer select-none ${showFilter && "text-teal-500"}`}
               onClick={() => setShowFilter((prev) => !prev)}
             >
               tune
             </span>
           </div>
           {showFilter && (
-            <div className="mt-4 bg-gray-800 text-white p-4 rounded-lg space-y-4 max-w-md">
+            <div className="mt-4 bg-gray-800 text-white p-4 rounded-lg space-y-4 max-w-lg">
               <div className="flex gap-4 justify-center flex-wrap">
                 {/* Type Filter */}
                 <div>
@@ -104,9 +104,13 @@ const WishList = () => {
                   >
                     <option value="">All</option>
                     <option value="Action">Action</option>
+                    <option value="Adventure">Adventure</option>
                     <option value="Drama">Drama</option>
                     <option value="Comedy">Comedy</option>
                     <option value="Thriller">Thriller</option>
+                    <option value="Mystery">Mystery</option>
+                    <option value="Fantasy">Fantasy</option>
+                    <option value="Science Fiction">Sci-Fi</option>
                   </select>
                 </div>
 
@@ -129,6 +133,7 @@ const WishList = () => {
                     step="0.1"
                     min="0"
                     max="10"
+                    placeholder="e.g. 6"
                     value={ratingFilter}
                     onChange={(e) => setRatingFilter(e.target.value)}
                   />
