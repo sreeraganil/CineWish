@@ -8,9 +8,10 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 const Search = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
-  const [type, setType] = useState("multi");
   const navigate = useNavigate();
   const { searchResult, setSearchResult } = userStore();
+
+  const type = searchParams.get("t") || "";
 
   useEffect(() => {
     const query = searchParams.get("q") || "";
@@ -24,6 +25,7 @@ const Search = () => {
   const handleSearch = async (e) => {
     e && e.preventDefault();
     const query = searchParams.get("q") || "";
+    const type = searchParams.get("t") || "multi";
     if (!query.trim()) return;
 
     setLoading(true);
@@ -44,8 +46,17 @@ const Search = () => {
     navigate(`/details/${media}/${id}`);
   };
 
-  const handleChange = (e) => {
-    setSearchParams({ q: e.target.value }, { replace: true });
+  const handleChange = (e, param) => {
+    const currentParams = Object.fromEntries(searchParams.entries());
+    console.log(searchParams);
+    console.log(currentParams)
+    setSearchParams(
+      {
+        ...currentParams,
+        [param]: e.target.value,
+      },
+      { replace: true }
+    );
   };
 
   return (
@@ -60,7 +71,7 @@ const Search = () => {
             type="text"
             autoFocus
             value={searchParams.get("q") || ""}
-            onChange={handleChange}
+            onChange={(e) => handleChange(e, "q")}
             placeholder={
               type == "multi"
                 ? "Search for movies or series..."
@@ -81,8 +92,8 @@ const Search = () => {
         <div className="sm:px-2 bg-gray-800 rounded-lg overflow-hidden focus:outline-none hover:ring-2 hover:ring-teal-500">
           <select
             name="type"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
+            value={searchParams.get("t") || ""}
+            onChange={(e) => handleChange(e, "t")}
             className="bg-gray-800 text-white py-[10px] text-sm border-none outline-none"
           >
             <option value="multi">All</option>

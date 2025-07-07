@@ -43,7 +43,7 @@ const Header = () => {
             <div className="w-9 h-9 bg-teal-600 text-white rounded-full flex items-center justify-center text-2xl font-semibold uppercase">
               {user.username?.charAt(0)}
             </div>
-          </Link> : <button>Login</button>}
+          </Link> : <Link to="/login" className="bg-teal-500 rounded px-4 py-1 font-semibold hover:scale-105 transition duration-300">Login</Link>}
         </div>
       </header>
 

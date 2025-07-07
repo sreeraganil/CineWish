@@ -5,6 +5,7 @@ import wishlistStore from "../store/wishlistStore";
 import toast from "react-hot-toast";
 import BackHeader from "../components/Backheader";
 import Loader from "../components/Loader";
+import userStore from "../store/userStore";
 
 const Details = () => {
   const { media, id } = useParams();
@@ -14,10 +15,11 @@ const Details = () => {
   const [clicked, setClicked] = useState(false);
   const { addToWishlist, wishlist, watched, fetchWishlist, fetchWatched } =
     wishlistStore();
+  const { user } = userStore();
 
   useEffect(() => {
-    fetchWishlist();
-    fetchWatched();
+    user && fetchWishlist();
+    user && fetchWatched();
   }, []);
 
   useEffect(() => {
@@ -126,7 +128,9 @@ const Details = () => {
           ) : (
             <div className="absolute z-20 flex justify-center top-[-15px] right-2">
               <div className="flex items-center gap-2 bg-[#032541] px-2 py-1 rounded-lg shadow-md text-lg font-semibold text-white">
-                <span className="text-sm font-bold bg-gradient-to-r from-[#9cccb6] to-[#00bae1] text-transparent bg-clip-text">TMDB</span>
+                <span className="text-sm font-bold bg-gradient-to-r from-[#9cccb6] to-[#00bae1] text-transparent bg-clip-text">
+                  TMDB
+                </span>
                 <span className="text-sm font-bold">
                   {parseFloat(item.vote_average).toFixed(1)}
                 </span>
@@ -221,7 +225,6 @@ const Details = () => {
                   </div>
                 ) : null}
 
-               
                 {item.number_of_seasons && (
                   <div>
                     <span className="text-gray-400">Seasons:</span>{" "}
@@ -284,7 +287,7 @@ const Details = () => {
                 )}
               </div>
 
-              <div className="flex flex-wrap gap-3 pt-4">
+              { user && <div className="flex flex-wrap gap-3 pt-4">
                 <button
                   onClick={() => handleAdd("towatch")}
                   disabled={isInWishlist || clicked}
@@ -310,7 +313,7 @@ const Details = () => {
                     Mark as Watched
                   </button>
                 )}
-              </div>
+              </div>}
 
               {item.homepage && (
                 <div className="pt-2">

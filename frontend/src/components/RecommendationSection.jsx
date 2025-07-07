@@ -4,7 +4,7 @@ import RecommendationCard from "./RecommendationCard";
 import wishlistStore from "../store/wishlistStore";
 
 const RecommendationSection = () => {
-  const { recommended, fetchRecommendations } = userStore();
+  const { user, recommended, fetchRecommendations } = userStore();
   const { fetchWatched } = wishlistStore();
 
   const fetchData = async () => {
@@ -19,7 +19,7 @@ const RecommendationSection = () => {
   };
 
   useEffect(() => {
-    recommended?.length == 0 && fetchData();
+    recommended?.length == 0 && user && fetchData();
   }, []);
 
   if (recommended?.length == 0) return null;

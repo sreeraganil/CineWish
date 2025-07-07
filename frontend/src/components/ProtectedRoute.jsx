@@ -1,11 +1,11 @@
-import { Navigate } from 'react-router-dom';
 import userStore from '../store/userStore';
+import LoginRequired from './LoginRequired';
 
 const ProtectedRoute = ({ children }) => {
   const user = userStore((state) => state.user);
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <LoginRequired />;
   }
 
   return children;

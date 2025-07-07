@@ -3,16 +3,29 @@ import wishlistStore from "../store/wishlistStore";
 import userStore from "../store/userStore";
 import BackHeader from "../components/Backheader";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const { user, logoutUser } = userStore();
   const { wishlist, fetchWishlist, fetchWatched, watched } = wishlistStore();
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchWishlist();
     fetchWatched();
   }, []);
+
+  const handleLogout = async () => {
+    const success = await logoutUser();
+    if (success) {
+      navigate("/login");
+    }
+  };
+
+  useEffect(()=>{
+    !user && handleLogout();
+  },[user])
 
   return (
     <>
@@ -56,7 +69,8 @@ const Profile = () => {
       <DeleteConfirmModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
-        onConfirm={logoutUser}
+        onConfirm={handleLogout}
+        msg={"Logout"}
       />
     </>
   );

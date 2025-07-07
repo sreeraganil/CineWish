@@ -6,7 +6,7 @@ const StatsSection = () => {
   const { stats, fetchStats, user } = userStore();
 
   useEffect(()=>{
-    fetchStats();
+    user && fetchStats();
   },[])
 
   if(!user) return null

@@ -26,6 +26,7 @@ const userStore = create((set, get) => {
         set({ user: null });
         localStorage.removeItem("user");
         toast.success(res.data.message);
+        return true;
       } catch (err) {
         throw err?.res?.data?.message || "Logout failed";
       }

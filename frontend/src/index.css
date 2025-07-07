@@ -59,3 +59,19 @@ body {
 .animate-underlineScale {
   animation: underlineScale 2s ease infinite;
 }
+
+
+@keyframes bg-animation {
+  0%,100% {
+    background-size: 200% 200%;
+    background-position: left center;
+  }
+  50% {
+    background-size: 200% 200%;
+    background-position: right center;
+  }
+}
+
+.animate-bg {
+  animation: bg-animation 10s ease infinite;
+}

@@ -57,17 +57,13 @@ const App = () => {
         <Route
           path="/search"
           element={
-            <ProtectedRoute>
               <Search />
-            </ProtectedRoute>
           }
         />
         <Route
           path="/details/:media/:id"
           element={
-            <ProtectedRoute>
               <Details />
-            </ProtectedRoute>
           }
         />
         <Route
