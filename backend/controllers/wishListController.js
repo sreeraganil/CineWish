@@ -32,14 +32,26 @@ export const getWishlist = async (req, res) => {
   try {
     const userId = req.user.id;
     const status = req.query.status || "towatch";
-    const wishlist = await WatchList.find({ userId, status }).sort({
-      createdAt: -1,
-    });
-    res.json(wishlist);
+
+    const { t, g, y, r, page = 1, limit = 20 } = req.query;
+
+    // Start with basic query
+    const query = { userId, status };
+
+    if (t) query.type = t;
+    if (g) query.genre = { $in: [g] };
+    if (y) query.year = parseInt(y);
+    if (r) query.rating = { $gte: parseFloat(r) };
+
+    const wishlist = await WatchList.find(query).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit);
+    const total = await WatchList.countDocuments({ status });
+
+    res.json({data: wishlist, total});
   } catch (err) {
-    res.status(500).json({ message: "Failed to fetch wishlist" });
+    res.status(500).json({ message: "Failed to fetch wishlist", error: err.message });
   }
 };
+
 
 export const removeFromWishlist = async (req, res) => {
   try {

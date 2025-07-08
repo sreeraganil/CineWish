@@ -8,24 +8,29 @@ import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const Watched = () => {
-  const { watched, fetchWatched, removeFromWishlist } = wishlistStore();
+  const { watched, watchedCount, fetchWatched, removeFromWishlist } =
+    wishlistStore();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
+  const [page, setPage] = useState(1);
 
   const handleClick = (media, id) => {
     navigate(`/details/${media}/${id}`);
   };
 
+  const ITEMS_PER_PAGE = 20;
+  const totalPages = Math.ceil(watchedCount / ITEMS_PER_PAGE);
+
   useEffect(() => {
     const load = async () => {
       setLoading(true);
-      await fetchWatched();
+      await fetchWatched(page);
       setLoading(false);
     };
     load();
-  }, []);
+  }, [page]);
 
   const handleDelete = async () => {
     await removeFromWishlist(idToDelete, "watched");
@@ -37,13 +42,17 @@ const Watched = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black text-white pb-20 md:pb-0">
       <Header />
       <div className="max-w-7xl mx-auto px-4 py-6">
-        <h1 className="text-2xl font-bold mb-4">Watched</h1>
+        <h1 className="text-2xl font-bold mb-4  flex items-center">
+          Watched
+          <span className="ml-3 text-lg rounded-full bg-teal-600 px-2">
+            {watchedCount}
+          </span>
+        </h1>
         {loading ? (
           <Loader />
         ) : watched?.length === 0 ? (
           <div className="w-full flex flex-col items-center justify-center gap-4">
             <DotLottieReact
-              // src="https://lottie.host/9d2b2f06-56f3-48e6-a778-513d8f97fb34/SdOaUoj0vE.lottie"
               src="/lottie/no_data_found.lottie"
               loop
               autoplay
@@ -98,6 +107,37 @@ const Watched = () => {
             ))}
           </div>
         )}
+      </div>
+      <div className="flex justify-center items-center gap-2 mt-8 pb-4">
+        <button
+          onClick={() => setPage((p) => Math.max(p - 1, 1))}
+          disabled={page === 1}
+          className="px-2 py-1 rounded bg-gray-800 hover:bg-gray-700 disabled:opacity-50 flex items-center justify-center"
+        >
+          <span className="material-symbols-outlined">chevron_left</span>
+        </button>
+
+        {[...Array(totalPages)].map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setPage(i + 1)}
+            className={`px-3 py-1 rounded ${
+              page === i + 1
+                ? "bg-teal-500 text-white"
+                : "bg-gray-800 text-gray-300"
+            }`}
+          >
+            {i + 1}
+          </button>
+        ))}
+
+        <button
+          onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+          disabled={page === totalPages}
+          className="px-2 py-1 rounded bg-gray-800 hover:bg-gray-700 disabled:opacity-50 flex items-center justify-center"
+        >
+          <span className="material-symbols-outlined">chevron_right</span>
+        </button>
       </div>
       <DeleteConfirmModal
         isOpen={showModal}

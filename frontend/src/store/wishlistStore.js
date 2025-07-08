@@ -5,11 +5,13 @@ import toast from "react-hot-toast";
 const wishlistStore = create((set, get) => ({
   wishlist: [],
   watched: [],
+  wishlistCount: 0,
+  watchedCount: 0,
 
-  fetchWishlist: async () => {
+  fetchWishlist: async (queries, page = 1, limit = 20) => {
     try {
-      const { data } = await API.get("/wishlist");
-      set({ wishlist: data });
+      const { data } = await API.get(`/wishlist?page=${page}&limit=${limit}&${queries}`);
+      set({ wishlist: data.data, wishlistCount: data.total });
     } catch (err) {
       console.error("Failed to fetch wishlist", err);
     }
@@ -39,10 +41,10 @@ const wishlistStore = create((set, get) => ({
     }
   },
 
-  fetchWatched: async () => {
+  fetchWatched: async (page = 1) => {
     try {
-      const { data } = await API.get("/wishlist?status=watched");
-      set({ watched: data });
+      const { data } = await API.get(`/wishlist?status=watched&page=${page}`);
+      set({ watched: data.data, watchedCount: data.total });
       return data
     } catch (err) {
       console.error("Failed to fetch wishlist", err);
