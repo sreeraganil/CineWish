@@ -13,20 +13,22 @@ const Details = () => {
   const [loading, setLoading] = useState(true);
   const [isInWishlist, setIsInWishlist] = useState(false);
   const [clicked, setClicked] = useState(false);
-  const { addToWishlist, wishlist, watched, fetchWishlist, fetchWatched } =
-    wishlistStore();
+  const { addToWishlist } = wishlistStore();
   const { user } = userStore();
 
   useEffect(() => {
-    user && fetchWishlist();
-    user && fetchWatched();
-  }, []);
+    const checkStatus = async () => {
+      console.log(isInWishlist)
+      try {
+        const { data } = await API.get(`/wishlist/check/${id}`);
+        setIsInWishlist(!!data.exists);
+      } catch (err) {
+        console.error("Check failed", err);
+      }
+    };
 
-  useEffect(() => {
-    setIsInWishlist(
-      [...wishlist, ...watched].some((multimedia) => multimedia.tmdbId == id)
-    );
-  }, [wishlist]);
+    if (user) checkStatus();
+  }, [id, user]);
 
   const handleAdd = async (status) => {
     try {
@@ -287,33 +289,35 @@ const Details = () => {
                 )}
               </div>
 
-              { user && <div className="flex flex-wrap gap-3 pt-4">
-                <button
-                  onClick={() => handleAdd("towatch")}
-                  disabled={isInWishlist || clicked}
-                  className={`flex items-center gap-2 px-4 py-2 rounded transition-colors ${
-                    isInWishlist
-                      ? "bg-gray-600 text-gray-300"
-                      : "bg-teal-600 hover:bg-teal-700 text-white"
-                  } disabled:opacity-60`}
-                >
-                  <span className="material-symbols-outlined">
-                    {isInWishlist ? "bookmark_added" : "bookmark_add"}
-                  </span>
-                  {isInWishlist ? "In Wishlist" : "Add to Wishlist"}
-                </button>
-
-                {!isInWishlist && (
+              {user && (
+                <div className="flex flex-wrap gap-3 pt-4">
                   <button
-                    onClick={() => handleAdd("watched")}
-                    disabled={clicked}
-                    className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded transition-colors disabled:opacity-60"
+                    onClick={() => handleAdd("towatch")}
+                    disabled={isInWishlist || clicked}
+                    className={`flex items-center gap-2 px-4 py-2 rounded transition-colors ${
+                      isInWishlist
+                        ? "bg-gray-600 text-gray-300"
+                        : "bg-teal-600 hover:bg-teal-700 text-white"
+                    } disabled:opacity-60`}
                   >
-                    <span className="material-symbols-outlined">preview</span>
-                    Mark as Watched
+                    <span className="material-symbols-outlined">
+                      {isInWishlist ? "bookmark_added" : "bookmark_add"}
+                    </span>
+                    {isInWishlist ? "In Wishlist" : "Add to Wishlist"}
                   </button>
-                )}
-              </div>}
+
+                  {!isInWishlist && (
+                    <button
+                      onClick={() => handleAdd("watched")}
+                      disabled={clicked}
+                      className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded transition-colors disabled:opacity-60"
+                    >
+                      <span className="material-symbols-outlined">preview</span>
+                      Mark as Watched
+                    </button>
+                  )}
+                </div>
+              )}
 
               {item.homepage && (
                 <div className="pt-2">
