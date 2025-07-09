@@ -86,3 +86,16 @@ export const markAsWatched = async (req, res) => {
       .json({ message: "Failed to update status", error: err.message });
   }
 };
+
+export const checkIfExists = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { tmdbId } = req.params;
+
+    const exists = await WatchList.findOne({ userId, tmdbId });
+    res.json({ exists: !!exists, status: exists?.status || null });
+  } catch (err) {
+    res.status(500).json({ message: "Error checking status" });
+  }
+};
+

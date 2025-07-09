@@ -21,7 +21,7 @@ const Watched = () => {
   };
 
   const ITEMS_PER_PAGE = 20;
-  const totalPages = Math.ceil(watchedCount / ITEMS_PER_PAGE);
+  const totalPages = Math.max(Math.ceil(watchedCount.totalCount / ITEMS_PER_PAGE), 1);
 
   useEffect(() => {
     const load = async () => {
@@ -41,11 +41,11 @@ const Watched = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black text-white pb-20 md:pb-0">
       <Header />
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="max-w-7xl mx-auto px-4 py-6 min-h-screen">
         <h1 className="text-2xl font-bold mb-4  flex items-center">
           Watched
           { !loading && <span className="ml-3 text-lg rounded-full bg-teal-600 px-2">
-            {watchedCount}
+            {watchedCount.totalCount}
           </span>}
         </h1>
         {loading ? (
@@ -108,7 +108,7 @@ const Watched = () => {
           </div>
         )}
       </div>
-      {watched.length !== 0 && <div className="flex justify-center items-center gap-2 mt-8 pb-4">
+      {watched.length !== 0 && !loading && <div className="flex justify-center items-center gap-2 mt-8 pb-4">
         <button
           onClick={() => setPage((p) => Math.max(p - 1, 1))}
           disabled={page === 1}

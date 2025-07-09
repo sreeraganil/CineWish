@@ -11,5 +11,6 @@ router.post("/", addToWishlist);
 router.get("/", getWishlist);
 router.delete("/:id", removeFromWishlist);
 router.put("/:id", markAsWatched);
+router.get("/check/:tmdbId", markAsWatched);
 
 export default router;

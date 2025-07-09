@@ -16,7 +16,7 @@ const RecommendationSection = () => {
     } catch (err) {
       console.log(`error in fetching recommendations: ${err?.message}`);
     }
-  };
+  }; 
 
   useEffect(() => {
     recommended?.length == 0 && user && fetchData();

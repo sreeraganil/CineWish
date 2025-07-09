@@ -45,7 +45,7 @@ const WishList = () => {
   };
 
   const ITEMS_PER_PAGE = 20;
-  const totalPages = Math.ceil(wishlistCount / ITEMS_PER_PAGE);
+  const totalPages = Math.max(Math.ceil(wishlistCount.filterTotalCount / ITEMS_PER_PAGE), 1);
 
   const handleClick = (media, id) => {
     navigate(`/details/${media}/${id}`);
@@ -78,14 +78,14 @@ const WishList = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black text-white pb-20 md:pb-0">
       <Header />
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="max-w-7xl mx-auto px-4 py-6 min-h-screen">
         <div className="relative mb-4 flex flex-col items-end">
           <div className="flex items-center justify-between w-full">
             <h2 className="text-2xl font-bold flex items-center justify-center">
               Your Wishlist
               {!loading && (
                 <span className="ml-3 text-lg rounded-full bg-teal-600 px-2">
-                  {wishlistCount}
+                  {wishlistCount.totalCount}
                 </span>
               )}
             </h2>
@@ -260,7 +260,7 @@ const WishList = () => {
           </div>
         )}
       </div>
-      {wishlist.length !== 0 && (
+      {wishlist.length !== 0 && !loading && (
         <div className="flex justify-center items-center gap-2 mt-8 pb-4">
           <button
             onClick={() => setPage((p) => Math.max(p - 1, 1))}
