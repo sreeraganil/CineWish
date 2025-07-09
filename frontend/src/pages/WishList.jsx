@@ -26,13 +26,21 @@ const WishList = () => {
   const [ratingFilter, setRatingFilter] = useState("");
   const [page, setPage] = useState(1);
 
+  const activeFilterCount = [
+    typeFilter,
+    genreFilter,
+    yearFilter,
+    ratingFilter,
+  ].filter(Boolean).length;
+
   const clearFilters = async () => {
     setTypeFilter("");
     setGenreFilter("");
     setYearFilter("");
     setRatingFilter("");
     setLoading(true);
-    await fetchWishlist("");
+    (typeFilter || genreFilter || yearFilter || ratingFilter) &&
+      (await fetchWishlist(""));
     setLoading(false);
   };
 
@@ -75,18 +83,27 @@ const WishList = () => {
           <div className="flex items-center justify-between w-full">
             <h2 className="text-2xl font-bold flex items-center justify-center">
               Your Wishlist
-              <span className="ml-3 text-lg rounded-full bg-teal-600 px-2">
-                {wishlistCount}
-              </span>
+              {!loading && (
+                <span className="ml-3 text-lg rounded-full bg-teal-600 px-2">
+                  {wishlistCount}
+                </span>
+              )}
             </h2>
-            <span
-              className={`material-symbols-outlined cursor-pointer select-none ${
-                showFilter && "text-teal-500"
-              }`}
-              onClick={() => setShowFilter((prev) => !prev)}
-            >
-              tune
-            </span>
+            <div className="relative">
+              <span
+                className={`material-symbols-outlined cursor-pointer select-none ${
+                  showFilter && "text-teal-500"
+                }`}
+                onClick={() => setShowFilter((prev) => !prev)}
+              >
+                tune
+              </span>
+              {activeFilterCount > 0 && (
+                <span className="absolute rounded-full bg-teal-500 px-1 top-[-30%] right-[-50%] text-xs font-semibold">
+                  {activeFilterCount}
+                </span>
+              )}
+            </div>
           </div>
           {showFilter && (
             <div className="mt-4 bg-gray-800 text-white p-4 rounded-lg space-y-4 max-w-lg">
@@ -243,37 +260,39 @@ const WishList = () => {
           </div>
         )}
       </div>
-      <div className="flex justify-center items-center gap-2 mt-8 pb-4">
-        <button
-          onClick={() => setPage((p) => Math.max(p - 1, 1))}
-          disabled={page === 1}
-          className="px-2 py-1 rounded bg-gray-800 hover:bg-gray-700 disabled:opacity-50 flex items-center justify-center"
-        >
-          <span className="material-symbols-outlined">chevron_left</span>
-        </button>
-
-        {[...Array(totalPages)].map((_, i) => (
+      {wishlist.length !== 0 && (
+        <div className="flex justify-center items-center gap-2 mt-8 pb-4">
           <button
-            key={i}
-            onClick={() => setPage(i + 1)}
-            className={`px-3 py-1 rounded ${
-              page === i + 1
-                ? "bg-teal-500 text-white"
-                : "bg-gray-800 text-gray-300"
-            }`}
+            onClick={() => setPage((p) => Math.max(p - 1, 1))}
+            disabled={page === 1}
+            className="px-2 py-1 rounded bg-gray-800 hover:bg-gray-700 disabled:opacity-50 flex items-center justify-center"
           >
-            {i + 1}
+            <span className="material-symbols-outlined">chevron_left</span>
           </button>
-        ))}
 
-        <button
-          onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-          disabled={page === totalPages}
-          className="px-2 py-1 rounded bg-gray-800 hover:bg-gray-700 disabled:opacity-50 flex items-center justify-center"
-        >
-          <span className="material-symbols-outlined">chevron_right</span>
-        </button>
-      </div>
+          {[...Array(totalPages)].map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setPage(i + 1)}
+              className={`px-3 py-1 rounded ${
+                page === i + 1
+                  ? "bg-teal-500 text-white"
+                  : "bg-gray-800 text-gray-300"
+              }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+
+          <button
+            onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+            disabled={page === totalPages}
+            className="px-2 py-1 rounded bg-gray-800 hover:bg-gray-700 disabled:opacity-50 flex items-center justify-center"
+          >
+            <span className="material-symbols-outlined">chevron_right</span>
+          </button>
+        </div>
+      )}
       <DeleteConfirmModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}

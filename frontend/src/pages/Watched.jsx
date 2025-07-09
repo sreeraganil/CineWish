@@ -44,9 +44,9 @@ const Watched = () => {
       <div className="max-w-7xl mx-auto px-4 py-6">
         <h1 className="text-2xl font-bold mb-4  flex items-center">
           Watched
-          <span className="ml-3 text-lg rounded-full bg-teal-600 px-2">
+          { !loading && <span className="ml-3 text-lg rounded-full bg-teal-600 px-2">
             {watchedCount}
-          </span>
+          </span>}
         </h1>
         {loading ? (
           <Loader />
@@ -108,7 +108,7 @@ const Watched = () => {
           </div>
         )}
       </div>
-      <div className="flex justify-center items-center gap-2 mt-8 pb-4">
+      {watched.length !== 0 && <div className="flex justify-center items-center gap-2 mt-8 pb-4">
         <button
           onClick={() => setPage((p) => Math.max(p - 1, 1))}
           disabled={page === 1}
@@ -138,7 +138,7 @@ const Watched = () => {
         >
           <span className="material-symbols-outlined">chevron_right</span>
         </button>
-      </div>
+      </div>}
       <DeleteConfirmModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}

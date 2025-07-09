@@ -45,8 +45,9 @@ export const getWishlist = async (req, res) => {
 
     const wishlist = await WatchList.find(query).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit);
     const total = await WatchList.countDocuments({ status });
+    const filterTotal = await WatchList.countDocuments({ query });
 
-    res.json({data: wishlist, total});
+    res.json({data: wishlist, total: {totalCount: total, filterTotalCount: filterTotal}});
   } catch (err) {
     res.status(500).json({ message: "Failed to fetch wishlist", error: err.message });
   }
