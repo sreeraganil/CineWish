@@ -78,7 +78,7 @@ const WishList = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black text-white pb-20 md:pb-0">
       <Header />
 
-      <div className="max-w-7xl mx-auto px-4 py-6 min-h-screen">
+      <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="relative mb-4 flex flex-col items-end">
           <div className="flex items-center justify-between w-full">
             <h2 className="text-2xl font-bold flex items-center justify-center">

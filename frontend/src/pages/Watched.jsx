@@ -41,7 +41,7 @@ const Watched = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black text-white pb-20 md:pb-0">
       <Header />
-      <div className="max-w-7xl mx-auto px-4 py-6 min-h-screen">
+      <div className="max-w-7xl mx-auto px-4 py-6">
         <h1 className="text-2xl font-bold mb-4  flex items-center">
           Watched
           { !loading && <span className="ml-3 text-lg rounded-full bg-teal-600 px-2">

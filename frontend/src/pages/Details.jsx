@@ -17,18 +17,17 @@ const Details = () => {
   const { user } = userStore();
 
   useEffect(() => {
-    const checkStatus = async () => {
-      console.log(isInWishlist)
-      try {
-        const { data } = await API.get(`/wishlist/check/${id}`);
-        setIsInWishlist(!!data.exists);
-      } catch (err) {
-        console.error("Check failed", err);
-      }
-    };
-
     if (user) checkStatus();
   }, [id, user]);
+
+  const checkStatus = async () => {
+    try {
+      const { data } = await API.get(`/wishlist/check/${id}`);
+      setIsInWishlist(!!data.exists);
+    } catch (err) {
+      console.error("Check failed", err);
+    }
+  };
 
   const handleAdd = async (status) => {
     try {
@@ -47,6 +46,7 @@ const Details = () => {
       toast.success(
         `Added to ${status === "towatch" ? "wishlist" : "watched list"}`
       );
+      await checkStatus();
     } catch (err) {
       toast.error(err.message || "Failed to add");
       console.log(err);

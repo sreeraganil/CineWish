@@ -36,7 +36,7 @@ const Login = () => {
       <div className="w-full max-w-md bg-gray-900 p-8 rounded-2xl shadow-2xl border border-gray-800">
         <div className="mb-6 text-center">
           <h1 className="text-3xl font-bold">CineWish</h1>
-          <p className="text-sm text-gray-400 mt-1">Track your movies & shows wishlist</p>
+          <p className="text-sm text-gray-400 mt-1">Manage and track all your favorite movies & TV shows</p>
         </div>
         <form className="flex flex-col space-y-5">
           <div>

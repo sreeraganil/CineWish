@@ -3,7 +3,6 @@ import { join, extname } from "https://deno.land/std/path/mod.ts";
 import { contentType } from "https://deno.land/std/media_types/mod.ts";
 
 const DIST_DIR = join(Deno.cwd(), "dist"); // Your build output folder
-const ASSETS_DIR = join(DIST_DIR, "assets"); // Static assets folder
 
 async function handler(req) {
   const url = new URL(req.url);

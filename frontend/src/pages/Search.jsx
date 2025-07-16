@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Header from "../components/Header";
 import API from "../config/axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -10,12 +10,15 @@ const Search = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { searchResult, setSearchResult } = userStore();
+  const inputRef = useRef(null);
 
   const type = searchParams.get("t") || "";
 
   useEffect(() => {
     const query = searchParams.get("q") || "";
     !query && setSearchResult([]);
+
+    !query && inputRef.current?.focus();
   }, []);
 
   useEffect(() => {
@@ -35,6 +38,7 @@ const Search = () => {
         params: { query, type },
       });
       setSearchResult(data.data || []);
+      inputRef.current.blur();
     } catch (err) {
       console.error(err);
     } finally {
@@ -42,14 +46,14 @@ const Search = () => {
     }
   };
 
-  const handleClick = (media, id) => {
+  const handleClick = (media=type, id) => {
     navigate(`/details/${media}/${id}`);
   };
 
   const handleChange = (e, param) => {
     const currentParams = Object.fromEntries(searchParams.entries());
     console.log(searchParams);
-    console.log(currentParams)
+    console.log(currentParams);
     setSearchParams(
       {
         ...currentParams,
@@ -69,7 +73,7 @@ const Search = () => {
         >
           <input
             type="text"
-            autoFocus
+            ref={inputRef}
             value={searchParams.get("q") || ""}
             onChange={(e) => handleChange(e, "q")}
             placeholder={
@@ -96,7 +100,7 @@ const Search = () => {
             onChange={(e) => handleChange(e, "t")}
             className="bg-gray-800 text-white py-[10px] text-sm border-none outline-none"
           >
-            <option value="multi">All</option>
+            <option value="">All</option>
             <option value="movie">Movies</option>
             <option value="tv">TV</option>
           </select>
@@ -160,7 +164,7 @@ const Search = () => {
                 </p>
               </div>
               <span className="absolute top-2 right-2 bg-teal-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase shadow-md">
-                {item.media_type}
+                {item.media_type || type}
               </span>
             </div>
           ))}
