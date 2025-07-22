@@ -2,8 +2,7 @@ import axios from "axios";
 import Trending from "../models/trendingModel.js";
 import Upcoming from "../models/upcomingModel.js";
 
-
-const TMDB_ACCESS_TOKEN = process.env.TMDB_ACCESS_TOKEN; 
+const TMDB_ACCESS_TOKEN = process.env.TMDB_ACCESS_TOKEN;
 const BASE_URL = "https://api.themoviedb.org/3";
 
 // Helper function using Bearer Token
@@ -25,16 +24,22 @@ const fetchFromTMDB = async (endpoint) => {
   }
 };
 
+export const updateUpcoming = async () => {
+  const results = await fetchFromTMDB("/movie/upcoming");
+  const today = new Date().toISOString().split("T")[0];
+
+  const filteredResults = results.filter(
+    (movie) => movie.release_date >= today
+  );
+
+  await Upcoming.deleteMany({});
+  await Upcoming.create({ data: filteredResults });
+};
+
 export const updateTrending = async () => {
   const results = await fetchFromTMDB("/trending/all/day");
   await Trending.deleteMany({});
   await Trending.create({ data: results });
-};
-
-export const updateUpcoming = async () => {
-  const results = await fetchFromTMDB("/movie/upcoming");
-  await Upcoming.deleteMany({});
-  await Upcoming.create({ data: results });
 };
 
 export const getTrending = async (req, res) => {
@@ -89,7 +94,6 @@ export const searchTMDB = async (req, res) => {
   }
 };
 
-
 const OMDB_API_KEY = process.env.OMDB_KEY;
 
 export const getDetails = async (req, res) => {
@@ -130,15 +134,18 @@ export const getRecommendations = async (req, res) => {
   try {
     const { media, id } = req.params;
 
-    const { data } = await axios.get(`${BASE_URL}/${media}/${id}/recommendations`, {
-      headers: {
-        Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
-        accept: "application/json",
-      },
-      params: {
-        language: "en-US",
-      },
-    });
+    const { data } = await axios.get(
+      `${BASE_URL}/${media}/${id}/recommendations`,
+      {
+        headers: {
+          Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+          accept: "application/json",
+        },
+        params: {
+          language: "en-US",
+        },
+      }
+    );
 
     res.json(data.results || []);
   } catch (err) {
@@ -146,4 +153,3 @@ export const getRecommendations = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch recommendations" });
   }
 };
-
