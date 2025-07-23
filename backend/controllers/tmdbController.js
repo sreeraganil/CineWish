@@ -26,15 +26,11 @@ const fetchFromTMDB = async (endpoint) => {
 };
 
 export const updateUpcoming = async () => {
-  const results = await fetchFromTMDB("/movie/upcoming");
-  const today = new Date().toISOString().split("T")[0];
-
-  const filteredResults = results.filter(
-    (movie) => movie.release_date >= today
-  );
-
-  await Upcoming.deleteMany({});
-  await Upcoming.create({ data: filteredResults });
+  const results = await getUpcomingList();
+  if(results){
+    await Upcoming.deleteMany({});
+    await Upcoming.create({ data: results });
+  }
 };
 
 export const updateTrending = async () => {
@@ -159,7 +155,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 
-export const getUpcomingList = async (req, res) => {
+export const getUpcomingList = async () => {
   const prompt = `
 Provide a JSON array of 15 popular and highly anticipated upcoming movies and TV shows that will be released in the next 4 months.
 
@@ -192,7 +188,6 @@ The response must be a valid JSON array only — no markdown, no comments, no ad
     const mediaList = JSON.parse(match[0]);
 
     const tmdbApiKey = process.env.TMDB_KEY;
-    const tmdbImageBaseUrl = "https://image.tmdb.org/t/p/w500";
 
     const promises = mediaList.map(async ({ id, media_type }) => {
       const url = `https://api.themoviedb.org/3/${media_type}/${id}?api_key=${tmdbApiKey}&language=en-US`;
@@ -201,11 +196,9 @@ The response must be a valid JSON array only — no markdown, no comments, no ad
         return {
           id: data.id,
           media_type,
-          name: data.name || data.title,
+          title: data.name || data.title,
           release_date: data.first_air_date || data.release_date,
-          poster_url: data.poster_path
-            ? `${tmdbImageBaseUrl}${data.poster_path}`
-            : null,
+          poster_path: data.poster_path
         };
       } catch (err) {
         console.error(`Failed to fetch TMDB item ${media_type} ${id}:`, err.message);
@@ -233,10 +226,10 @@ The response must be a valid JSON array only — no markdown, no comments, no ad
       return getFallbackUpcomingList(req, res);
     }
 
-    res.json(verifiedResults);
+    return verifiedResults;
   } catch (error) {
     console.error("Error during media fetch pipeline:", error.message);
-    res.status(500).json({ error: "Failed to process request." });
+    return null
   }
 };
 
@@ -278,10 +271,10 @@ async function getFallbackUpcomingList(req, res) {
       .sort((a, b) => new Date(a.release_date) - new Date(b.release_date))
       .slice(0, 15); // Limit to 15 most popular
 
-    res.json(allUpcoming);
+    return allUpcoming;
   } catch (error) {
     console.error("Error in fallback upcoming content fetch:", error.message);
-    res.status(500).json({ error: "Failed to process request." });
+    return null;
   }
 }
 
