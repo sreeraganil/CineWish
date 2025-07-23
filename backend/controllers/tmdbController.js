@@ -223,8 +223,9 @@ The response must be a valid JSON array only — no markdown, no comments, no ad
     if (verifiedResults.length === 0) {
       console.warn("No upcoming content found - Gemini may have provided outdated data");
       // Fallback to direct TMDB API for upcoming content
-      return getFallbackUpcomingList(req, res);
+      return await getFallbackUpcomingList();
     }
+    console.log(verifiedResults)
 
     return verifiedResults;
   } catch (error) {
@@ -234,7 +235,7 @@ The response must be a valid JSON array only — no markdown, no comments, no ad
 };
 
 // Fallback function using direct TMDB API calls
-async function getFallbackUpcomingList(req, res) {
+async function getFallbackUpcomingList() {
   try {
     const tmdbApiKey = process.env.TMDB_KEY;
     const tmdbImageBaseUrl = "https://image.tmdb.org/t/p/w500";
