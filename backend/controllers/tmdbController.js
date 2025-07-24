@@ -27,7 +27,7 @@ const fetchFromTMDB = async (endpoint) => {
 
 export const updateUpcoming = async () => {
   const results = await getUpcomingList();
-  if(results){
+  if (results) {
     await Upcoming.deleteMany({});
     await Upcoming.create({ data: results });
   }
@@ -154,13 +154,18 @@ export const getRecommendations = async (req, res) => {
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-
 export const getUpcomingList = async () => {
   const prompt = `
 Provide a JSON array of 15 popular and highly anticipated upcoming movies and TV shows that will be released in the next 4 months.
 
 Requirements:
-- Only include content with official release dates between today (${new Date().toISOString().split('T')[0]}) and ${new Date(new Date().setMonth(new Date().getMonth() + 4)).toISOString().split('T')[0]}
+- Only include content with official release dates between today (${
+    new Date().toISOString().split("T")[0]
+  }) and ${
+    new Date(new Date().setMonth(new Date().getMonth() + 4))
+      .toISOString()
+      .split("T")[0]
+  }
 - Must be officially listed on The Movie Database (TMDB)
 - Only return these fields:
   - "id": TMDB ID (integer)
@@ -196,12 +201,19 @@ The response must be a valid JSON array only — no markdown, no comments, no ad
         return {
           id: data.id,
           media_type,
-          title: data.name || data.title,
+          title:
+            data.title ||
+            data.name ||
+            data.original_name ||
+            data.original_title,
           release_date: data.first_air_date || data.release_date,
-          poster_path: data.poster_path
+          poster_path: data.poster_path,
         };
       } catch (err) {
-        console.error(`Failed to fetch TMDB item ${media_type} ${id}:`, err.message);
+        console.error(
+          `Failed to fetch TMDB item ${media_type} ${id}:`,
+          err.message
+        );
         return null;
       }
     });
@@ -213,7 +225,7 @@ The response must be a valid JSON array only — no markdown, no comments, no ad
     upperLimit.setHours(23, 59, 59, 999);
 
     const verifiedResults = (await Promise.all(promises))
-      .filter(item => {
+      .filter((item) => {
         if (!item || !item.release_date) return false;
         const release = new Date(item.release_date);
         return release >= today && release <= upperLimit;
@@ -221,16 +233,18 @@ The response must be a valid JSON array only — no markdown, no comments, no ad
       .sort((a, b) => new Date(a.release_date) - new Date(b.release_date));
 
     if (verifiedResults.length === 0) {
-      console.warn("No upcoming content found - Gemini may have provided outdated data");
+      console.warn(
+        "No upcoming content found - Gemini may have provided outdated data"
+      );
       // Fallback to direct TMDB API for upcoming content
       return await getFallbackUpcomingList();
     }
-    console.log(verifiedResults)
+    console.log(verifiedResults);
 
     return verifiedResults;
   } catch (error) {
     console.error("Error during media fetch pipeline:", error.message);
-    return null
+    return null;
   }
 };
 
@@ -239,34 +253,39 @@ async function getFallbackUpcomingList() {
   try {
     const tmdbApiKey = process.env.TMDB_KEY;
     const tmdbImageBaseUrl = "https://image.tmdb.org/t/p/w500";
-    
+
     // Get current date and date 4 months from now
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
     const futureDate = new Date();
     futureDate.setMonth(futureDate.getMonth() + 4);
-    const futureDateStr = futureDate.toISOString().split('T')[0];
+    const futureDateStr = futureDate.toISOString().split("T")[0];
 
     // Fetch upcoming movies
     const moviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${tmdbApiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&primary_release_date.gte=${today}&primary_release_date.lte=${futureDateStr}`;
-    
+
     // Fetch upcoming TV shows
     const tvUrl = `https://api.themoviedb.org/3/discover/tv?api_key=${tmdbApiKey}&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1&first_air_date.gte=${today}&first_air_date.lte=${futureDateStr}`;
 
     const [moviesRes, tvRes] = await Promise.all([
       axios.get(moviesUrl),
-      axios.get(tvUrl)
+      axios.get(tvUrl),
     ]);
 
     const processItem = (item, media_type) => ({
       id: item.id,
       media_type,
-      name: item.title || item.name,
-      release_date: item.release_date || item.first_air_date,
-      poster_url: item.poster_path ? `${tmdbImageBaseUrl}${item.poster_path}` : null
+      title:
+        data.title || data.name || data.original_name || data.original_title,
+      release_date: data.first_air_date || data.release_date,
+      poster_path: data.poster_path,
     });
 
-    const upcomingMovies = moviesRes.data.results.map(item => processItem(item, 'movie'));
-    const upcomingTV = tvRes.data.results.map(item => processItem(item, 'tv'));
+    const upcomingMovies = moviesRes.data.results.map((item) =>
+      processItem(item, "movie")
+    );
+    const upcomingTV = tvRes.data.results.map((item) =>
+      processItem(item, "tv")
+    );
 
     const allUpcoming = [...upcomingMovies, ...upcomingTV]
       .sort((a, b) => new Date(a.release_date) - new Date(b.release_date))
@@ -278,4 +297,3 @@ async function getFallbackUpcomingList() {
     return null;
   }
 }
-
