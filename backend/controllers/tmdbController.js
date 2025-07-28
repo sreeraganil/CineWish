@@ -1,6 +1,7 @@
 import axios from "axios";
 import Trending from "../models/trendingModel.js";
 import Upcoming from "../models/upcomingModel.js";
+import WatchList from '../models/watchListModel.js'
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const TMDB_ACCESS_TOKEN = process.env.TMDB_ACCESS_TOKEN;
@@ -128,12 +129,66 @@ export const getDetails = async (req, res) => {
   }
 };
 
+// export const getRecommendations = async (req, res) => {
+//   try {
+//     const { media, id } = req.params;console.log(req.user)
+
+//     // Step 1: Get details of the current media to extract genre_ids
+//     const { data: mediaDetails } = await axios.get(
+//       `${BASE_URL}/${media}/${id}`,
+//       {
+//         headers: {
+//           Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+//           accept: "application/json",
+//         },
+//         params: {
+//           language: "en-US",
+//         },
+//       }
+//     );
+
+//     const genreIds = mediaDetails.genres?.map((g) => g.id) || [];
+
+//     if (genreIds.length === 0) {
+//       return res.status(404).json({ message: "No genres found to suggest" });
+//     }
+
+//     // Step 2: Discover content based on genre(s)
+//     const genreQuery = genreIds.slice(0, 3).join(","); // Limit to top 3 genres
+
+//     const { data: discoveryData } = await axios.get(
+//       `${BASE_URL}/discover/${media}`,
+//       {
+//         headers: {
+//           Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+//           accept: "application/json",
+//         },
+//         params: {
+//           with_genres: genreQuery,
+//           sort_by: "popularity.desc",
+//           language: "en-US",
+//           page: 1,
+//         },
+//       }
+//     );
+
+//     // Step 3: Filter out current media from recommendations
+//     const recommendations = discoveryData.results.filter(
+//       (item) => item.id !== parseInt(id)
+//     );
+
+//     res.json(recommendations.slice(0, 15)); // Limit to 15 results
+//   } catch (err) {
+//     console.error("Custom Recommendations Error:", err.message);
+//     res.status(500).json({ message: "Failed to generate recommendations" });
+//   }
+// };
+
 export const getRecommendations = async (req, res) => {
   try {
     const { media, id } = req.params;
     const userId  = req.user._id;
 
-    // 1. Fetch genre information of the current media
     const { data: mediaDetails } = await axios.get(
       `${BASE_URL}/${media}/${id}`,
       {
@@ -149,8 +204,7 @@ export const getRecommendations = async (req, res) => {
       return res.status(404).json({ message: "No genres found" });
     }
 
-    // 2. Discover similar media by genre
-    const genreQuery = genreIds.slice(0, 3).join(","); // Limit to top 3 genres
+    const genreQuery = genreIds.slice(0, 3).join(",");
     const { data: discoveryData } = await axios.get(
       `${BASE_URL}/discover/${media}`,
       {
@@ -168,11 +222,10 @@ export const getRecommendations = async (req, res) => {
 
     let recommended = discoveryData.results;
 
-    // 3. Exclude already watched or wishlisted content
     if (userId) {
       const userWatchList = await WatchList.find({ userId });
       const excludedIds = new Set(userWatchList.map((item) => item.tmdbId));
-      excludedIds.add(parseInt(id)); // Also exclude current item
+      excludedIds.add(parseInt(id)); 
 
       recommended = recommended.filter((item) => !excludedIds.has(item.id));
     }
@@ -183,7 +236,6 @@ export const getRecommendations = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch custom recommendations" });
   }
 };
-
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
