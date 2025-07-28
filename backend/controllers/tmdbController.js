@@ -187,7 +187,7 @@ export const getDetails = async (req, res) => {
 export const getRecommendations = async (req, res) => {
   try {
     const { media, id } = req.params;
-    const userId  = req.user._id;
+    const userId = req.user._id;
 
     const { data: mediaDetails } = await axios.get(
       `${BASE_URL}/${media}/${id}`,
@@ -205,6 +205,7 @@ export const getRecommendations = async (req, res) => {
     }
 
     const genreQuery = genreIds.slice(0, 3).join(",");
+
     const { data: discoveryData } = await axios.get(
       `${BASE_URL}/discover/${media}`,
       {
@@ -220,7 +221,10 @@ export const getRecommendations = async (req, res) => {
       }
     );
 
-    let recommended = discoveryData.results;
+    let recommended = discoveryData.results.map((item) => ({
+      ...item,
+      media_type: media, // <-- Inject media_type
+    }));
 
     if (userId) {
       const userWatchList = await WatchList.find({ userId });
@@ -236,6 +240,7 @@ export const getRecommendations = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch custom recommendations" });
   }
 };
+
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
