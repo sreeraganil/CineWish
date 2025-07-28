@@ -131,26 +131,59 @@ export const getDetails = async (req, res) => {
 export const getRecommendations = async (req, res) => {
   try {
     const { media, id } = req.params;
+    const userId  = req.user._id;
 
-    const { data } = await axios.get(
-      `${BASE_URL}/${media}/${id}/recommendations`,
+    // 1. Fetch genre information of the current media
+    const { data: mediaDetails } = await axios.get(
+      `${BASE_URL}/${media}/${id}`,
       {
         headers: {
           Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
-          accept: "application/json",
+        },
+        params: { language: "en-US" },
+      }
+    );
+
+    const genreIds = mediaDetails.genres?.map((g) => g.id) || [];
+    if (!genreIds.length) {
+      return res.status(404).json({ message: "No genres found" });
+    }
+
+    // 2. Discover similar media by genre
+    const genreQuery = genreIds.slice(0, 3).join(","); // Limit to top 3 genres
+    const { data: discoveryData } = await axios.get(
+      `${BASE_URL}/discover/${media}`,
+      {
+        headers: {
+          Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
         },
         params: {
+          with_genres: genreQuery,
+          sort_by: "popularity.desc",
           language: "en-US",
+          page: 1,
         },
       }
     );
 
-    res.json(data.results || []);
+    let recommended = discoveryData.results;
+
+    // 3. Exclude already watched or wishlisted content
+    if (userId) {
+      const userWatchList = await WatchList.find({ userId });
+      const excludedIds = new Set(userWatchList.map((item) => item.tmdbId));
+      excludedIds.add(parseInt(id)); // Also exclude current item
+
+      recommended = recommended.filter((item) => !excludedIds.has(item.id));
+    }
+
+    res.json(recommended.slice(0, 15));
   } catch (err) {
-    console.error("TMDB Recommendations Error:", err.message);
-    res.status(500).json({ message: "Failed to fetch recommendations" });
+    console.error("Custom Recommendation Error:", err.message);
+    res.status(500).json({ message: "Failed to fetch custom recommendations" });
   }
 };
+
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
