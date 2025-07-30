@@ -4,7 +4,7 @@ import {
   updateUpcoming,
 } from "../controllers/tmdbController.js";
 
-cron.schedule("*/30 * * * *", async () => {
+cron.schedule("1 0 * * *", async () => {
   console.log(`⏰ [${new Date().toISOString()}] Running content cache...`);
 
   try {

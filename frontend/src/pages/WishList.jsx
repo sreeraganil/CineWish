@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Header from "../components/Header";
 import wishlistStore from "../store/wishlistStore";
 import { useNavigate } from "react-router-dom";
@@ -20,11 +20,14 @@ const WishList = () => {
   const [idToDelete, setIdToDelete] = useState(null);
   const [showFilter, setShowFilter] = useState(false);
 
+  const loaderRef = useRef(null);
+
   const [typeFilter, setTypeFilter] = useState("");
   const [genreFilter, setGenreFilter] = useState("");
   const [yearFilter, setYearFilter] = useState("");
   const [ratingFilter, setRatingFilter] = useState("");
   const [page, setPage] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   const activeFilterCount = [
     typeFilter,
@@ -33,35 +36,74 @@ const WishList = () => {
     ratingFilter,
   ].filter(Boolean).length;
 
-  const clearFilters = async () => {
+  // FIX: Simplified clearFilters function. It now only resets state.
+  // The main useEffect will handle re-fetching the data.
+  const clearFilters = () => {
     setTypeFilter("");
     setGenreFilter("");
     setYearFilter("");
     setRatingFilter("");
-    setLoading(true);
-    (typeFilter || genreFilter || yearFilter || ratingFilter) &&
-      (await fetchWishlist(""));
-    setLoading(false);
+    setPage(1); // Reset to page 1
   };
 
+  // FIX: New function to apply filters. It simply resets the page to 1.
+  // The main useEffect will see the page change and trigger a fetch.
+  const applyFilters = () => {
+    setPage(1);
+  };
+
+
   const ITEMS_PER_PAGE = 20;
-  const totalPages = Math.max(Math.ceil(wishlistCount.filterTotalCount / ITEMS_PER_PAGE), 1);
+  const totalPages = Math.max(
+    Math.ceil(
+      (wishlistCount.filterTotalCount || wishlistCount.totalCount) /
+        ITEMS_PER_PAGE
+    ),
+    1
+  );
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !loading && !loadingMore && page < totalPages) {
+          setPage((prev) => prev + 1);
+        }
+      },
+      { threshold: 1 }
+    );
+
+    const currentLoaderRef = loaderRef.current;
+    if (currentLoaderRef) observer.observe(currentLoaderRef);
+
+    return () => {
+      if (currentLoaderRef) observer.unobserve(currentLoaderRef);
+    };
+  }, [loading, loadingMore, page, totalPages]);
 
   const handleClick = (media, id) => {
     navigate(`/details/${media}/${id}`);
   };
 
   const fetchData = async () => {
-    setLoading(true);
+    if (page === 1) {
+      setLoading(true);
+    } else {
+      setLoadingMore(true);
+    }
+
     const queries = new URLSearchParams({
       t: typeFilter,
       g: genreFilter,
       y: yearFilter,
       r: ratingFilter,
     }).toString();
+
     await fetchWishlist(queries, page);
+
     setLoading(false);
+    setLoadingMore(false);
   };
+
 
   useEffect(() => {
     fetchData();
@@ -69,7 +111,6 @@ const WishList = () => {
 
   const handleDelete = async () => {
     await removeFromWishlist(idToDelete, "wishlist");
-    console.log("Deleted!");
     setIdToDelete(null);
     setShowModal(false);
   };
@@ -142,6 +183,7 @@ const WishList = () => {
                   </select>
                 </div>
 
+                {/* Year Filter */}
                 <div>
                   <label className="block text-sm mb-1">Year</label>
                   <input
@@ -153,6 +195,7 @@ const WishList = () => {
                   />
                 </div>
 
+                {/* Rating Filter */}
                 <div>
                   <label className="block text-sm mb-1">Min Rating</label>
                   <input
@@ -168,15 +211,16 @@ const WishList = () => {
                 </div>
               </div>
 
-              <div className="text-right w-full  flex justify-between">
+              <div className="text-right w-full flex justify-between">
                 <button
                   onClick={clearFilters}
                   className="px-3 py-[2px] bg-red-600 rounded hover:bg-red-700 transition duration-300"
                 >
                   Clear Filters
                 </button>
+                {/* FIX: Button now calls applyFilters */}
                 <button
-                  onClick={fetchData}
+                  onClick={applyFilters}
                   className="px-3 py-[2px] bg-teal-500 rounded hover:bg-teal-700 transition duration-300"
                 >
                   Show Results
@@ -204,95 +248,75 @@ const WishList = () => {
                 }}
               />
               <p className="text-gray-500 text-center">
-                Your wishlist is empty.
+                {activeFilterCount > 0 ? "No results found matching your filters." : "Your wishlist is empty."}
               </p>
             </div>
           </>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4">
-            {wishlist?.map((item) => (
-              <div
-                key={item._id}
-                className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden shadow hover:shadow-teal-500/20 transition hover:scale-105 relative"
-                onClick={() => handleClick(item.type, item.tmdbId)}
-              >
-                <img
-                  src={`https://image.tmdb.org/t/p/w500${item.poster}`}
-                  alt={item.title}
-                  className="h-60 w-full object-cover"
-                />
-                <div className="p-3">
-                  <h3 className="text-sm font-semibold truncate">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs text-gray-400">{item.year}</p>
-                  <p className="text-xs text-teal-400 mt-1">
-                    Rating: {parseFloat(item.rating).toFixed(1) || "N/A"}
-                  </p>
+          <>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4">
+              {wishlist?.map((item) => (
+                <div
+                  key={item._id}
+                  className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden shadow hover:shadow-teal-500/20 transition hover:scale-105 relative cursor-pointer"
+                  onClick={() => handleClick(item.type, item.tmdbId)}
+                >
+                  <img
+                    src={`https://image.tmdb.org/t/p/w500${item.poster}`}
+                    alt={item.title}
+                    className="h-60 w-full object-cover"
+                  />
+                  <div className="p-3">
+                    <h3 className="text-sm font-semibold truncate">
+                      {item.title}
+                    </h3>
+                    <p className="text-xs text-gray-400">{item.year}</p>
+                    <p className="text-xs text-teal-400 mt-1">
+                      Rating: {parseFloat(item.rating).toFixed(1) || "N/A"}
+                    </p>
 
-                  <div className="relative mt-2 flex items-center justify-between">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        markAsWatched(item._id);
-                      }}
-                      className="w-3/4 bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold py-1.5 rounded"
-                    >
-                      Watched
-                    </button>
-                    <button
-                      className="bg-red-500 p-0.5 rounded flex items-center justify-center hover:bg-red-800"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIdToDelete(item._id);
-                        setShowModal(true);
-                      }}
-                    >
-                      <span className="material-symbols-outlined">delete</span>
-                    </button>
+                    <div className="relative mt-2 flex items-center justify-between">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          markAsWatched(item._id);
+                        }}
+                        className="w-3/4 bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold py-1.5 rounded"
+                      >
+                        Watched
+                      </button>
+                      <button
+                        className="bg-red-500 p-0.5 rounded flex items-center justify-center hover:bg-red-800"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIdToDelete(item._id);
+                          setShowModal(true);
+                        }}
+                      >
+                        <span className="material-symbols-outlined">
+                          delete
+                        </span>
+                      </button>
+                    </div>
                   </div>
+                  <span className="absolute top-2 right-2 bg-teal-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase shadow-md">
+                    {item.type}
+                  </span>
                 </div>
-                <span className="absolute top-2 right-2 bg-teal-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase shadow-md">
-                  {item.type}
-                </span>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+            <div
+              ref={loaderRef}
+              className="h-10 mt-4 flex justify-center items-center"
+            >
+              {loadingMore && page > 1 && (
+                <span className="text-teal-400">Loading more...</span>
+              )}
+            </div>
+          </>
         )}
       </div>
-      {wishlist.length !== 0 && !loading && (
-        <div className="flex justify-center items-center gap-2 mt-8 pb-4">
-          <button
-            onClick={() => setPage((p) => Math.max(p - 1, 1))}
-            disabled={page === 1}
-            className="px-2 py-1 rounded bg-gray-800 hover:bg-gray-700 disabled:opacity-50 flex items-center justify-center"
-          >
-            <span className="material-symbols-outlined">chevron_left</span>
-          </button>
 
-          {[...Array(totalPages)].map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setPage(i + 1)}
-              className={`px-3 py-1 rounded ${
-                page === i + 1
-                  ? "bg-teal-500 text-white"
-                  : "bg-gray-800 text-gray-300"
-              }`}
-            >
-              {i + 1}
-            </button>
-          ))}
-
-          <button
-            onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
-            disabled={page === totalPages}
-            className="px-2 py-1 rounded bg-gray-800 hover:bg-gray-700 disabled:opacity-50 flex items-center justify-center"
-          >
-            <span className="material-symbols-outlined">chevron_right</span>
-          </button>
-        </div>
-      )}
       <DeleteConfirmModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}

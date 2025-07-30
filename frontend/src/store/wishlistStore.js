@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import API from "../config/axios";
-import toast from "react-hot-toast";
+import toast from "react-hot-toast";  
 
 const wishlistStore = create((set, get) => ({
   wishlist: [],
@@ -11,7 +11,10 @@ const wishlistStore = create((set, get) => ({
   fetchWishlist: async (queries, page = 1, limit = 20) => {
     try {
       const { data } = await API.get(`/wishlist?page=${page}&limit=${limit}&${queries}`);
-      set({ wishlist: data.data, wishlistCount: data.total });
+      set((state) => ({
+      wishlist: page === 1 ? data.data : [...state.wishlist, ...data.data],
+      wishlistCount: data.total
+    }));
     } catch (err) {
       console.error("Failed to fetch wishlist", err);
     }
@@ -41,15 +44,19 @@ const wishlistStore = create((set, get) => ({
     }
   },
 
-  fetchWatched: async (page = 1) => {
-    try {
-      const { data } = await API.get(`/wishlist?status=watched&page=${page}`);
-      set({ watched: data.data, watchedCount: data.total });
-      return data.data
-    } catch (err) {
-      console.error("Failed to fetch wishlist", err);
-    }
-  },
+ fetchWatched: async (page = 1) => {
+  try {
+    const { data } = await API.get(`/wishlist?status=watched&page=${page}`);
+    set((state) => ({
+      watched: page === 1 ? data.data : [...state.watched, ...data.data],
+      watchedCount: data.total
+    }));
+    return data.data;
+  } catch (err) {
+    console.error("Failed to fetch wishlist", err);
+  }
+},
+
 
   markAsWatched: async (id) => {
     try {
