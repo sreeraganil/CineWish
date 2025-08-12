@@ -3,6 +3,7 @@ import Trending from "../models/trendingModel.js";
 import Upcoming from "../models/upcomingModel.js";
 import WatchList from '../models/watchListModel.js';
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import latestOTT from "../models/latestOTTModel.js";
 
 const TMDB_ACCESS_TOKEN = process.env.TMDB_ACCESS_TOKEN;
 const BASE_URL = "https://api.themoviedb.org/3";
@@ -35,6 +36,15 @@ export const updateUpcoming = async () => {
   }
 };
 
+
+export const updateLatestOTT = async () => {
+  const results = await getLatestOTTList();
+  if (results) {
+    await latestOTT.deleteMany({});
+    await latestOTT.create({ data: results });
+  }
+};
+
 export const updateTrending = async () => {
   const results = await fetchFromTMDB("/trending/all/day");
   await Trending.deleteMany({});
@@ -53,6 +63,15 @@ export const getTrending = async (req, res) => {
 export const getUpcoming = async (req, res) => {
   try {
     const cached = await Upcoming.findOne();
+    res.json(cached?.data || []);
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
+export const getLatestOTT = async (req, res) => {
+  try {
+    const cached = await latestOTT.findOne();
     res.json(cached?.data || []);
   } catch (err) {
     res.status(500).json({ success: false, message: "Server Error" });
@@ -368,6 +387,136 @@ async function getFallbackUpcomingList() {
       .slice(0, 15);
   } catch (err) {
     console.error("Error in fallback upcoming content fetch:", err.message);
+    return null;
+  }
+}
+
+
+
+export const getLatestOTTList = async () => {
+  const todayStr = new Date().toISOString().split("T")[0];
+  const pastStr = new Date(new Date().setMonth(new Date().getMonth() - 2))
+    .toISOString()
+    .split("T")[0];
+
+  const prompt = `
+Provide a JSON array of 15 popular and highly rated movies and TV shows that were released on OTT platforms in the past 2 months.
+
+Requirements:
+- Official release date must be between ${pastStr} and ${todayStr}
+- Must be officially listed on The Movie Database (TMDB)
+- Only return these fields:
+  - "id": TMDB ID (integer)
+  - "media_type": Either "movie" or "tv"
+  - "release_date": The official release date in YYYY-MM-DD format
+
+Format example:
+[
+  {"id": 12345, "media_type": "movie", "release_date": "2023-11-15"},
+  {"id": 67890, "media_type": "tv", "release_date": "2023-12-01"}
+]
+
+The response must be a valid JSON array only — no markdown, no comments, no extra text before or after the array.
+`;
+
+  try {
+    const geminiResult = await model.generateContent(prompt);
+    const rawText = geminiResult.response.text();
+
+    const match = rawText.match(/\[\s*{[\s\S]*?}\s*\]/);
+    if (!match) throw new Error("No valid JSON array found in Gemini response");
+
+    const mediaList = JSON.parse(match[0]);
+
+    const promises = mediaList.map(async ({ id, media_type }) => {
+      const url = `${BASE_URL}/${media_type}/${id}?api_key=${TMDB_KEY}&language=en-US`;
+      try {
+        const { data } = await axios.get(url);
+        return {
+          id: data.id,
+          media_type,
+          title:
+            data.title ||
+            data.name ||
+            data.original_name ||
+            data.original_title,
+          release_date: data.first_air_date || data.release_date,
+          poster_path: data.poster_path,
+        };
+      } catch (err) {
+        console.error(
+          `Failed to fetch TMDB item ${media_type} ${id}:`,
+          err.message
+        );
+        return null;
+      }
+    });
+
+    const past = new Date();
+    past.setMonth(past.getMonth() - 2);
+    past.setHours(0, 0, 0, 0);
+
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+
+    const verifiedResults = (await Promise.all(promises))
+      .filter((item) => {
+        if (!item || !item.release_date) return false;
+        const release = new Date(item.release_date);
+        return release >= past && release <= today;
+      })
+      .sort((a, b) => new Date(b.release_date) - new Date(a.release_date));
+
+    if (verifiedResults.length === 0) {
+      console.warn(
+        "No latest OTT content found - Gemini may have provided outdated data"
+      );
+      return await getFallbackLatestOTTList();
+    }
+
+    return verifiedResults;
+  } catch (error) {
+    console.error("Error during latest OTT fetch pipeline:", error.message);
+    return await getFallbackLatestOTTList();
+  }
+};
+
+async function getFallbackLatestOTTList() {
+  try {
+    const today = new Date().toISOString().split("T")[0];
+    const pastDate = new Date();
+    pastDate.setMonth(pastDate.getMonth() - 2);
+    const pastDateStr = pastDate.toISOString().split("T")[0];
+
+    const movieURL = `${BASE_URL}/discover/movie?api_key=${TMDB_KEY}&language=en-US&sort_by=primary_release_date.desc&include_adult=false&page=1&primary_release_date.gte=${pastDateStr}&primary_release_date.lte=${today}&with_watch_providers=8&watch_region=IN`;
+    const tvURL = `${BASE_URL}/discover/tv?api_key=${TMDB_KEY}&language=en-US&sort_by=first_air_date.desc&include_adult=false&page=1&first_air_date.gte=${pastDateStr}&first_air_date.lte=${today}&with_watch_providers=8&watch_region=IN`;
+
+    const [moviesRes, tvRes] = await Promise.all([
+      axios.get(movieURL),
+      axios.get(tvURL),
+    ]);
+
+    const processItem = (item, media_type) => ({
+      id: item.id,
+      media_type,
+      title:
+        item.title || item.name || item.original_name || item.original_title,
+      release_date: item.first_air_date || item.release_date,
+      poster_path: item.poster_path,
+    });
+
+    const latestMovies = moviesRes.data.results.map((item) =>
+      processItem(item, "movie")
+    );
+    const latestTV = tvRes.data.results.map((item) =>
+      processItem(item, "tv")
+    );
+
+    return [...latestMovies, ...latestTV]
+      .sort((a, b) => new Date(b.release_date) - new Date(a.release_date))
+      .slice(0, 15);
+  } catch (err) {
+    console.error("Error in fallback latest OTT fetch:", err.message);
     return null;
   }
 }

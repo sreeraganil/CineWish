@@ -20,12 +20,12 @@ const userStore = create((set, get) => {
       localStorage.setItem("user", JSON.stringify(data));
     },
 
-    logoutUser: async () => {
+    logoutUser: async (msg=null) => {
       try {
         const res = await API.post("/auth/logout");
         set({ user: null });
         localStorage.removeItem("user");
-        toast.success(res.data.message);
+        msg ? toast.success(msg) : toast.success(res.data.message);
         return true;
       } catch (err) {
         throw err?.res?.data?.message || "Logout failed";
@@ -60,7 +60,7 @@ const userStore = create((set, get) => {
         set({ trending: res.data });
       } catch (err) {
         console.error("Failed to fetch trending:", err.message);
-      }
+      } 
     },
 
     fetchUpcoming: async () => {
