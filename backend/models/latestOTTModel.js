@@ -8,6 +8,6 @@ const latestOTTSchema = new mongoose.Schema({
   }
 });
 
-const latestOTT = mongoose.model("Upcoming", latestOTTSchema);
+const latestOTT = mongoose.model("latestOTT", latestOTTSchema);
 
 export default latestOTT;

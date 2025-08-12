@@ -29,3 +29,4 @@ cron.schedule("1 0 * * *", async () => {
     console.error("❌ Failed to update latest OTT:", err.code || err.message);
   }
 });
+updateLatestOTT()
