@@ -4,6 +4,7 @@ import RecommendationSection from "../components/RecommendationSection"
 import StatsSection from "../components/StatsSection"
 import TrendingSection from "../components/TrendingSection"
 import UpcomingSection from "../components/UpcomingSection"
+import OTTSection from "../components/OTTSection"
 
 const Home = () => {
   return (
@@ -14,6 +15,7 @@ const Home = () => {
         <RecommendationSection />
         <TrendingSection /> 
         <UpcomingSection /> 
+        <OTTSection />
     </div>
   )
 }

@@ -10,6 +10,7 @@ const userStore = create((set, get) => {
     user: storedUser || null,
     trending: [],
     upcoming: [],
+    ott: [],
     recommended: [],
     searchResult: [],
     stats: null,
@@ -67,6 +68,16 @@ const userStore = create((set, get) => {
       try {
         const res = await API.get("/tmdb/upcoming?page=1");
         set({ upcoming: res.data });
+      } catch (err) {
+        console.error("Failed to fetch upcoming:", err.message);
+      }
+    },
+
+
+    fetchOtt: async () => {
+      try {
+        const res = await API.get("/tmdb/ott?page=1");
+        set({ ott: res.data });
       } catch (err) {
         console.error("Failed to fetch upcoming:", err.message);
       }
