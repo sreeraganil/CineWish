@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const { user, logoutUser } = userStore();
-  const { wishlist, fetchWishlist, fetchWatched, watched } = wishlistStore();
+  const { watchedCount, fetchWishlist, fetchWatched, wishlistCount } = wishlistStore();
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
@@ -49,11 +49,11 @@ const Profile = () => {
             </div>
             <div className="flex justify-between text-teal-400">
               <span>✅ Watched:</span>
-              <span>{watched.length || 0}</span>
+              <span>{watchedCount || 0}</span>
             </div>
             <div className="flex justify-between text-yellow-400">
               <span>📌 To Watch:</span>
-              <span>{wishlist.length || 0}</span>
+              <span>{wishlistCount || 0}</span>
             </div>
           </div>
 
