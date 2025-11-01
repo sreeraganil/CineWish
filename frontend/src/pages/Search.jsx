@@ -8,37 +8,169 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 const Search = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
   const { searchResult, setSearchResult } = userStore();
   const inputRef = useRef(null);
 
+  // Suggestions
+  const [suggestions, setSuggestions] = useState([]);
+  const [isSuggestionsLoading, setIsSuggestionsLoading] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [focused, setFocused] = useState(false);
+
+  // Infinite scroll
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+
+  const [activeIndex, setActiveIndex] = useState(-1);
+
+  const searchContainerRef = useRef(null);
+  const suggestionsContainerRef = useRef(null);
+  const suggestionItemRefs = useRef([]);
+
+  const observerRef = useRef(null);
+
+  const query = searchParams.get("q") || "";
   const type = searchParams.get("t") || "";
 
+  /* -------------------------- INIT -------------------------- */
   useEffect(() => {
-    const query = searchParams.get("q") || "";
-    !query && setSearchResult([]);
-
-    !query && inputRef.current?.focus();
+    if (!query) {
+      setSearchResult([]);
+      inputRef.current?.focus();
+    }
   }, []);
 
+  /* -------------------- ON TYPE FILTER CHANGE -------------------- */
   useEffect(() => {
-    handleSearch();
+    if (query.trim()) {
+      handleSearch(); // Re-search for page 1
+    }
   }, [type]);
 
-  const handleSearch = async (e) => {
-    e && e.preventDefault();
-    const query = searchParams.get("q") || "";
-    const type = searchParams.get("t") || "multi";
-    if (!query.trim()) return;
+  /* -------------------- DEBOUNCE SUGGESTIONS -------------------- */
+  useEffect(() => {
+    if (query.trim().length < 2) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
 
-    setLoading(true);
-    setSearchResult([]);
+    setActiveIndex(-1);
+    suggestionItemRefs.current = [];
+
+    const timer = setTimeout(() => {
+      if (focused) fetchSuggestions(query);
+    }, 600);
+
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  /* -------------------- CLICK OUTSIDE -------------------- */
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(event.target)
+      ) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  /* -------------------- SCROLL ACTIVE SUGGESTION -------------------- */
+  useEffect(() => {
+    if (activeIndex < 0 || !suggestionsContainerRef.current) return;
+    const itemEl = suggestionItemRefs.current[activeIndex];
+    if (itemEl) {
+      itemEl.scrollIntoView({ behavior: "auto", block: "nearest" });
+    }
+  }, [activeIndex]);
+
+  /* -------------------- AUTO LOAD MORE ON PAGE CHANGE -------------------- */
+  useEffect(() => {
+    if (page > 1) {
+      fetchMoreData();
+    }
+  }, [page]);
+
+  /* -------------------- INTERSECTION OBSERVER -------------------- */
+  useEffect(() => {
+    if (loading || !hasMore) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setPage((prev) => prev + 1);
+      }
+    });
+
+    const elem = observerRef.current;
+
+    if (elem) observer.observe(elem);
+
+    return () => {
+      if (elem) observer.unobserve(elem);
+    };
+  }, [loading, hasMore]);
+
+  /* -------------------- FETCH SUGGESTIONS -------------------- */
+  const fetchSuggestions = async (currentQuery) => {
+    setIsSuggestionsLoading(true);
     try {
       const { data } = await API.get(`/tmdb/search`, {
-        params: { query, type },
+        params: { query: currentQuery, type: "multi" },
       });
-      setSearchResult(data.data || []);
-      inputRef.current.blur();
+
+      const items = Array.isArray(data.data) ? data.data : [];
+
+      const topResults = items
+        .filter(
+          (item) => item.media_type === "tv" || item.media_type === "movie"
+        )
+        .slice(0, 7);
+
+      setSuggestions(topResults);
+      setShowSuggestions(topResults.length > 0);
+    } catch (err) {
+      console.error("Suggestion error:", err);
+      setSuggestions([]);
+      setShowSuggestions(false);
+    } finally {
+      setIsSuggestionsLoading(false);
+    }
+  };
+
+  /* -------------------- MAIN SEARCH -------------------- */
+  const handleSearch = async (e) => {
+    if (e) e.preventDefault();
+
+    setShowSuggestions(false);
+    inputRef.current?.blur();
+    setActiveIndex(-1);
+
+    const currentQuery = searchParams.get("q") || "";
+    const currentType = searchParams.get("t") || "multi";
+
+    if (!currentQuery.trim()) return;
+
+    setLoading(true);
+    setPage(1);
+    setSearchResult([]);
+    setHasMore(false);
+
+    try {
+      const { data } = await API.get(`/tmdb/search`, {
+        params: { query: currentQuery, type: currentType, page: 1 },
+      });
+
+      const items = Array.isArray(data.data) ? data.data : [];
+
+      setSearchResult(items);
+      setHasMore((data.total_pages || 0) > 1);
     } catch (err) {
       console.error(err);
     } finally {
@@ -46,57 +178,189 @@ const Search = () => {
     }
   };
 
-  const handleClick = (media=type, id) => {
-    navigate(`/details/${media}/${id}`);
+  /* -------------------- FETCH NEXT PAGE -------------------- */
+  const fetchMoreData = async () => {
+    setLoading(true);
+    try {
+      const { data } = await API.get(`/tmdb/search`, {
+        params: { query, type: type || "multi", page },
+      });
+
+      const items = Array.isArray(data.data) ? data.data : [];
+
+      setSearchResult((prev) => [...prev, ...items]);
+      setHasMore((data.total_pages || 0) > page);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  /* -------------------- CLICK ITEM -------------------- */
+  const handleClick = (media_type, id) => {
+    if (!media_type || !id) return;
+    navigate(`/details/${media_type}/${id}`);
+    setShowSuggestions(false);
+    setActiveIndex(-1);
+  };
+
+  /* -------------------- UPDATE SEARCH PARAMS -------------------- */
   const handleChange = (e, param) => {
     const currentParams = Object.fromEntries(searchParams.entries());
-    console.log(searchParams);
-    console.log(currentParams);
     setSearchParams(
-      {
-        ...currentParams,
-        [param]: e.target.value,
-      },
+      { ...currentParams, [param]: e.target.value },
       { replace: true }
     );
+    setFocused(true);
   };
+
+  const handleFocus = () => {
+    if (query.trim().length > 1 && suggestions.length > 0) {
+      setShowSuggestions(true);
+    }
+  };
+
+  /* -------------------- KEYBOARD NAVIGATION -------------------- */
+  const handleKeyDown = (e) => {
+    if (!showSuggestions || suggestions.length === 0) return;
+
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        setActiveIndex((prev) =>
+          prev === suggestions.length - 1 ? 0 : prev + 1
+        );
+        break;
+
+      case "ArrowUp":
+        e.preventDefault();
+        setActiveIndex((prev) =>
+          prev <= 0 ? suggestions.length - 1 : prev - 1
+        );
+        break;
+
+      case "Enter":
+        if (activeIndex > -1) {
+          e.preventDefault();
+          const item = suggestions[activeIndex];
+          handleClick(item.media_type, item.id);
+        }
+        break;
+
+      case "Escape":
+        setShowSuggestions(false);
+        setActiveIndex(-1);
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  /* -------------------------------------------------------------- */
+  /*                            RENDER                              */
+  /* -------------------------------------------------------------- */
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black text-white pb-20 md:pb-0">
       <Header />
-      <div className="relative max-w-xl mx-1 sm:mx-auto my-6 flex gap-1 sm:gap-2 items-center">
-        <form
-          onSubmit={handleSearch}
-          className="relative flex items-center flex-1"
-        >
+
+      <div
+        ref={searchContainerRef}
+        className="relative max-w-xl mx-1 sm:mx-auto my-6 flex gap-1 sm:gap-2 items-center"
+      >
+        <form onSubmit={handleSearch} className="relative flex items-center flex-1">
           <input
             type="text"
             ref={inputRef}
-            value={searchParams.get("q") || ""}
+            value={query}
             onChange={(e) => handleChange(e, "q")}
+            onFocus={handleFocus}
+            onKeyDown={handleKeyDown}
             placeholder={
-              type == "multi"
-                ? "Search for movies or series..."
-                : type == "movie"
+              type === "movie"
                 ? "Search for movies..."
-                : "Search for series..."
+                : type === "tv"
+                ? "Search for series..."
+                : "Search for movies or series..."
             }
             className="flex-1 px-4 pr-12 py-2 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+            autoComplete="off"
           />
+
           <span
             onClick={handleSearch}
             className="material-symbols-outlined absolute top-1/2 right-4 transform -translate-y-1/2 cursor-pointer text-gray-400 hover:text-white"
           >
             search
           </span>
+
+          {/* SUGGESTIONS */}
+          {showSuggestions && (
+            <div
+              ref={suggestionsContainerRef}
+              className="absolute top-full left-0 right-0 mt-2 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-20 max-h-96 overflow-y-auto"
+            >
+              {isSuggestionsLoading ? (
+                <p className="text-gray-400 text-sm p-3 text-center">
+                  Loading...
+                </p>
+              ) : (
+                <ul className="divide-y divide-gray-700">
+                  {(suggestionItemRefs.current = []) && null}
+                  {suggestions.length > 0 ? (
+                    suggestions.map((item, index) => (
+                      <li
+                        ref={(el) => (suggestionItemRefs.current[index] = el)}
+                        key={item.id}
+                        onClick={() => handleClick(item.media_type, item.id)}
+                        onMouseEnter={() => setActiveIndex(index)}
+                        className={`flex items-center p-2 cursor-pointer transition-colors ${
+                          activeIndex === index
+                            ? "bg-gray-700"
+                            : "hover:bg-gray-700"
+                        }`}
+                      >
+                        <img
+                          src={
+                            item.poster_path
+                              ? `https://image.tmdb.org/t/p/w92${item.poster_path}`
+                              : "/placeholder.png"
+                          }
+                          alt={item.title || item.name}
+                          className="w-10 h-14 object-cover rounded flex-shrink-0"
+                        />
+                        <div className="ml-3 overflow-hidden">
+                          <h4 className="text-sm font-semibold truncate">
+                            {item.title || item.name}
+                          </h4>
+                          <p className="text-xs text-gray-400 capitalize">
+                            {item.media_type === "movie" ? "Movie" : "TV Show"}
+                            {(item.release_date || item.first_air_date) &&
+                              ` (${(
+                                item.release_date || item.first_air_date
+                              ).slice(0, 4)})`}
+                          </p>
+                        </div>
+                      </li>
+                    ))
+                  ) : (
+                    <p className="text-gray-500 text-sm p-3 text-center">
+                      No suggestions found
+                    </p>
+                  )}
+                </ul>
+              )}
+            </div>
+          )}
         </form>
 
-        <div className="sm:px-2 bg-gray-800 rounded-lg overflow-hidden focus:outline-none hover:ring-2 hover:ring-teal-500">
+        {/* TYPE SELECT */}
+        <div className="sm:px-2 bg-gray-800 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-teal-500">
           <select
             name="type"
-            value={searchParams.get("t") || ""}
+            value={type}
             onChange={(e) => handleChange(e, "t")}
             className="bg-gray-800 text-white py-[10px] text-sm border-none outline-none"
           >
@@ -107,9 +371,13 @@ const Search = () => {
         </div>
       </div>
 
-      {loading && <p className="text-center text-gray-400">Loading...</p>}
+      {/* INITIAL LOADING */}
+      {loading && page === 1 && (
+        <p className="text-center text-gray-400">Loading...</p>
+      )}
 
-      {!loading && searchResult?.length === 0 && (
+      {/* NO RESULTS */}
+      {!loading && page === 1 && searchResult?.length === 0 && (
         <div className="relative w-full flex flex-col items-center justify-center gap-4">
           <DotLottieReact
             src="/lottie/no_result.lottie"
@@ -127,47 +395,56 @@ const Search = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8  gap-4 px-4 md:mx-5 pb-4">
-        {searchResult
-          ?.filter(
-            (item) =>
-              type !== "multi" ||
-              item.media_type == "tv" ||
-              item.media_type == "movie"
-          )
-          .map((item) => (
-            <div
-              key={item.id}
-              onClick={() => handleClick(item.media_type, item.id)}
-              className="relative bg-gray-900 border border-gray-800 rounded-lg overflow-hidden shadow hover:shadow-teal-500/10 transition"
-            >
-              <img
-                src={
-                  item.poster_path
-                    ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
-                    : "/placeholder.png"
-                }
-                alt={item.title || item.name}
-                className="h-60 w-full object-cover object-top"
-              />
-              <div className="p-3">
-                <h3 className="text-sm font-semibold truncate">
-                  {item.title || item.name}
-                </h3>
-                <p className="text-xs text-gray-400 mt-1">
-                  {item.release_date?.slice(0, 4) ||
-                    item.first_air_date?.slice(0, 4) ||
-                    "N/A"}
-                </p>
-                <p className="text-xs text-teal-400 mt-1">
-                  Rating: {parseFloat(item.vote_average?.toFixed(1)) || "N/A"}
-                </p>
+      {/* RESULT GRID */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8 gap-4 px-4 md:mx-5 pb-4">
+        {Array.isArray(searchResult) &&
+          searchResult
+            ?.filter(
+              (item) =>
+                type !== "multi" ||
+                item.media_type == "tv" ||
+                item.media_type == "movie"
+            )
+            .map((item) => (
+              <div
+                key={item.id}
+                onClick={() => handleClick(item.media_type, item.id)}
+                className="relative bg-gray-900 border border-gray-800 rounded-lg overflow-hidden shadow hover:shadow-teal-500/10 transition"
+              >
+                <img
+                  src={
+                    item.poster_path
+                      ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+                      : "/placeholder.png"
+                  }
+                  alt={item.title || item.name}
+                  className="h-60 w-full object-cover object-top"
+                />
+                <div className="p-3">
+                  <h3 className="text-sm font-semibold truncate">
+                    {item.title || item.name}
+                  </h3>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {item.release_date?.slice(0, 4) ||
+                      item.first_air_date?.slice(0, 4) ||
+                      "N/A"}
+                  </p>
+                  <p className="text-xs text-teal-400 mt-1">
+                    Rating: {parseFloat(item.vote_average?.toFixed(1)) || "N/A"}
+                  </p>
+                </div>
+                <span className="absolute top-2 right-2 bg-teal-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase shadow-md">
+                  {item.media_type || type}
+                </span>
               </div>
-              <span className="absolute top-2 right-2 bg-teal-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase shadow-md">
-                {item.media_type || type}
-              </span>
-            </div>
-          ))}
+            ))}
+      </div>
+
+      {/* OBSERVER & LOAD MORE */}
+      <div ref={observerRef} className="h-20 flex justify-center items-center">
+        {loading && page > 1 && hasMore && (
+          <p className="text-gray-400">Loading more...</p>
+        )}
       </div>
     </div>
   );

@@ -79,7 +79,7 @@ export const getLatestOTT = async (req, res) => {
 };
 
 export const searchTMDB = async (req, res) => {
-  const { query, type } = req.query;
+  const { query, type, page = 1 } = req.query;
   if (!query) return res.status(400).json({ message: "Query is required" });
 
   const options = {
@@ -93,7 +93,7 @@ export const searchTMDB = async (req, res) => {
       query,
       language: "en-US",
       include_adult: false,
-      page: 1,
+      page,
     },
     timeout: 2000, // 5 seconds timeout
   };
@@ -103,6 +103,7 @@ export const searchTMDB = async (req, res) => {
     res.json({
       message: "Search result",
       data: response.data.results || [],
+      total_pages: response.data.total_pages || 0,
     });
   } catch (err) {
     console.error("TMDB search error:", err.code || err.message);

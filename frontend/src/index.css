@@ -8,10 +8,19 @@ body {
   display: none;
 }
 
-/* For IE, Edge and Firefox */
 .scrollbar-hide {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; 
+  scrollbar-width: none;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background: #1e2939;
+}
+
+::-webkit-scrollbar-thumb{
+  background: oklch(70.4% 0.14 182.503);
+  border-radius: 3px;
 }
 
 @keyframes filmScroll {
