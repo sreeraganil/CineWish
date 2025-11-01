@@ -47,7 +47,7 @@ const Header = () => {
         </div>
       </header>
 
-      <nav className="fixed bottom-0 left-0 w-full bg-gray-900 border-t border-gray-800 md:hidden flex justify-around items-center py-2 z-50">
+      <nav className="fixed bottom-0 left-0 w-full bg-gray-900 border-t border-gray-800 md:hidden flex justify-around items-center py-2 z-[100]">
         <NavLink to="/" className={iconLinkClass}>
           {({ isActive }) => (
             <>

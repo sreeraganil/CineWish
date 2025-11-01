@@ -1,34 +1,19 @@
-import { useRef } from 'react';
-import TrendingCard from './TrendingCard';
-import userStore from '../store/userStore';
-import { useEffect } from 'react';
-import CardSkeleton from './CardSkeleton';
-import SectionSkeleton from './SectionSkeleton';
+import { useRef } from "react";
 
-
-const TrendingSection = () => {
+const SectionSkeleton = ({ title = "Loading..." , CardSkeleton }) => {
   const scrollRef = useRef(null);
-  const { trending, fetchTrending } = userStore();
-
-  useEffect(() => {
-    trending?.length == 0 && fetchTrending();
-  }, []);
 
   const scroll = (direction) => {
-    const { current } = scrollRef;
-    if (current) {
-      const scrollAmount = direction * current.offsetWidth - 250;
-      current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
+    if (!scrollRef.current) return;
+    const { scrollLeft, clientWidth } = scrollRef.current;
+    const scrollAmount = direction === 1 ? scrollLeft + clientWidth : scrollLeft - clientWidth;
+    scrollRef.current.scrollTo({ left: scrollAmount, behavior: "smooth" });
   };
-
-  if(trending?.length == 0)
-    return <SectionSkeleton title='Trending Now' CardSkeleton={CardSkeleton} />
 
   return (
     <section className="bg-gray-950 py-8 px-4 text-white relative">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-2xl font-bold mb-4 text-teal-400">Trending Now</h2>
+        <h2 className="text-2xl font-bold mb-4 text-teal-400">{title}</h2>
 
         <div className="relative">
           <button
@@ -49,9 +34,11 @@ const TrendingSection = () => {
             ref={scrollRef}
             className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth px-2 md:px-5"
           >
-            {trending?.map((item) => (
-              <TrendingCard key={item.id} {...item} />
-            ))}
+            {Array(10)
+              .fill("")
+              .map((_, i) => (
+                <CardSkeleton key={i} />
+              ))}
           </div>
         </div>
       </div>
@@ -59,4 +46,4 @@ const TrendingSection = () => {
   );
 };
 
-export default TrendingSection;
+export default SectionSkeleton;

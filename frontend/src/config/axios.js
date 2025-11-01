@@ -1,9 +1,10 @@
 import axios from "axios";
-import logoutUser from '../store/userStore';
+import useUserStore from '../store/userStore';
 
 // Setup your API instance
 const API = axios.create({
   baseURL: "https://cinewish-web.onrender.com/api",
+  // baseURL: "http://localhost:5000/api",
   withCredentials: true
 });
 
@@ -12,7 +13,8 @@ API.interceptors.response.use(
   response => response, // ✅ Return the response normally if successful
   error => {
     if (error.response && error.response.status === 401) {
-      logoutUser("Your token has been expired, Please login")
+      const { logoutUser } = useUserStore.getState();
+      logoutUser("Token expired, please login again");
     }
 
     // For other errors, just reject

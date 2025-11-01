@@ -2,6 +2,8 @@ import { useRef } from 'react';
 import UpcomingCard from './UpcomingCard';
 import userStore from '../store/userStore';
 import { useEffect } from 'react';
+import SectionSkeleton from './SectionSkeleton';
+import CardSkeleton from './CardSkeleton';
 
 
 const UpcomingSection = () => {
@@ -21,7 +23,7 @@ const UpcomingSection = () => {
   };
 
   if(upcoming?.length == 0)
-    return null
+    return <SectionSkeleton title='Upcoming Releases' CardSkeleton={CardSkeleton} />
 
   return (
     <section className="bg-gray-950 py-8 px-4 text-white relative">

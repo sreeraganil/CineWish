@@ -2,6 +2,8 @@ import { useRef } from 'react';
 import Card from './Card';
 import userStore from '../store/userStore';
 import { useEffect } from 'react';
+import CardSkeleton from './CardSkeleton';
+import SectionSkeleton from './SectionSkeleton';
 
 
 const OTTSection = () => {
@@ -21,7 +23,7 @@ const OTTSection = () => {
   };
 
   if(ott?.length == 0)
-    return null
+    return <SectionSkeleton title='Latest OTT Releases' CardSkeleton={CardSkeleton} />
 
   return (
     <section className="bg-gray-950 py-8 px-4 text-white relative">

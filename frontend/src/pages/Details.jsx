@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import BackHeader from "../components/Backheader";
 import Loader from "../components/Loader";
 import userStore from "../store/userStore";
+import AdSection from "../components/AdSection";
 
 const Details = () => {
   const { media, id } = useParams();
@@ -338,6 +339,7 @@ const Details = () => {
           </div>
         </div>
       </div>
+      <AdSection />
     </>
   );
 };
