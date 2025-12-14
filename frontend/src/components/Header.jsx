@@ -1,5 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
 import userStore from "../store/userStore";
+import SnowFall from "./events/christmas/SnowFall";
 
 const Header = () => {
   const { user } = userStore();
@@ -15,13 +16,14 @@ const Header = () => {
 
   return (
     <>
-      <header className="bg-gray-900 text-white border-b border-gray-800">
+      <header className="bg-gray-900 text-white border-b border-gray-800 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
-          <div className="flex items-center gap-2">
+          <div className="relative flex items-center gap-2">
             <img className="h-10" src="/logo/logo.png" alt="logo" />
             <h1 className="text-xl font-bold">
-              Cine<span className="text-teal-400">Wish</span>
+              Cine<span className="text-teal-400 relative z-50">Wish</span>
             </h1>
+            <SnowFall />
           </div>
 
           <nav className="hidden md:flex gap-6 text-sm font-medium">

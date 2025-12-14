@@ -264,7 +264,7 @@ const Details = () => {
                   </div>
                 )}
 
-                {item.revenue && item.revenue !== 0 && (
+                {item.revenue > 0 && (
                   <div>
                     <span className="text-gray-400">Box Office:</span>{" "}
                     <span className="text-white">
@@ -339,7 +339,6 @@ const Details = () => {
           </div>
         </div>
       </div>
-      <AdSection />
     </>
   );
 };

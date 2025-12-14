@@ -119,35 +119,96 @@ export const getDetails = async (req, res) => {
   try {
     const { media, id } = req.params;
 
-    const { data: tmdbData } = await axios.get(`${BASE_URL}/${media}/${id}`, {
-      headers: {
-        Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
-        accept: "application/json",
-      },
-      params: { language: "en-US" },
-    });
+    const { data: tmdbData } = await axios.get(
+      `${BASE_URL}/${media}/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+          accept: "application/json",
+        },
+        params: {
+          language: "en-US",
+          append_to_response:
+            media === "tv"
+              ? "aggregate_credits,external_ids"
+              : "credits,external_ids",
+        },
+      }
+    );
 
-    let imdbRating = null;
-    let imdbVotes = null;
+    let imdbRating = 0;
+    let imdbVotes = 0;
 
-    if (tmdbData.imdb_id && OMDB_API_KEY) {
+    if (tmdbData.external_ids?.imdb_id && OMDB_API_KEY) {
       try {
         const { data: omdbData } = await axios.get(
-          `https://www.omdbapi.com/?i=${tmdbData.imdb_id}&apikey=${OMDB_API_KEY}`
+          `https://www.omdbapi.com/`,
+          {
+            params: {
+              i: tmdbData.external_ids.imdb_id,
+              apikey: OMDB_API_KEY,
+            },
+          }
         );
-        imdbRating = omdbData.imdbRating == "N/A" ? 0 : omdbData.imdbRating;
-        imdbVotes = omdbData.imdbVotes == "N/A" ? 0 : omdbData.imdbVotes;
+
+        imdbRating =
+          omdbData.imdbRating !== "N/A"
+            ? Number(omdbData.imdbRating)
+            : 0;
+
+        imdbVotes =
+          omdbData.imdbVotes !== "N/A"
+            ? Number(omdbData.imdbVotes.replace(/,/g, ""))
+            : 0;
       } catch (err) {
         console.warn("OMDb fetch failed:", err.message);
       }
     }
 
-    res.json({ ...tmdbData, imdbRating, imdbVotes });
+    let seasons = [];
+    let episodes = null;
+
+    if (media === "tv") {
+      seasons = tmdbData.seasons ?? [];
+
+      episodes = await Promise.all(
+        seasons.map(async (season) => {
+          const { data } = await axios.get(
+            `${BASE_URL}/tv/${id}/season/${season.season_number}`,
+            {
+              headers: {
+                Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+                accept: "application/json",
+              },
+              params: { language: "en-US" },
+            }
+          );
+          return data;
+        })
+      );
+    }
+
+    res.json({
+      ...tmdbData,
+
+      imdbRating,
+      imdbVotes,
+
+      ...(media === "tv" && {
+        numberOfSeasons: tmdbData.number_of_seasons,
+        numberOfEpisodes: tmdbData.number_of_episodes,
+        seasons,
+        episodes, 
+        lastEpisodeToAir: tmdbData.last_episode_to_air,
+        nextEpisodeToAir: tmdbData.next_episode_to_air,
+      }),
+    });
   } catch (err) {
     console.error("getDetails error:", err.message);
     res.status(500).json({ message: "Failed to fetch detail" });
   }
 };
+
 
 // export const getRecommendations = async (req, res) => {
 //   try {

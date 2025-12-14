@@ -34,7 +34,7 @@ const Search = () => {
   const query = searchParams.get("q") || "";
   const type = searchParams.get("t") || "";
 
-  /* -------------------------- INIT -------------------------- */
+  
   useEffect(() => {
     if (!query) {
       setSearchResult([]);
@@ -42,14 +42,14 @@ const Search = () => {
     }
   }, []);
 
-  /* -------------------- ON TYPE FILTER CHANGE -------------------- */
+  
   useEffect(() => {
     if (query.trim()) {
       handleSearch(); // Re-search for page 1
     }
   }, [type]);
 
-  /* -------------------- DEBOUNCE SUGGESTIONS -------------------- */
+  
   useEffect(() => {
     if (query.trim().length < 2) {
       setSuggestions([]);
@@ -67,7 +67,7 @@ const Search = () => {
     return () => clearTimeout(timer);
   }, [query]);
 
-  /* -------------------- CLICK OUTSIDE -------------------- */
+  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -82,7 +82,7 @@ const Search = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  /* -------------------- SCROLL ACTIVE SUGGESTION -------------------- */
+  
   useEffect(() => {
     if (activeIndex < 0 || !suggestionsContainerRef.current) return;
     const itemEl = suggestionItemRefs.current[activeIndex];
@@ -91,33 +91,30 @@ const Search = () => {
     }
   }, [activeIndex]);
 
-  /* -------------------- AUTO LOAD MORE ON PAGE CHANGE -------------------- */
+  
   useEffect(() => {
     if (page > 1) {
       fetchMoreData();
     }
   }, [page]);
 
-  /* -------------------- INTERSECTION OBSERVER -------------------- */
+  
   useEffect(() => {
-    if (loading || !hasMore) return;
+  if (!hasMore) return;
 
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        setPage((prev) => prev + 1);
-      }
-    });
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !loading) {
+      setPage((prev) => prev + 1);
+    }
+  });
 
-    const elem = observerRef.current;
+  const elem = observerRef.current;
+  if (elem) observer.observe(elem);
 
-    if (elem) observer.observe(elem);
+  return () => elem && observer.unobserve(elem);
+}, [hasMore, loading]);
 
-    return () => {
-      if (elem) observer.unobserve(elem);
-    };
-  }, [loading, hasMore]);
 
-  /* -------------------- FETCH SUGGESTIONS -------------------- */
   const fetchSuggestions = async (currentQuery) => {
     setIsSuggestionsLoading(true);
     try {
@@ -144,7 +141,6 @@ const Search = () => {
     }
   };
 
-  /* -------------------- MAIN SEARCH -------------------- */
   const handleSearch = async (e) => {
     if (e) e.preventDefault();
 
@@ -178,7 +174,6 @@ const Search = () => {
     }
   };
 
-  /* -------------------- FETCH NEXT PAGE -------------------- */
   const fetchMoreData = async () => {
     setLoading(true);
     try {
@@ -188,7 +183,7 @@ const Search = () => {
 
       const items = Array.isArray(data.data) ? data.data : [];
 
-      setSearchResult((prev) => [...prev, ...items]);
+      setSearchResult([...searchResult, ...items]);
       setHasMore((data.total_pages || 0) > page);
     } catch (err) {
       console.error(err);
@@ -197,7 +192,6 @@ const Search = () => {
     }
   };
 
-  /* -------------------- CLICK ITEM -------------------- */
   const handleClick = (media_type, id) => {
     if (!media_type || !id) return;
     navigate(`/details/${media_type}/${id}`);
@@ -205,7 +199,6 @@ const Search = () => {
     setActiveIndex(-1);
   };
 
-  /* -------------------- UPDATE SEARCH PARAMS -------------------- */
   const handleChange = (e, param) => {
     const currentParams = Object.fromEntries(searchParams.entries());
     setSearchParams(
@@ -221,7 +214,6 @@ const Search = () => {
     }
   };
 
-  /* -------------------- KEYBOARD NAVIGATION -------------------- */
   const handleKeyDown = (e) => {
     if (!showSuggestions || suggestions.length === 0) return;
 
@@ -258,10 +250,6 @@ const Search = () => {
     }
   };
 
-  /* -------------------------------------------------------------- */
-  /*                            RENDER                              */
-  /* -------------------------------------------------------------- */
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black text-white pb-20 md:pb-0">
       <Header />
@@ -296,7 +284,6 @@ const Search = () => {
             search
           </span>
 
-          {/* SUGGESTIONS */}
           {showSuggestions && (
             <div
               ref={suggestionsContainerRef}
@@ -356,7 +343,6 @@ const Search = () => {
           )}
         </form>
 
-        {/* TYPE SELECT */}
         <div className="sm:px-2 bg-gray-800 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-teal-500">
           <select
             name="type"
@@ -371,12 +357,10 @@ const Search = () => {
         </div>
       </div>
 
-      {/* INITIAL LOADING */}
       {loading && page === 1 && (
         <p className="text-center text-gray-400">Loading...</p>
       )}
 
-      {/* NO RESULTS */}
       {!loading && page === 1 && searchResult?.length === 0 && (
         <div className="relative w-full flex flex-col items-center justify-center gap-4">
           <DotLottieReact
@@ -395,20 +379,11 @@ const Search = () => {
         </div>
       )}
 
-      {/* RESULT GRID */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8 gap-4 px-4 md:mx-5 pb-4">
-        {Array.isArray(searchResult) &&
-          searchResult
-            ?.filter(
-              (item) =>
-                type !== "multi" ||
-                item.media_type == "tv" ||
-                item.media_type == "movie"
-            )
-            .map((item) => (
+        {searchResult?.map((item) => (
               <div
                 key={item.id}
-                onClick={() => handleClick(item.media_type, item.id)}
+                onClick={() => handleClick(item.media_type || type, item.id)}
                 className="relative bg-gray-900 border border-gray-800 rounded-lg overflow-hidden shadow hover:shadow-teal-500/10 transition"
               >
                 <img
@@ -440,7 +415,6 @@ const Search = () => {
             ))}
       </div>
 
-      {/* OBSERVER & LOAD MORE */}
       <div ref={observerRef} className="h-20 flex justify-center items-center">
         {loading && page > 1 && hasMore && (
           <p className="text-gray-400">Loading more...</p>
