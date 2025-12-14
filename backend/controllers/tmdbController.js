@@ -116,7 +116,7 @@ export const searchTMDB = async (req, res) => {
 const OMDB_API_KEY = process.env.OMDB_KEY;
 
 
-const DEFAULT_WATCH_REGION = "US";
+const DEFAULT_WATCH_REGION = "IN";
 
 export const getDetails = async (req, res) => {
   try {
