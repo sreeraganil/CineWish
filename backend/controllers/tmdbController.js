@@ -115,6 +115,9 @@ export const searchTMDB = async (req, res) => {
 
 const OMDB_API_KEY = process.env.OMDB_KEY;
 
+
+const DEFAULT_WATCH_REGION = "US";
+
 export const getDetails = async (req, res) => {
   try {
     const { media, id } = req.params;
@@ -136,6 +139,7 @@ export const getDetails = async (req, res) => {
       }
     );
 
+    // --- 2. Fetch OMDb Ratings ---
     let imdbRating = 0;
     let imdbVotes = 0;
 
@@ -165,6 +169,33 @@ export const getDetails = async (req, res) => {
       }
     }
 
+    // --- 3. Fetch Watch Providers (NEW SECTION) ---
+    let providers = null;
+    try {
+        // Use the dedicated TMDB Watch Providers endpoint
+        const providersUrl = `${BASE_URL}/${media}/${id}/watch/providers`;
+        
+        const { data: providersData } = await axios.get(
+            providersUrl,
+            {
+                headers: {
+                    Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+                    accept: "application/json",
+                },
+                params: {
+                    // Crucial parameter to filter by country
+                    watch_region: DEFAULT_WATCH_REGION, 
+                },
+            }
+        );
+        
+        // Extract the provider data specifically for the requested region
+        providers = providersData.results[DEFAULT_WATCH_REGION] || null;
+
+    } catch (err) {
+        console.warn("TMDB Watch Providers fetch failed:", err.message);
+    }
+    
     let seasons = [];
     let episodes = null;
 
@@ -193,6 +224,8 @@ export const getDetails = async (req, res) => {
 
       imdbRating,
       imdbVotes,
+      
+      watchProviders: providers, 
 
       ...(media === "tv" && {
         numberOfSeasons: tmdbData.number_of_seasons,
