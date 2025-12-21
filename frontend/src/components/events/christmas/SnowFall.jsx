@@ -19,7 +19,7 @@ const SnowFall = () => {
   return (
     <div className="absolute -inset-4">
         <div className="bg relative h-full w-full">
-          <img className='w-1/4 absolute right-0 top-0' src="/events/christmas/decorator.png" alt="" srcset="" />
+          <img className='w-1/4 absolute right-0 top-0' src="/events/christmas/decorator.png" alt="decor" />
           {
           snowflakes?.map(s => (
             <img
