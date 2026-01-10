@@ -1,7 +1,13 @@
 @import "tailwindcss";
 
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: #101828;
+  overflow-x: auto;
 }
 
 .scrollbar-hide::-webkit-scrollbar {
@@ -83,4 +89,105 @@ body {
 
 .animate-bg {
   animation: bg-animation 10s ease infinite;
+}
+
+.stranger-things .st {
+  transform: rotate(180deg);
+  left: 12px;
+  right: auto;
+  margin-bottom: 12px;
+}
+
+.stranger-things .st.title {
+  margin-top: 40px;
+}
+
+.rift-button {
+  width: 30px;
+  height: 40px;
+  background: radial-gradient(
+    circle at center,
+    #ff2a2a 0%,
+    #8b0000 35%,
+    #120005 65%,
+    #000 100%
+  );
+  border: none;
+  border-radius: 40px;
+  cursor: pointer;
+  position: relative;
+  box-shadow:
+    0 0 12px rgba(255, 0, 0, 0.6),
+    inset 0 0 18px rgba(0, 0, 0, 0.9);
+  animation: pulse 4s infinite ease-in-out;
+}
+
+/* organic crack line */
+.rift-button::before {
+  content: "";
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  width: 2px;
+  height: 84%;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    #ff3b3b,
+    #ff3b3b,
+    transparent
+  );
+  transform: translateX(-50%);
+  opacity: 0.9;
+}
+
+/* hover = opening */
+.rift-button:hover {
+  box-shadow:
+    0 0 24px rgba(255, 0, 0, 0.9),
+    inset 0 0 30px rgba(0, 0, 0, 1);
+  transform: scale(1.05);
+}
+
+/* subtle life */
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(255, 0, 0, 0.4); }
+  50% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.9); }
+}
+.portal-open {
+  animation: portalExpand 750ms cubic-bezier(.22,1,.36,1) forwards;
+}
+
+@keyframes portalExpand {
+  0% {
+    transform: scale(0.04);
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  60% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.portal-close {
+  animation: portalClose 400ms ease-in forwards;
+}
+
+@keyframes portalClose {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.02);
+    opacity: 0;
+  }
 }

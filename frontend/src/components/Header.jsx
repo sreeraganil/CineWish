@@ -1,6 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
 import userStore from "../store/userStore";
-import SnowFall from "./events/christmas/SnowFall";
+// import SnowFall from "./events/christmas/SnowFall";
 
 const Header = () => {
   const { user } = userStore();
@@ -23,7 +23,7 @@ const Header = () => {
             <h1 className="text-xl font-bold">
               Cine<span className="text-teal-400 relative z-50">Wish</span>
             </h1>
-            <SnowFall />
+            {/* <SnowFall /> */}
           </div>
 
           <nav className="hidden md:flex gap-6 text-sm font-medium">

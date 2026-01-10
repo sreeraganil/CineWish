@@ -36,20 +36,18 @@ const WishList = () => {
     ratingFilter,
   ].filter(Boolean).length;
 
-  // FIX: Simplified clearFilters function. It now only resets state.
-  // The main useEffect will handle re-fetching the data.
   const clearFilters = () => {
     setTypeFilter("");
     setGenreFilter("");
     setYearFilter("");
     setRatingFilter("");
-    setPage(1); // Reset to page 1
+    setPage(1); 
   };
 
-  // FIX: New function to apply filters. It simply resets the page to 1.
-  // The main useEffect will see the page change and trigger a fetch.
   const applyFilters = () => {
     setPage(1);
+    fetchData();
+    setShowFilter(false);
   };
 
 
@@ -126,7 +124,7 @@ const WishList = () => {
               Your Wishlist
               {!loading && (
                 <span className="ml-3 text-lg rounded-full bg-teal-600 px-2">
-                  {wishlistCount.totalCount}
+                  {wishlistCount.filterTotalCount || wishlistCount.totalCount}
                 </span>
               )}
             </h2>

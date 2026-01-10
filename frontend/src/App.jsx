@@ -11,6 +11,7 @@ import GuestRoute from "./components/GuestRoute";
 import Details from "./pages/Details";
 import Profile from "./pages/Profile";
 import { Toaster } from "react-hot-toast"
+import Watch from "./pages/Watch";
 
 const App = () => {
   return (
@@ -71,6 +72,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/watch/:media/:id/:s?/:e?"
+          element={
+            <ProtectedRoute>
+              <Watch />
             </ProtectedRoute>
           }
         />

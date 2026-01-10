@@ -108,7 +108,7 @@ useEffect(() => {
             </h3>
             <div className="space-y-3 text-sm sm:text-base">
               <div className="flex justify-between text-gray-300 font-bold">
-                <span>🎯 Total Items:</span>
+                <span>Total Items:</span>
                 <span>
                   {profileData?.watchedCount.totalCount + profileData?.wishlistCount.totalCount || 0}
                 </span>
@@ -118,15 +118,15 @@ useEffect(() => {
 
               {/* Watched Stats */}
               <div className="flex justify-between text-teal-400">
-                <span>✅ Watched (Total):</span>
+                <span>Watched (Total):</span>
                 <span>{profileData?.watchedCount.totalCount || 0}</span>
               </div>
               <div className="flex justify-between text-gray-400 pl-4 text-sm">
-                <span>- Movies:</span>
+                <span>Movies:</span>
                 <span>{profileData?.watchedCount.movieCount || 0}</span>
               </div>
               <div className="flex justify-between text-gray-400 pl-4 text-sm">
-                <span>- Shows:</span>
+                <span>Shows:</span>
                 <span>{profileData?.watchedCount.showCount || 0}</span>
               </div>
               
@@ -134,33 +134,31 @@ useEffect(() => {
 
               {/* Wishlist Stats */}
               <div className="flex justify-between text-yellow-400">
-                <span>📌 To Watch (Total):</span>
+                <span>To Watch (Total):</span>
                 <span>{profileData?.wishlistCount.totalCount || 0}</span>
               </div>
               <div className="flex justify-between text-gray-400 pl-4 text-sm">
-                <span>- Movies:</span>
+                <span>Movies:</span>
                 <span>{profileData?.wishlistCount.movieCount || 0}</span>
               </div>
               <div className="flex justify-between text-gray-400 pl-4 text-sm">
-                <span>- Shows:</span>
+                <span>Shows:</span>
                 <span>{profileData?.wishlistCount.showCount || 0}</span>
               </div>
             </div>
           </div>
 
-          {/* --- Navigation Links Section (NEW) --- */}
           <div className="mt-8 pt-6 border-t border-gray-700">
             <h3 className="text-lg font-semibold text-gray-200 mb-4">
               Manage
             </h3>
             <div className="space-y-3">
-              <NavLink title="My Wishlist" path="/wishlist" emoji="📌" />
-              <NavLink title="My Watched List" path="/watched" emoji="✅" />
+              <NavLink title="My Wishlist" path="/wishlist" />
+              <NavLink title="My Watched List" path="/watched" />
               {/* <NavLink title="Edit Profile" path="/settings" emoji="⚙️" /> */}
             </div>
           </div>
 
-          {/* --- Account Actions Section --- */}
           <div className="mt-8 pt-6 border-t border-gray-700 space-y-3">
             <button
               onClick={() => setShowLogoutModal(true)}

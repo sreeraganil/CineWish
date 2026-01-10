@@ -1,5 +1,5 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import API from "../config/axios";
 import wishlistStore from "../store/wishlistStore";
 import toast from "react-hot-toast";
@@ -13,15 +13,28 @@ const Details = () => {
   const [loading, setLoading] = useState(true);
   const [isInWishlist, setIsInWishlist] = useState(false);
   const [clicked, setClicked] = useState(false);
-  const [openSeason, setOpenSeason] = useState(null);
-  const [season, setSeason] = useState([]);
+  const [openSeason, setOpenSeason] = useState(1);
+  const detailpageRef = useRef();
 
   const { addToWishlist } = wishlistStore();
   const { user } = userStore();
 
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
   useEffect(() => {
     if (user) checkStatus();
   }, [id, user]);
+
+  const extraEvent = () => {
+    setIsTransitioning(true);
+
+    setTimeout(() => {
+      setIsTransitioning(false);
+      if (id == 66732) {
+        detailpageRef.current.classList.toggle("stranger-things");
+      }
+    }, 800);
+  };
 
   const checkStatus = async () => {
     try {
@@ -88,7 +101,6 @@ const Details = () => {
 
   const toggleSeason = (seasonNumber) => {
     setOpenSeason((prev) => (prev === seasonNumber ? null : seasonNumber));
-    console.log(openSeason);
   };
 
   if (loading)
@@ -106,6 +118,9 @@ const Details = () => {
     );
 
   const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/original";
+
+  const btnBase =
+    "flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors disabled:opacity-60 disabled:pointer-events-none";
 
   const castData =
     media === "tv" ? item.aggregate_credits?.cast : item.credits?.cast;
@@ -135,10 +150,39 @@ const Details = () => {
     buyProviders.length > 0;
 
   return (
-    <>
+    <div ref={detailpageRef}>
       <BackHeader title="Details" />
 
-      <div className="fixed inset-0 -z-10">
+      {id == 66732 && (
+        <>
+          {/* Rift Button */}
+          <div className="fixed bottom-15 left-1/2 -translate-x-1/2 z-50">
+            <button
+              className="rift-button"
+              aria-label="Enter the Upside Down"
+              onClick={extraEvent}
+            />
+          </div>
+
+          {/* Red Screen */}
+          <div
+            className={`
+    fixed inset-0 z-40
+    pointer-events-none
+    ${isTransitioning ? "portal-open" : "portal-close"}
+  `}
+            style={{
+              background:
+                "radial-gradient(circle at 50% 85%, #ef4444 0%, #b91c1c 35%, #7f1d1d 65%, #450a0a 100%)",
+              transformOrigin: "50% 85%",
+            }}
+          >
+            {/* <img src="/images/portal.png" alt="" className="w-full h-full object-cover" /> */}
+          </div>
+        </>
+      )}
+
+      <div className="fixed inset-0 -z-10 w-full st">
         <img
           src={
             item.backdrop_path
@@ -155,7 +199,7 @@ const Details = () => {
         {/* Rating badge - Improved conditional logic */}
         {primaryRating > 0 && (
           <div
-            className={`absolute right-6 top-6 px-3 py-1 rounded-lg font-semibold ${
+            className={`absolute right-6 top-2 sm:top-6 px-3 py-1 rounded-lg font-semibold text-xs sm:text-lg st ${
               isImdb ? "bg-[#f5c518] text-black" : "bg-[#032541] text-white"
             }`}
           >
@@ -164,15 +208,15 @@ const Details = () => {
           </div>
         )}
 
-        <h1 className="text-4xl font-bold mb-2 pt-16">
+        <h1 className="text-2xl sm:text-4xl font-bold st title pt-5">
           {item.title || item.name}
         </h1>
 
         {item.tagline && (
-          <p className="italic text-gray-300 mb-6">"{item.tagline}"</p>
+          <p className="italic text-gray-300 mb-6 st">"{item.tagline}"</p>
         )}
 
-        <div className="flex flex-col md:flex-row gap-8">
+        <div className="flex flex-col md:flex-row gap-8 items-center st">
           <div>
             <img
               src={
@@ -186,7 +230,7 @@ const Details = () => {
             />
           </div>
 
-          <div className="flex-1 space-y-5">
+          <div className="flex-1 space-y-5 my-2">
             {item.overview && (
               <p className="text-gray-300 leading-relaxed">{item.overview}</p>
             )}
@@ -278,10 +322,12 @@ const Details = () => {
             </div>
 
             {/* Crew/Creators Section */}
-            {(director ||
-              creators?.length > 0 ||
+            {!!(
+              director ||
+              creators.length ||
               composers.length ||
-              producers.length) && (
+              producers.length
+            ) && (
               <div className="pt-4 text-sm space-y-1">
                 {/* TV Creator */}
                 {media === "tv" && creators?.length > 0 && (
@@ -313,31 +359,60 @@ const Details = () => {
             )}
 
             {user && (
-              <div className="flex flex-wrap gap-3 pt-4">
+              <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {/* Wishlist */}
                 <button
                   onClick={() => handleAdd("towatch")}
                   disabled={isInWishlist || clicked}
-                  className={`flex items-center gap-2 px-4 py-2 rounded transition-colors ${
+                  className={`${btnBase} ${
                     isInWishlist
-                      ? "bg-gray-600 text-gray-300"
+                      ? "bg-gray-700 text-gray-300"
                       : "bg-teal-600 hover:bg-teal-700 text-white"
-                  } disabled:opacity-60`}
+                  }`}
                 >
-                  <span className="material-symbols-outlined">
+                  <span className="material-symbols-outlined text-base">
                     {isInWishlist ? "bookmark_added" : "bookmark_add"}
                   </span>
-                  {isInWishlist ? "In Wishlist" : "Add to Wishlist"}
+                  <span className="truncate">
+                    {isInWishlist ? "In Wishlist" : "Add to Wishlist"}
+                  </span>
                 </button>
 
+                {/* Watched */}
                 {!isInWishlist && (
                   <button
                     onClick={() => handleAdd("watched")}
                     disabled={clicked}
-                    className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded transition-colors disabled:opacity-60"
+                    className={`${btnBase} bg-teal-600 hover:bg-teal-700 text-white`}
                   >
-                    <span className="material-symbols-outlined">preview</span>
-                    Mark as Watched
+                    <span className="material-symbols-outlined text-base">
+                      preview
+                    </span>
+                    <span className="truncate">Mark as Watched</span>
                   </button>
+                )}
+
+                {/* Watch */}
+                {media === "tv" ? (
+                  <a
+                    href="#s01e01"
+                    className={`${btnBase} bg-amber-500 hover:bg-amber-600 text-black`}
+                  >
+                    <span className="material-symbols-outlined text-base">
+                      live_tv
+                    </span>
+                    <span className="truncate">Watch</span>
+                  </a>
+                ) : (
+                  <Link
+                    to={`/watch/${media}/${id}`}
+                    className={`${btnBase} bg-amber-500 hover:bg-amber-600 text-black`}
+                  >
+                    <span className="material-symbols-outlined text-base">
+                      live_tv
+                    </span>
+                    <span className="truncate">Watch</span>
+                  </Link>
                 )}
               </div>
             )}
@@ -345,7 +420,7 @@ const Details = () => {
         </div>
 
         {hasProviders && (
-          <div className="pt-6 space-y-6 border-t border-gray-700/50">
+          <div className="pt-6 space-y-6 border-t border-gray-700/50 st">
             <h3 className="text-xl font-bold text-teal-400">
               <i className="fas fa-tv mr-2"></i> Watch Options
             </h3>
@@ -434,7 +509,7 @@ const Details = () => {
 
         {/* New TV Next/Last Episode Info */}
         {media === "tv" && (item.lastEpisodeToAir || item.nextEpisodeToAir) && (
-          <div className="pt-8 bg-gray-900/50 p-4 rounded-lg mt-4">
+          <div className="pt-8 bg-gray-900/50 p-4 rounded-lg mt-4 st">
             <h3 className="text-lg font-semibold mb-2">Episode Status</h3>
             {item.nextEpisodeToAir && (
               <p className="text-sm mb-2">
@@ -459,7 +534,7 @@ const Details = () => {
 
         {/* Collection (Movies Only) */}
         {media === "movie" && item.belongs_to_collection && (
-          <div className="pt-8">
+          <div className="pt-8 st">
             <h3 className="text-lg font-semibold mb-2">Collection</h3>
             <div className="flex items-center gap-4 bg-gray-900/50 p-4 rounded-lg">
               {item.belongs_to_collection.poster_path && (
@@ -476,7 +551,7 @@ const Details = () => {
 
         {/* Cast - Note: Uses 'aggregate_credits' structure for TV */}
         {topCast.length > 0 && (
-          <div className="pt-8">
+          <div className="pt-8 st">
             <h3 className="text-lg font-semibold mb-4">Top Cast</h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4 overflow-x-auto pb-4">
               {topCast.map((c) => (
@@ -506,7 +581,7 @@ const Details = () => {
 
         {/* Seasons & Episodes Section (TV Only) */}
         {media === "tv" && item.episodes?.length > 0 && (
-          <div className="pt-8">
+          <div className="pt-8 st">
             <h3 className="text-lg font-semibold mb-4">
               Seasons ({item.episodes.length})
             </h3>
@@ -556,37 +631,47 @@ const Details = () => {
                     {/* EPISODES DROPDOWN */}
                     {isOpen && season.episodes?.length > 0 && (
                       <div className="w-[90%] ml-auto border-t border-gray-700 divide-y divide-gray-700">
-                        {season.episodes.map((ep) => (
+                        {season.episodes.map((ep, i) => (
                           <div
                             key={ep.id}
-                            className="p-4 flex gap-4 hover:bg-gray-700/40"
+                            className="hover:bg-gray-700/40 items-center flex justify-between scroll-mt-32"
+                            id={`s01e0${i + 1}`}
                           >
-                            <img
-                              src={
-                                ep.still_path
-                                  ? `https://image.tmdb.org/t/p/w185${ep.still_path}`
-                                  : "/placeholder.png"
-                              }
-                              alt={ep.name}
-                              className="w-32 h-20 object-cover rounded"
-                            />
+                            <div className="p-4 flex gap-4">
+                              <img
+                                src={
+                                  ep.still_path
+                                    ? `https://image.tmdb.org/t/p/w185${ep.still_path}`
+                                    : "/placeholder.png"
+                                }
+                                alt={ep.name}
+                                className="w-32 h-20 object-cover rounded"
+                              />
 
-                            <div className="flex-1">
-                              <p className="text-sm font-medium">
-                                E{ep.episode_number} • {ep.name}
-                              </p>
-
-                              <p className="text-xs text-gray-400">
-                                {ep.air_date ?? "TBA"}
-                                {ep.runtime ? ` • ${ep.runtime} min` : ""}
-                              </p>
-
-                              {ep.overview && (
-                                <p className="text-xs mt-1 line-clamp-2 text-gray-300">
-                                  {ep.overview}
+                              <div className="flex-1">
+                                <p className="text-sm font-medium">
+                                  E{ep.episode_number} • {ep.name}
                                 </p>
-                              )}
+
+                                <p className="text-xs text-gray-400">
+                                  {ep.air_date ?? "TBA"}
+                                  {ep.runtime ? ` • ${ep.runtime} min` : ""}
+                                </p>
+
+                                {ep.overview && (
+                                  <p className="text-xs mt-1 line-clamp-2 text-gray-300">
+                                    {ep.overview}
+                                  </p>
+                                )}
+                              </div>
                             </div>
+
+                            <Link
+                              className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-xs mx-4 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded whitespace-nowrap font-medium"
+                              to={`/watch/${media}/${id}/${openSeason}/${ep.episode_number}`}
+                            >
+                              Watch S{openSeason}E{ep.episode_number}
+                            </Link>
                           </div>
                         ))}
                       </div>
@@ -598,7 +683,7 @@ const Details = () => {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 
