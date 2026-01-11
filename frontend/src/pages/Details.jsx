@@ -406,6 +406,17 @@ const Details = () => {
                 ) : (
                   <Link
                     to={`/watch/${media}/${id}`}
+                    state={{
+                      title: item.title || item.name,
+                      poster: item.poster_path
+                        ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+                        : "/placeholder.png",
+                      backdrop_path: item.backdrop_path
+                        ? `https://image.tmdb.org/t/p/w500${item.backdrop_path}`
+                        : "/placeholder.png",
+                      mediaType: media,
+                      mediaId: id,
+                    }}
                     className={`${btnBase} bg-amber-500 hover:bg-amber-600 text-black`}
                   >
                     <span className="material-symbols-outlined text-base">
@@ -668,6 +679,17 @@ const Details = () => {
 
                             <Link
                               className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-xs mx-4 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded whitespace-nowrap font-medium"
+                              state={{
+                                title: item.title || item.name,
+                                poster: item.poster_path
+                                  ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+                                  : "/placeholder.png",
+                                backdrop: ep.still_path
+                                  ? `https://image.tmdb.org/t/p/w185${ep.still_path}`
+                                  : "/placeholder.png",
+                                mediaType: media,
+                                mediaId: id,
+                              }}
                               to={`/watch/${media}/${id}/${openSeason}/${ep.episode_number}`}
                             >
                               Watch S{openSeason}E{ep.episode_number}

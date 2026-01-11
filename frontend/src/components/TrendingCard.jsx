@@ -9,8 +9,8 @@ const TrendingCard = ({ id, title, name, year, vote_average, poster_path, media_
   }
 
   return (
-    <div className="min-w-[160px] my-1 relative bg-gray-900 rounded-xl border border-gray-800 overflow-hidden shadow hover:border-teal-300 transition-all" onClick={()=>handleClick(media_type, id)}>
-      <img src={`https://image.tmdb.org/t/p/w500${poster_path}`} alt={name || title} className="h-48 w-full object-cover hover:object-bottom transition-all" />
+    <div className="min-w-[160px] my-1 relative bg-gray-900 rounded-xl border border-gray-800 overflow-hidden shadow hover:border-teal-300 transition-all group" onClick={()=>handleClick(media_type, id)}>
+      <img src={`https://image.tmdb.org/t/p/w500${poster_path}`} alt={name || title} className="h-48 w-full object-cover group-hover:object-bottom transition-all" />
       <div className="p-3 text-white">
         <h3 className="text-sm font-semibold truncate">{name || title}</h3>
         <p className="text-xs text-gray-400">{year}</p>

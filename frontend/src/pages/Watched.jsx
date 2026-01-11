@@ -7,7 +7,8 @@ import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const Watched = () => {
-  const { watched, watchedCount, fetchWatched, removeFromWishlist } = wishlistStore();
+  const { watched, watchedCount, fetchWatched, removeFromWishlist } =
+    wishlistStore();
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
@@ -16,7 +17,10 @@ const Watched = () => {
   const navigate = useNavigate();
 
   const ITEMS_PER_PAGE = 20;
-  const totalPages = Math.max(Math.ceil(watchedCount.totalCount / ITEMS_PER_PAGE), 1);
+  const totalPages = Math.max(
+    Math.ceil(watchedCount.totalCount / ITEMS_PER_PAGE),
+    1
+  );
 
   useEffect(() => {
     const load = async () => {
@@ -34,7 +38,11 @@ const Watched = () => {
           setPage((prev) => prev + 1);
         }
       },
-      { threshold: 1 }
+      {
+        root: null,
+        rootMargin: "600px 0px",
+        threshold: 0,
+      }
     );
 
     if (loaderRef.current) observer.observe(loaderRef.current);
@@ -127,8 +135,10 @@ const Watched = () => {
               ))}
             </div>
 
-            
-            <div ref={loaderRef} className="h-10 mt-4 flex justify-center items-center">
+            <div
+              ref={loaderRef}
+              className="h-10 mt-4 flex justify-center items-center"
+            >
               {loading && page > 1 && (
                 <span className="text-teal-400">Loading more...</span>
               )}

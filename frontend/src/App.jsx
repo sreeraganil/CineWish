@@ -12,6 +12,7 @@ import Details from "./pages/Details";
 import Profile from "./pages/Profile";
 import { Toaster } from "react-hot-toast"
 import Watch from "./pages/Watch";
+import WatchOverviewPage from "./pages/WatchOverviewPage";
 
 const App = () => {
   return (
@@ -80,6 +81,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <Watch />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/watch/history"
+          element={
+            <ProtectedRoute>
+              <WatchOverviewPage />
             </ProtectedRoute>
           }
         />

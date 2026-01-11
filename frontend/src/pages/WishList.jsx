@@ -67,7 +67,11 @@ const WishList = () => {
           setPage((prev) => prev + 1);
         }
       },
-      { threshold: 1 }
+      {
+        root: null,
+        rootMargin: "600px 0px",
+        threshold: 0,
+      }
     );
 
     const currentLoaderRef = loaderRef.current;

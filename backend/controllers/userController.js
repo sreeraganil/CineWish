@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import User from "../models/userModel.js";
 import WatchList from "../models/watchListModel.js";
+import WatchProgressModel from "../models/WatchProgressModel.js";
 
 export const getWatchStats = async (req, res) => {
   try {
@@ -99,3 +100,6 @@ export const getProfileData = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch profile data", error: err.message });
   }
 };
+
+
+
