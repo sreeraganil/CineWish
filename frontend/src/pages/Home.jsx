@@ -5,6 +5,7 @@ import StatsSection from "../components/StatsSection"
 import TrendingSection from "../components/TrendingSection"
 import UpcomingSection from "../components/UpcomingSection"
 import OTTSection from "../components/OTTSection"
+import Watching from "../components/watch/Watching"
 
 const Home = () => {
   return (
@@ -12,6 +13,7 @@ const Home = () => {
         <Header />
         <HeroSection />
         <StatsSection />
+        <Watching />
         <RecommendationSection />
         <TrendingSection /> 
         <UpcomingSection /> 

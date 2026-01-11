@@ -411,7 +411,7 @@ const Details = () => {
                       poster: item.poster_path
                         ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
                         : "/placeholder.png",
-                      backdrop_path: item.backdrop_path
+                      backdrop: item.backdrop_path
                         ? `https://image.tmdb.org/t/p/w500${item.backdrop_path}`
                         : "/placeholder.png",
                       mediaType: media,

@@ -4,12 +4,12 @@ const WatchHistory = ({ items }) => {
   if (!items?.length) return null;
 
   return (
-    <section>
-      <h2 className="text-xl font-semibold text-teal-300 mb-4">
+    <section className="mb-10">
+      <h2 className="text-xl font-semibold mb-4 text-white">
         Watch History
       </h2>
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         {items.map((item) => {
           const watchUrl =
             item.mediaType === "tv"
@@ -21,13 +21,22 @@ const WatchHistory = ({ items }) => {
               to={watchUrl}
               state={{
                 title: item.title,
-                progress: item.progressSeconds
+                progress: item.progressSeconds,
+                poster: item.poster,
+                backdrop: item.backdrop,
               }}
               key={`${item.mediaType}-${item.mediaId}-${item.season}-${item.episode}`}
-              className="group flex items-center gap-4 bg-slate-900 border border-slate-800 rounded-lg px-4 py-3 hover:border-teal-600 transition"
+              className="
+                flex items-center gap-4
+                bg-slate-900
+                rounded-lg
+                px-4 py-3
+                hover:bg-slate-800
+                transition
+              "
             >
               {/* Poster */}
-              <div className="w-12 h-18 shrink-0 rounded overflow-hidden bg-slate-800">
+              <div className="w-14 h-20 shrink-0 rounded overflow-hidden bg-slate-800">
                 {item.poster ? (
                   <img
                     src={item.poster}
@@ -47,15 +56,15 @@ const WatchHistory = ({ items }) => {
                   {item.title ?? `Media ${item.mediaId}`}
                 </div>
 
-                <div className="text-sm text-slate-400">
-                  {item.mediaType.toUpperCase()}
-                  {item.mediaType === "tv" &&
-                    ` • S${item.season}E${item.episode}`}
+                <div className="text-sm text-slate-400 mt-1">
+                  {item.mediaType === "tv"
+                    ? `Season ${item.season} • Episode ${item.episode}`
+                    : "Movie"}
                 </div>
               </div>
 
               {/* Date */}
-              <div className="text-xs text-teal-400 whitespace-nowrap">
+              <div className="text-sm text-slate-400 whitespace-nowrap">
                 {new Date(item.lastWatchedAt).toLocaleDateString()}
               </div>
             </Link>

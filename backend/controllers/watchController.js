@@ -1,8 +1,5 @@
 import WatchProgress from "../models/WatchProgressModel.js";
 
-/* =========================
-   SAVE / UPDATE PROGRESS
-========================= */
 export const saveProgress = async (req, res) => {
   try {
     if (!req.user) {
@@ -67,9 +64,6 @@ export const saveProgress = async (req, res) => {
   }
 };
 
-/* =========================
-   GET ALL
-========================= */
 export const getAllWatchProgress = async (req, res) => {
   const userId = req.user.id;
 
@@ -83,9 +77,7 @@ export const getAllWatchProgress = async (req, res) => {
   res.json(list);
 };
 
-/* =========================
-   CONTINUE WATCHING
-========================= */
+
 export const getContinueWatching = async (req, res) => {
   const userId = req.user.id;
 
@@ -103,9 +95,7 @@ export const getContinueWatching = async (req, res) => {
   res.json(list);
 };
 
-/* =========================
-   COMPLETED
-========================= */
+
 export const getCompletedWatchList = async (req, res) => {
   const userId = req.user.id;
 
@@ -122,9 +112,7 @@ export const getCompletedWatchList = async (req, res) => {
   res.json(list);
 };
 
-/* =========================
-   BY MEDIA
-========================= */
+
 export const getWatchProgressByMedia = async (req, res) => {
   const userId = req.user.id;
   const { mediaType, mediaId } = req.params;
@@ -157,4 +145,45 @@ export const getWatchProgressByMedia = async (req, res) => {
   }
 
   res.json(result);
+};
+
+export const removeFromHistory = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { mediaType, mediaId } = req.params;
+    const { season, episode } = req.query;
+
+    if (!mediaType || !mediaId) {
+      return res.status(400).json({ error: "mediaType and mediaId required" });
+    }
+
+    const query = {
+      userId,
+      mediaType,
+      mediaId: Number(mediaId),
+    };
+
+    // ✅ TV: delete specific episode ONLY when both are provided
+    if (mediaType === "tv") {
+      if (season === undefined || episode === undefined) {
+        return res.status(400).json({
+          error: "season and episode are required to delete a TV episode",
+        });
+      }
+
+      query.season = Number(season);
+      query.episode = Number(episode);
+    }
+
+    const result = await WatchProgress.deleteOne(query);
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "History item not found" });
+    }
+
+    res.sendStatus(204);
+  } catch (err) {
+    console.error("removeFromHistory error:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
 };
