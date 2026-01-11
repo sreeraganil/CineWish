@@ -324,9 +324,9 @@ const Details = () => {
             {/* Crew/Creators Section */}
             {!!(
               director ||
-              creators.length ||
-              composers.length ||
-              producers.length
+              creators?.length ||
+              composers?.length ||
+              producers?.length
             ) && (
               <div className="pt-4 text-sm space-y-1">
                 {/* TV Creator */}

@@ -26,7 +26,7 @@ const Watch = () => {
         nextEpisode: "true",
         episodeSelector: "true",
       }),
-      ...(resumeTime && { t: resumeTime }), // 👈 resume hint
+      ...(resumeTime && { progress: resumeTime }),
     });
 
     return `${base}?${params.toString()}`;

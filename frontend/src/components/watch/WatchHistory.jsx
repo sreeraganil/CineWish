@@ -21,7 +21,7 @@ const WatchHistory = ({ items }) => {
               to={watchUrl}
               state={{
                 title: item.title,
-                progress: item.progressSeconds,
+                progressSeconds: item.progressSeconds,
                 poster: item.poster,
                 backdrop: item.backdrop,
               }}
