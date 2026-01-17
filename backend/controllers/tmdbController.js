@@ -1,7 +1,7 @@
 import axios from "axios";
 import Trending from "../models/trendingModel.js";
 import Upcoming from "../models/upcomingModel.js";
-import WatchList from '../models/watchListModel.js';
+import WatchList from "../models/watchListModel.js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import latestOTT from "../models/latestOTTModel.js";
 
@@ -35,7 +35,6 @@ export const updateUpcoming = async () => {
     await Upcoming.create({ data: results });
   }
 };
-
 
 export const updateLatestOTT = async () => {
   const results = await getLatestOTTList();
@@ -115,29 +114,25 @@ export const searchTMDB = async (req, res) => {
 
 const OMDB_API_KEY = process.env.OMDB_KEY;
 
-
 const DEFAULT_WATCH_REGION = "IN";
 
 export const getDetails = async (req, res) => {
   try {
     const { media, id } = req.params;
 
-    const { data: tmdbData } = await axios.get(
-      `${BASE_URL}/${media}/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
-          accept: "application/json",
-        },
-        params: {
-          language: "en-US",
-          append_to_response:
-            media === "tv"
-              ? "aggregate_credits,external_ids"
-              : "credits,external_ids",
-        },
-      }
-    );
+    const { data: tmdbData } = await axios.get(`${BASE_URL}/${media}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+        accept: "application/json",
+      },
+      params: {
+        language: "en-US",
+        append_to_response:
+          media === "tv"
+            ? "aggregate_credits,external_ids"
+            : "credits,external_ids",
+      },
+    });
 
     // --- 2. Fetch OMDb Ratings ---
     let imdbRating = 0;
@@ -145,24 +140,23 @@ export const getDetails = async (req, res) => {
 
     if (tmdbData.external_ids?.imdb_id && OMDB_API_KEY) {
       try {
-        const { data: omdbData } = await axios.get(
-          `https://www.omdbapi.com/`,
-          {
-            params: {
-              i: tmdbData.external_ids.imdb_id,
-              apikey: OMDB_API_KEY,
-            },
-          }
-        );
-
-        imdbRating =
-          omdbData.imdbRating !== "N/A"
-            ? Number(omdbData.imdbRating)
-            : 0;
+        const { data: omdbData } = await axios.get(`https://www.omdbapi.com/`, {
+          timeout: 1500,
+          params: {
+            i: tmdbData.external_ids.imdb_id,
+            apikey: OMDB_API_KEY,
+          },
+        });
 
         imdbVotes =
-          omdbData.imdbVotes !== "N/A"
+          typeof omdbData.imdbVotes === "string"
             ? Number(omdbData.imdbVotes.replace(/,/g, ""))
+            : 0;
+
+        imdbRating =
+          typeof omdbData.imdbRating === "string" &&
+          omdbData.imdbRating !== "N/A"
+            ? Number(omdbData.imdbRating)
             : 0;
       } catch (err) {
         console.warn("OMDb fetch failed:", err.message);
@@ -172,30 +166,26 @@ export const getDetails = async (req, res) => {
     // --- 3. Fetch Watch Providers (NEW SECTION) ---
     let providers = null;
     try {
-        // Use the dedicated TMDB Watch Providers endpoint
-        const providersUrl = `${BASE_URL}/${media}/${id}/watch/providers`;
-        
-        const { data: providersData } = await axios.get(
-            providersUrl,
-            {
-                headers: {
-                    Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
-                    accept: "application/json",
-                },
-                params: {
-                    // Crucial parameter to filter by country
-                    watch_region: DEFAULT_WATCH_REGION, 
-                },
-            }
-        );
-        
-        // Extract the provider data specifically for the requested region
-        providers = providersData.results[DEFAULT_WATCH_REGION] || null;
+      // Use the dedicated TMDB Watch Providers endpoint
+      const providersUrl = `${BASE_URL}/${media}/${id}/watch/providers`;
 
+      const { data: providersData } = await axios.get(providersUrl, {
+        headers: {
+          Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+          accept: "application/json",
+        },
+        params: {
+          // Crucial parameter to filter by country
+          watch_region: DEFAULT_WATCH_REGION,
+        },
+      });
+
+      // Extract the provider data specifically for the requested region
+      providers = providersData.results[DEFAULT_WATCH_REGION] || null;
     } catch (err) {
-        console.warn("TMDB Watch Providers fetch failed:", err.message);
+      console.warn("TMDB Watch Providers fetch failed:", err.message);
     }
-    
+
     let seasons = [];
     let episodes = null;
 
@@ -212,10 +202,10 @@ export const getDetails = async (req, res) => {
                 accept: "application/json",
               },
               params: { language: "en-US" },
-            }
+            },
           );
           return data;
-        })
+        }),
       );
     }
 
@@ -224,14 +214,14 @@ export const getDetails = async (req, res) => {
 
       imdbRating,
       imdbVotes,
-      
-      watchProviders: providers, 
+
+      watchProviders: providers,
 
       ...(media === "tv" && {
         numberOfSeasons: tmdbData.number_of_seasons,
         numberOfEpisodes: tmdbData.number_of_episodes,
         seasons,
-        episodes, 
+        episodes,
         lastEpisodeToAir: tmdbData.last_episode_to_air,
         nextEpisodeToAir: tmdbData.next_episode_to_air,
       }),
@@ -241,7 +231,6 @@ export const getDetails = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch detail" });
   }
 };
-
 
 // export const getRecommendations = async (req, res) => {
 //   try {
@@ -310,7 +299,7 @@ export const getRecommendations = async (req, res) => {
           Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
         },
         params: { language: "en-US" },
-      }
+      },
     );
 
     const genreIds = mediaDetails.genres?.map((g) => g.id) || [];
@@ -332,7 +321,7 @@ export const getRecommendations = async (req, res) => {
           language: "en-US",
           page: 1,
         },
-      }
+      },
     );
 
     let recommended = discoveryData.results.map((item) => ({
@@ -343,7 +332,7 @@ export const getRecommendations = async (req, res) => {
     if (userId) {
       const userWatchList = await WatchList.find({ userId });
       const excludedIds = new Set(userWatchList.map((item) => item.tmdbId));
-      excludedIds.add(parseInt(id)); 
+      excludedIds.add(parseInt(id));
 
       recommended = recommended.filter((item) => !excludedIds.has(item.id));
     }
@@ -354,7 +343,6 @@ export const getRecommendations = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch custom recommendations" });
   }
 };
-
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
@@ -412,7 +400,7 @@ The response must be a valid JSON array only — no markdown, no comments, no ad
       } catch (err) {
         console.error(
           `Failed to fetch TMDB item ${media_type} ${id}:`,
-          err.message
+          err.message,
         );
         return null;
       }
@@ -434,7 +422,7 @@ The response must be a valid JSON array only — no markdown, no comments, no ad
 
     if (verifiedResults.length === 0) {
       console.warn(
-        "No upcoming content found - Gemini may have provided outdated data"
+        "No upcoming content found - Gemini may have provided outdated data",
       );
       return await getFallbackUpcomingList();
     }
@@ -471,10 +459,10 @@ async function getFallbackUpcomingList() {
     });
 
     const upcomingMovies = moviesRes.data.results.map((item) =>
-      processItem(item, "movie")
+      processItem(item, "movie"),
     );
     const upcomingTV = tvRes.data.results.map((item) =>
-      processItem(item, "tv")
+      processItem(item, "tv"),
     );
 
     return [...upcomingMovies, ...upcomingTV]
@@ -485,8 +473,6 @@ async function getFallbackUpcomingList() {
     return null;
   }
 }
-
-
 
 export const getLatestOTTList = async () => {
   const todayStr = new Date().toISOString().split("T")[0];
@@ -541,7 +527,7 @@ The response must be a valid JSON array only — no markdown, no comments, no ex
       } catch (err) {
         console.error(
           `Failed to fetch TMDB item ${media_type} ${id}:`,
-          err.message
+          err.message,
         );
         return null;
       }
@@ -564,7 +550,7 @@ The response must be a valid JSON array only — no markdown, no comments, no ex
 
     if (verifiedResults.length === 0) {
       console.warn(
-        "No latest OTT content found - Gemini may have provided outdated data"
+        "No latest OTT content found - Gemini may have provided outdated data",
       );
       return await getFallbackLatestOTTList();
     }
@@ -601,11 +587,9 @@ async function getFallbackLatestOTTList() {
     });
 
     const latestMovies = moviesRes.data.results.map((item) =>
-      processItem(item, "movie")
+      processItem(item, "movie"),
     );
-    const latestTV = tvRes.data.results.map((item) =>
-      processItem(item, "tv")
-    );
+    const latestTV = tvRes.data.results.map((item) => processItem(item, "tv"));
 
     return [...latestMovies, ...latestTV]
       .sort((a, b) => new Date(b.release_date) - new Date(a.release_date))
