@@ -12,6 +12,7 @@ const userStore = create((set, get) => {
     upcoming: [],
     ott: [],
     recommended: [],
+    nowPlaying: [],
     searchResult: [],
     stats: null,
 
@@ -80,6 +81,15 @@ const userStore = create((set, get) => {
         set({ ott: res.data });
       } catch (err) {
         console.error("Failed to fetch upcoming:", err.message);
+      }
+    },
+
+    fetchNowPlaying: async () => {
+      try {
+        const res = await API.get("/tmdb/now-playing");
+        set({ nowPlaying: res.data });
+      } catch (err) {
+        console.error("Failed to fetch now playing:", err.message);
       }
     },
 

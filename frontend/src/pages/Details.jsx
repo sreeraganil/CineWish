@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import API from "../config/axios";
 import wishlistStore from "../store/wishlistStore";
@@ -20,6 +20,8 @@ const Details = () => {
   const { user } = userStore();
 
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const { hash } = useLocation();
+  const ep_id = hash?.slice(1);
 
   useEffect(() => {
     if (user) checkStatus();
@@ -69,6 +71,12 @@ const Details = () => {
       setClicked(false);
     }
   };
+
+  useEffect(() => {
+    const el = document.getElementById(ep_id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [item]);
+
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -199,7 +207,7 @@ const Details = () => {
         {/* Rating badge - Improved conditional logic */}
         {primaryRating > 0 && (
           <div
-            className={`absolute right-6 top-2 sm:top-6 px-3 py-1 rounded-lg font-semibold text-xs sm:text-lg st ${
+            className={`absolute right-6 top-2 px-3 py-1 rounded-lg font-semibold text-xs sm:text-lg st ${
               isImdb ? "bg-[#f5c518] text-black" : "bg-[#032541] text-white"
             }`}
           >
@@ -431,92 +439,50 @@ const Details = () => {
         </div>
 
         {hasProviders && (
-          <div className="pt-6 space-y-6 border-t border-gray-700/50 st">
-            <h3 className="text-xl font-bold text-teal-400">
-              <i className="fas fa-tv mr-2"></i> Watch Options
-            </h3>
+  <div className="pt-6 space-y-6 border-t border-gray-700/50">
+    <h3 className="text-lg md:text-xl font-bold text-teal-400 flex items-center">
+      <i className="fas fa-tv mr-2"></i> Watch Options
+    </h3>
 
-            <div className="space-y-6">
-              {/* 1. Flatrate (Streaming) Providers */}
-              {flatrateProviders.length > 0 && (
-                <div className="bg-gray-800/50 p-4 rounded-lg">
-                  <p className="text-base font-semibold text-gray-200 mb-3 border-b border-gray-600 pb-2">
-                    Stream Subscription
-                  </p>
-                  <div className="flex flex-wrap gap-4">
-                    {flatrateProviders.map((provider) => (
-                      <div
-                        key={provider.provider_id}
-                        className="relative group flex flex-col items-center w-24"
-                      >
-                        <img
-                          src={`${IMAGE_BASE_URL}${provider.logo_path}`}
-                          alt={provider.provider_name}
-                          className="w-14 h-14 object-cover rounded-md shadow-lg transition-transform duration-200 hover:scale-105"
-                        />
-                        <p className="mt-1 text-xs text-gray-400 group-hover:text-white transition-colors w-full text-center overflow-hidden whitespace-nowrap text-ellipsis">
-                          {provider.provider_name}
-                        </p>
-                      </div>
-                    ))}
+    <div className="space-y-4">
+      {[
+        { title: "Stream Subscription", data: flatrateProviders },
+        { title: "Rent", data: rentProviders },
+        { title: "Buy", data: buyProviders },
+      ].map(
+        (category) =>
+          category.data.length > 0 && (
+            <div key={category.title} className="bg-gray-800/40 p-4 rounded-xl border border-gray-700/30">
+              <p className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wider">
+                {category.title}
+              </p>
+              
+              {/* Responsive Grid System */}
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-y-6 gap-x-2">
+                {category.data.map((provider) => (
+                  <div
+                    key={provider.provider_id}
+                    className="group flex flex-col items-center justify-start text-center"
+                  >
+                    <div className="relative">
+                      <img
+                        src={`${IMAGE_BASE_URL}${provider.logo_path}`}
+                        alt={provider.provider_name}
+                        className="w-14 h-14 md:w-16 md:h-16 object-cover rounded-xl shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:ring-2 group-hover:ring-teal-500"
+                      />
+                    </div>
+                    <p className="mt-2 text-[10px] md:text-xs text-gray-400 group-hover:text-white transition-colors w-full px-1 overflow-hidden whitespace-nowrap text-ellipsis">
+                      {provider.provider_name}
+                    </p>
                   </div>
-                </div>
-              )}
-
-              {/* 2. Rent Providers */}
-              {rentProviders.length > 0 && (
-                <div className="bg-gray-800/50 p-4 rounded-lg">
-                  <p className="text-base font-semibold text-gray-200 mb-3 border-b border-gray-600 pb-2">
-                    Rent
-                  </p>
-                  <div className="flex flex-wrap gap-4">
-                    {rentProviders.map((provider) => (
-                      <div
-                        key={provider.provider_id}
-                        className="relative group flex flex-col items-center w-24" // FIXED WIDTH
-                      >
-                        <img
-                          src={`${IMAGE_BASE_URL}${provider.logo_path}`}
-                          alt={provider.provider_name}
-                          className="w-14 h-14 object-cover rounded-md shadow-lg transition-transform duration-200 hover:scale-105"
-                        />
-                        <p className="mt-1 text-xs text-gray-400 group-hover:text-white transition-colors w-full text-center overflow-hidden whitespace-nowrap text-ellipsis">
-                          {provider.provider_name}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* 3. Buy Providers */}
-              {buyProviders.length > 0 && (
-                <div className="bg-gray-800/50 p-4 rounded-lg">
-                  <p className="text-base font-semibold text-gray-200 mb-3 border-b border-gray-600 pb-2">
-                    Buy
-                  </p>
-                  <div className="flex flex-wrap gap-4">
-                    {buyProviders.map((provider) => (
-                      <div
-                        key={provider.provider_id}
-                        className="relative group flex flex-col items-center w-24"
-                      >
-                        <img
-                          src={`${IMAGE_BASE_URL}${provider.logo_path}`}
-                          alt={provider.provider_name}
-                          className="w-14 h-14 object-cover rounded-md shadow-lg transition-transform duration-200 hover:scale-105"
-                        />
-                        <p className="mt-1 text-xs text-gray-400 group-hover:text-white transition-colors w-full text-center overflow-hidden whitespace-nowrap text-ellipsis">
-                          {provider.provider_name}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )
+      )}
+    </div>
+  </div>
+)}
 
         {/* New TV Next/Last Episode Info */}
         {media === "tv" && (item.lastEpisodeToAir || item.nextEpisodeToAir) && (
@@ -641,63 +607,68 @@ const Details = () => {
 
                     {/* EPISODES DROPDOWN */}
                     {isOpen && season.episodes?.length > 0 && (
-                      <div className="w-[90%] ml-auto border-t border-gray-700 divide-y divide-gray-700">
-                        {season.episodes.map((ep, i) => (
-                          <div
-                            key={ep.id}
-                            className="hover:bg-gray-700/40 items-center flex justify-between scroll-mt-32"
-                            id={`s01e0${i + 1}`}
-                          >
-                            <div className="p-4 flex gap-4">
-                              <img
-                                src={
-                                  ep.still_path
-                                    ? `https://image.tmdb.org/t/p/w185${ep.still_path}`
-                                    : "/placeholder.png"
-                                }
-                                alt={ep.name}
-                                className="w-32 h-20 object-cover rounded"
-                              />
+  <div className="w-full md:w-[95%] lg:w-[90%] ml-auto border-t border-gray-700 divide-y divide-gray-700">
+    {season.episodes.map((ep, i) => (
+      <div
+        key={ep.id}
+        className="hover:bg-gray-700/40 flex flex-col md:flex-row md:items-center justify-between p-4 gap-4 scroll-mt-32"
+        id={`s01e0${i + 1}`}
+      >
+        <div className="flex flex-col sm:flex-row gap-4 flex-1">
+          {/* Thumbnail - Larger on mobile, fixed on desktop */}
+          <img
+            src={
+              ep.still_path
+                ? `https://image.tmdb.org/t/p/w300${ep.still_path}` // Increased quality slightly for mobile full-width
+                : "/placeholder.png"
+            }
+            alt={ep.name}
+            className="w-full sm:w-32 md:w-40 aspect-video object-cover rounded shadow-md"
+          />
 
-                              <div className="flex-1">
-                                <p className="text-sm font-medium">
-                                  E{ep.episode_number} • {ep.name}
-                                </p>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between mb-1">
+              <p className="text-sm md:text-base font-semibold truncate">
+                E{ep.episode_number} • {ep.name}
+              </p>
+            </div>
 
-                                <p className="text-xs text-gray-400">
-                                  {ep.air_date ?? "TBA"}
-                                  {ep.runtime ? ` • ${ep.runtime} min` : ""}
-                                </p>
+            <p className="text-xs text-gray-400 mb-2">
+              {ep.air_date ?? "TBA"}
+              {ep.runtime ? ` • ${ep.runtime} min` : ""}
+            </p>
 
-                                {ep.overview && (
-                                  <p className="text-xs mt-1 line-clamp-2 text-gray-300">
-                                    {ep.overview}
-                                  </p>
-                                )}
-                              </div>
-                            </div>
+            {ep.overview && (
+              <p className="text-xs line-clamp-2 md:line-clamp-3 text-gray-300 leading-relaxed">
+                {ep.overview}
+              </p>
+            )}
+          </div>
+        </div>
 
-                            <Link
-                              className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-xs mx-4 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded whitespace-nowrap font-medium"
-                              state={{
-                                title: item.title || item.name,
-                                poster: item.poster_path
-                                  ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
-                                  : "/placeholder.png",
-                                backdrop: ep.still_path
-                                  ? `https://image.tmdb.org/t/p/w185${ep.still_path}`
-                                  : "/placeholder.png",
-                                mediaType: media,
-                                mediaId: id,
-                              }}
-                              to={`/watch/${media}/${id}/${openSeason}/${ep.episode_number}`}
-                            >
-                              Watch S{openSeason}E{ep.episode_number}
-                            </Link>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+        {/* Action Button - Full width on mobile */}
+        <Link
+          className="flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 text-xs md:text-sm text-white px-4 py-2 md:py-1.5 rounded transition-colors whitespace-nowrap font-medium w-full md:w-auto"
+          state={{
+            title: item.title || item.name,
+            poster: item.poster_path
+              ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+              : "/placeholder.png",
+            backdrop: ep.still_path
+              ? `https://image.tmdb.org/t/p/w185${ep.still_path}`
+              : "/placeholder.png",
+            mediaType: media,
+            mediaId: id,
+          }}
+          to={`/watch/${media}/${id}/${openSeason}/${ep.episode_number}`}
+        >
+          <span>Watch S{openSeason}E{ep.episode_number}</span>
+          {/* Adding a play icon would be a nice touch here */}
+        </Link>
+      </div>
+    ))}
+  </div>
+)}
                   </div>
                 );
               })}

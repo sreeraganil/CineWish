@@ -1,6 +1,7 @@
 import cron from "node-cron";
 import {
   updateLatestOTT,
+  updateNowPlaying,
   updateTrending,
   updateUpcoming,
 } from "../controllers/tmdbController.js";
@@ -28,5 +29,13 @@ cron.schedule("1 0 * * *", async () => {
   } catch (err) {
     console.error("❌ Failed to update latest OTT:", err.code || err.message);
   }
+
+  try {
+    await updateNowPlaying();
+    console.log("✅ Now Playing content updated.");
+  } catch (err) {
+    console.error("❌ Failed to update Now Playing:", err.code || err.message);
+  }
 });
-updateLatestOTT()
+
+updateNowPlaying();

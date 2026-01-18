@@ -2,6 +2,7 @@ import axios from "axios";
 import Trending from "../models/trendingModel.js";
 import Upcoming from "../models/upcomingModel.js";
 import WatchList from "../models/watchListModel.js";
+import NowPlaying from "../models/nowPlayingModel.js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import latestOTT from "../models/latestOTTModel.js";
 
@@ -50,9 +51,24 @@ export const updateTrending = async () => {
   await Trending.create({ data: results });
 };
 
+export const updateNowPlaying = async () => {
+  const results = await fetchFromTMDB("/movie/now_playing");
+  await NowPlaying.deleteMany({});
+  await NowPlaying.create({ data: results });
+};
+
 export const getTrending = async (req, res) => {
   try {
     const cached = await Trending.findOne();
+    res.json(cached?.data || []);
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
+
+export const getNowPlaying = async (req, res) => {
+  try {
+    const cached = await NowPlaying.findOne();
     res.json(cached?.data || []);
   } catch (err) {
     res.status(500).json({ success: false, message: "Server Error" });

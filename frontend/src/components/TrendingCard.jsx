@@ -4,7 +4,7 @@ const TrendingCard = ({ id, title, name, year, vote_average, poster_path, media_
   
   const navigate = useNavigate();
 
-  const handleClick = (media, id) => {
+  const handleClick = (media = 'movie', id) => {
     navigate(`/details/${media}/${id}`)
   }
 
