@@ -25,6 +25,7 @@ const allowedOrigins = [
   "http://localhost:5173",
   "https://cinewish.deno.dev",
   "http://localhost:5000",
+  "https://cinewish-web.onrender.com"
 ];
 
 
