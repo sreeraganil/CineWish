@@ -615,3 +615,45 @@ async function getFallbackLatestOTTList() {
     return null;
   }
 }
+
+export const discoverTMDB = async (req, res) => {
+  try {
+    const { media = "movie", page = 1, ...filters } = req.query;
+
+    if (!["movie", "tv"].includes(media)) {
+      return res.status(400).json({
+        message: "media must be movie or tv",
+      });
+    }
+
+    const { data } = await axios.get(`${BASE_URL}/discover/${media}`, {
+      headers: {
+        Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+        accept: "application/json",
+      },
+      params: {
+        language: "en-US",
+        page,
+        include_adult: false,
+        ...filters,
+      },
+      timeout: 4000,
+    });
+
+    res.json({
+      page: data.page,
+      total_pages: data.total_pages,
+      total_results: data.total_results,
+      results: data.results.map((item) => ({
+        ...item,
+        media_type: media,
+      })),
+    });
+  } catch (err) {
+    console.error("discoverTMDB error:", err.message);
+
+    res.status(500).json({
+      message: "Failed to fetch discover results",
+    });
+  }
+};
