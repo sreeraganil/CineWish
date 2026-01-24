@@ -23,8 +23,7 @@ const watchStore = create((set, get) => ({
     }
   },
 
-  removeFromContinueWatching: async (item) => {
-    // ✅ optimistic update
+  removeFromHistory: async (item) => {
     set((state) => ({
       continueWatching: state.continueWatching.filter(
         (i) =>
@@ -33,7 +32,17 @@ const watchStore = create((set, get) => ({
             i.mediaId === item.mediaId &&
             i.season === item.season &&
             i.episode === item.episode
-          )
+          ),
+      ),
+
+      history: state.history.filter(
+        (i) =>
+          !(
+            i.mediaType === item.mediaType &&
+            i.mediaId === item.mediaId &&
+            i.season === item.season &&
+            i.episode === item.episode
+          ),
       ),
     }));
 
@@ -47,9 +56,9 @@ const watchStore = create((set, get) => ({
     } catch (err) {
       console.error("Failed to remove item", err);
 
-      // optional rollback
       set((state) => ({
         continueWatching: [...state.continueWatching, item],
+        history: [...state.history, item],
       }));
     }
   },

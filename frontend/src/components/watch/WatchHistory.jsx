@@ -1,15 +1,16 @@
 import { Link } from "react-router-dom";
 
-const WatchHistory = ({ items }) => {
+const WatchHistory = ({ items, onRemove }) => {
   if (!items?.length) return null;
 
   return (
     <section className="mb-10">
-      <h2 className="text-xl font-semibold mb-4 text-white">
+      <h2 className="text-2xl font-bold mb-4 text-teal-400">
         Watch History
       </h2>
 
-      <div className="space-y-4">
+      {/* Card Row */}
+      <div className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth px-2 md:px-5">
         {items.map((item) => {
           const watchUrl =
             item.mediaType === "tv"
@@ -18,6 +19,7 @@ const WatchHistory = ({ items }) => {
 
           return (
             <Link
+              key={`${item.mediaType}-${item.mediaId}-${item.season}-${item.episode}`}
               to={watchUrl}
               state={{
                 title: item.title,
@@ -25,23 +27,15 @@ const WatchHistory = ({ items }) => {
                 poster: item.poster,
                 backdrop: item.backdrop,
               }}
-              key={`${item.mediaType}-${item.mediaId}-${item.season}-${item.episode}`}
-              className="
-                flex items-center gap-4
-                bg-slate-900
-                rounded-lg
-                px-4 py-3
-                hover:bg-slate-800
-                transition
-              "
+              className="relative group flex-none w-[160px] bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-teal-400 transition"
             >
               {/* Poster */}
-              <div className="w-14 h-20 shrink-0 rounded overflow-hidden bg-slate-800">
+              <div className="relative h-[240px] bg-slate-800 overflow-hidden">
                 {item.poster ? (
                   <img
                     src={item.poster}
-                    alt={item.title ?? `Media ${item.mediaId}`}
-                    className="w-full h-full object-cover"
+                    alt={item.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-slate-500 text-xs">
@@ -50,23 +44,42 @@ const WatchHistory = ({ items }) => {
                 )}
               </div>
 
-              {/* Info */}
-              <div className="flex-1 min-w-0">
-                <div className="text-white font-medium truncate">
-                  {item.title ?? `Media ${item.mediaId}`}
-                </div>
+              <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      onRemove?.(item);
+                    }}
+                    className="
+                      absolute top-2 right-2 z-20
+                      w-6 h-6
+                      rounded-full
+                      bg-black/70 text-white
+                      text-sm
+                      hover:bg-teal-600
+                      transition
+                    "
+                  >
+                    ✕
+                  </button>
 
-                <div className="text-sm text-slate-400 mt-1">
+              {/* Meta */}
+              <div className="p-3">
+                <h3 className="text-sm font-semibold text-white truncate">
+                  {item.title ?? "Unknown"}
+                </h3>
+
+                <p className="text-xs text-gray-400 mt-1">
                   {item.mediaType === "tv"
-                    ? `Season ${item.season} • Episode ${item.episode}`
+                    ? `S${item.season} • E${item.episode}`
                     : "Movie"}
-                </div>
+                </p>
+
+                <p className="text-[11px] text-teal-400 mt-1">
+                  {new Date(item.lastWatchedAt).toLocaleDateString()}
+                </p>
               </div>
 
-              {/* Date */}
-              <div className="text-sm text-slate-400 whitespace-nowrap">
-                {new Date(item.lastWatchedAt).toLocaleDateString()}
-              </div>
             </Link>
           );
         })}

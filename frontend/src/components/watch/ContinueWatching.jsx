@@ -115,15 +115,7 @@ const ContinueWatching = ({ items, onRemove }) => {
                       e.stopPropagation();
                       onRemove?.(item);
                     }}
-                    className="
-                      absolute top-2 right-2
-                      w-6 h-6
-                      rounded-full
-                      bg-black/70 text-white
-                      text-sm
-                      hover:bg-teal-600
-                      transition
-                    "
+                    className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/70 text-white text-sm hover:bg-teal-600 transition"
                   >
                     ✕
                   </button>
