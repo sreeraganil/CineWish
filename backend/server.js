@@ -10,8 +10,13 @@ import userRoutes from './routes/userRoutes.js'
 import watchRoutes from './routes/watchRoutes.js'
 import './utilities/fetchFrequently.js';
 import './utilities/sleepPreventer.js'
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const PORT = process.env.PORT || 4000
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 connectDB();
@@ -20,6 +25,9 @@ const allowedOrigins = [
   "http://localhost:5173",
   "https://cinewish.deno.dev",
 ];
+
+
+app.use(express.static(path.join(__dirname, 'dist')));
 
 app.use(
   cors({
@@ -46,9 +54,15 @@ app.use("/api/user", userRoutes);
 app.use("/api/watch", watchRoutes);
 
 
-app.get("/", (req, res) => {
+app.get("/ping", (req, res) => {
     res.json({ message: "Server Ping"})
 })
+
+app.get('/{*any}', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
+
 
 
 app.listen(PORT, ()=>{

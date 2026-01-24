@@ -1,0 +1,92 @@
+[
+    {
+        "id": 28,
+        "name": "Action",
+        "image": "/genres/action.webp"
+    },
+    {
+        "id": 12,
+        "name": "Adventure",
+        "image": "/genres/adventure.webp"
+    },
+    {
+        "id": 16,
+        "name": "Animation",
+        "image": "/genres/animation.webp"
+    },
+    {
+        "id": 35,
+        "name": "Comedy",
+        "image": "/genres/comedy.webp"
+    },
+    {
+        "id": 80,
+        "name": "Crime",
+        "image": "/genres/crime.webp"
+    },
+    {
+        "id": 99,
+        "name": "Documentary",
+        "image": "/genres/documentary.webp"
+    },
+    {
+        "id": 18,
+        "name": "Drama",
+        "image": "/genres/drama.webp"
+    },
+    {
+        "id": 10751,
+        "name": "Family",
+        "image": "/genres/family.webp"
+    },
+    {
+        "id": 14,
+        "name": "Fantasy",
+        "image": "/genres/fantasy.webp"
+    },
+    {
+        "id": 36,
+        "name": "History",
+        "image": "/genres/history.webp"
+    },
+    {
+        "id": 27,
+        "name": "Horror",
+        "image": "/genres/horror.webp"
+    },
+    {
+        "id": 10402,
+        "name": "Music",
+        "image": "/genres/music.webp"
+    },
+    {
+        "id": 9648,
+        "name": "Mystery",
+        "image": "/genres/mystery.webp"
+    },
+    {
+        "id": 10749,
+        "name": "Romance",
+        "image": "/genres/romance.webp"
+    },
+    {
+        "id": 878,
+        "name": "Science Fiction",
+        "image": "/genres/scifi.webp"
+    },
+    {
+        "id": 53,
+        "name": "Thriller",
+        "image": "/genres/thriller.webp"
+    },
+    {
+        "id": 10752,
+        "name": "War",
+        "image": "/genres/war.webp"
+    },
+    {
+        "id": 37,
+        "name": "Western",
+        "image": "/genres/western.webp"
+    }
+]

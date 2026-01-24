@@ -3,7 +3,7 @@ import axios from "axios";
 
 cron.schedule('*/10 * * * *', async () => {
   try {
-    const response = await axios.get(`https://cinewish-web.onrender.com`);
+    const response = await axios.get(`https://cinewish-web.onrender.com/ping`);
     console.log(`Server: ${response.data.message}`);
   } catch (error) {
     console.error('Error calling /ping:', error.message);

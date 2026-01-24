@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import BackHeader from "../components/Backheader";
 import API from "../config/axios";
 
 const Watch = () => {
   const { media, id, s = "1", e = "1" } = useParams();
   const { state } = useLocation();
+  const navigate = useNavigate();
   
   const [isLoading, setIsLoading] = useState(true);
   const lastSentRef = useRef(0);
@@ -27,6 +28,7 @@ const Watch = () => {
 
   // 2. Progress Syncing (Background Only)
   const syncProgress = useCallback(async (currentTime, duration) => {
+    if(currentTime < 5) return;
     const now = Date.now();
     // Throttling: only send every 15 seconds to minimize network traffic
     if (now - lastSentRef.current < 15000) return;
@@ -51,6 +53,9 @@ const Watch = () => {
 
   // 3. Message passing for progress tracking
   useEffect(() => {
+    if(!state?.title){
+      navigate(`/details/${media}/${id}`);
+    }
     const handleMessage = (event) => {
       // Validate origin for security
       if (!event.origin.includes("vidking.net")) return;

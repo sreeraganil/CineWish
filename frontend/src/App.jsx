@@ -13,6 +13,7 @@ import Profile from "./pages/Profile";
 import { Toaster } from "react-hot-toast"
 import Watch from "./pages/Watch";
 import WatchOverviewPage from "./pages/WatchOverviewPage";
+import GenrePage from "./pages/GenrePage";
 
 const App = () => {
   return (
@@ -90,6 +91,12 @@ const App = () => {
             <ProtectedRoute>
               <WatchOverviewPage />
             </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/genre/:id"
+          element={
+            <GenrePage />
           }
         />
         <Route path="*" element={<NotFound />} />
