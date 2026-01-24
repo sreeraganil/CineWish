@@ -43,7 +43,7 @@ export const getWishlist = async (req, res) => {
     if (y) query.year = parseInt(y);
     if (r) query.rating = { $gte: parseFloat(r) };
 
-    const wishlist = await WatchList.find(query).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit);
+    const wishlist = await WatchList.find(query).sort({ updatedAt: -1 }).skip((page - 1) * limit).limit(limit);
     const total = await WatchList.countDocuments({ userId, status });
     const filterTotal = await WatchList.countDocuments(query);
 
