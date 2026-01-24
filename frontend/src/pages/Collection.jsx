@@ -14,6 +14,8 @@ const Collection = () => {
   useEffect(() => {
     if (!id) return;
 
+    window.scrollTo({ top: 0, behavior: "instant" });
+
     const fetchCollection = async () => {
       try {
         setError("");

@@ -62,17 +62,17 @@ const SimilarContent = ({ media, id }) => {
             {`Similar ${media === "tv" ? "TV Shows" : "Movies"}`}
           </h2>
 
-          <div className="relative">
+          <div className="relative group/button">
             <button
               onClick={() => scroll(-1)}
-              className="hidden absolute sm:flex justify-center items-center left-0 top-1/2 transform -translate-y-1/2 z-10 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full"
+              className="hidden absolute sm:flex justify-center items-center left-0 top-1/2 transform -translate-y-1/2 z-10 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full opacity-0 group-hover/button:opacity-100"
             >
               <span className="material-symbols-outlined">chevron_left</span>
             </button>
 
             <button
               onClick={() => scroll(1)}
-              className="hidden absolute sm:flex justify-center items-center right-0 top-1/2 transform -translate-y-1/2 z-10 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full"
+              className="hidden absolute sm:flex justify-center items-center right-0 top-1/2 transform -translate-y-1/2 z-10 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full opacity-0 group-hover/button:opacity-100"
             >
               <span className="material-symbols-outlined">chevron_right</span>
             </button>

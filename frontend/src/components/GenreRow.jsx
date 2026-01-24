@@ -30,11 +30,11 @@ const GenreRow = () => {
           Browse by Genre
         </h2>
 
-        <div className="relative">
+        <div className="relative group/button">
           {/* Left */}
           <button
             onClick={() => scroll(-1)}
-            className="hidden absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full sm:flex items-center justify-center"
+            className="hidden absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full sm:flex items-center justify-center opacity-0 group-hover/button:opacity-100"
           >
             <span className="material-symbols-outlined">chevron_left</span>
           </button>
@@ -42,7 +42,7 @@ const GenreRow = () => {
           {/* Right */}
           <button
             onClick={() => scroll(1)}
-            className="hidden absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full sm:flex items-center justify-center"
+            className="hidden absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full sm:flex items-center justify-center opacity-0 group-hover/button:opacity-100"
           >
             <span className="material-symbols-outlined">chevron_right</span>
           </button>
@@ -59,14 +59,7 @@ const GenreRow = () => {
                 <Link
                   key={genre.id}
                   to={`/genre/${genre.id}`}
-                  className="
-    group flex-none
-    w-[220px] sm:w-[240px] lg:w-[260px]
-    aspect-video
-    rounded-xl overflow-hidden relative
-    hover:ring-2 hover:ring-teal-400/60
-    transition
-  "
+                  className=" group flex-none w-[220px] sm:w-[240px] lg:w-[260px] aspect-video rounded-xl overflow-hidden relative hover:ring-2 hover:ring-teal-400/60 transition"
                 >
                   {genre.image ? (
                     <img

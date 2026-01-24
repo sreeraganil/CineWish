@@ -2,6 +2,8 @@ import { Suspense, lazy } from "react";
 import Header from "../components/Header";
 import HeroSection from "../components/HeroSection";
 import GenreRow from "../components/GenreRow";
+import StudiosGrid from "../components/StudiosGrid";
+import NetWorkGrid from "../components/NetWorkGrid";
 
 // Lazy load sections that aren't immediately visible (below the fold)
 const StatsSection = lazy(() => import("../components/StatsSection"));
@@ -37,6 +39,8 @@ const Home = () => {
           <NowPlaying />
         </Suspense>
         <GenreRow />
+        <StudiosGrid />
+        <NetWorkGrid />
       </div>
     </div>
   );

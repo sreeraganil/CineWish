@@ -449,41 +449,54 @@ const Details = () => {
               <i className="fas fa-tv mr-2"></i> Watch Options
             </h3>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {[
-                { title: "Stream Subscription", data: flatrateProviders },
-                { title: "Rent", data: rentProviders },
-                { title: "Buy", data: buyProviders },
+                { title: "STREAM", data: flatrateProviders },
+                { title: "RENT", data: rentProviders },
+                { title: "BUY", data: buyProviders },
               ].map(
                 (category) =>
                   category.data.length > 0 && (
                     <div
                       key={category.title}
-                      className="bg-gray-800/40 p-4 rounded-xl border border-gray-700/30"
+                      className="bg-gradient-to-br from-gray-800/60 to-gray-900/40 rounded-xl border border-gray-700/30 backdrop-blur-sm hover:border-gray-600/50 transition-all duration-300 overflow-hidden"
                     >
-                      <p className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wider">
-                        {category.title}
-                      </p>
-
-                      {/* Responsive Grid System */}
-                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-y-6 gap-x-2">
-                        {category.data.map((provider) => (
-                          <div
-                            key={provider.provider_id}
-                            className="group flex flex-col items-center justify-start text-center"
+                      {/* Category Label with Vertical Text */}
+                      <div className="flex items-stretch">
+                        <div className="flex-shrink-0 bg-teal-600 flex items-center justify-center w-5 md:w-6">
+                          <span 
+                            className="text-white font-black text-[10px] md:text-[12px] tracking-widest whitespace-nowrap"
+                            style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
                           >
-                            <div className="relative">
-                              <img
-                                src={`${IMAGE_BASE_URL}${provider.logo_path}`}
-                                alt={provider.provider_name}
-                                className="w-14 h-14 md:w-16 md:h-16 object-cover rounded-xl shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:ring-2 group-hover:ring-teal-500"
-                              />
-                            </div>
-                            <p className="mt-2 text-[10px] md:text-xs text-gray-400 group-hover:text-white transition-colors w-full px-1 overflow-hidden whitespace-nowrap text-ellipsis">
-                              {provider.provider_name}
-                            </p>
+                            {category.title}
+                          </span>
+                        </div>
+
+                        {/* Responsive Grid System */}
+                        <div className="flex-1 p-3 md:p-4">
+                          <div className="grid grid-cols-4 xs:grid-cols-5 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12 gap-3 md:gap-4">
+                            {category.data.map((provider) => (
+                              <div
+                                key={provider.provider_id}
+                                className="group flex flex-col items-center justify-start text-center cursor-pointer"
+                              >
+                                <div className="relative w-full aspect-square max-w-[50px] md:max-w-[60px] mx-auto">
+                                  <img
+                                    src={`${IMAGE_BASE_URL}${provider.logo_path}`}
+                                    alt={provider.provider_name}
+                                    className="w-full h-full object-cover rounded-lg shadow-md transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-teal-500/20 ring-0 group-hover:ring-2 group-hover:ring-teal-400/50"
+                                    loading="lazy"
+                                  />
+                                  {/* Hover Overlay */}
+                                  <div className="absolute inset-0 bg-teal-500/0 group-hover:bg-teal-500/10 rounded-lg transition-all duration-300"></div>
+                                </div>
+                                <p className="mt-1.5 text-[10px] md:text-xs text-gray-300 group-hover:text-teal-300 transition-colors duration-200 w-full line-clamp-2 leading-tight font-medium">
+                                  {provider.provider_name}
+                                </p>
+                              </div>
+                            ))}
                           </div>
-                        ))}
+                        </div>
                       </div>
                     </div>
                   ),
@@ -530,7 +543,7 @@ const Details = () => {
                 src={
                   item.belongs_to_collection.poster_path
                     ? `https://image.tmdb.org/t/p/w200${item.belongs_to_collection.poster_path}`
-                    : "/poster-placeholder.png"
+                    : "/placeholder.png"
                 }
                 className="w-20 rounded object-cover"
                 alt={`${item.belongs_to_collection.name} poster`}

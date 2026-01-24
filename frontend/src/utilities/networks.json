@@ -1,0 +1,74 @@
+[
+  {
+    "id": 213,
+    "name": "Netflix",
+    "slug": "netflix",
+    "logo_path": "/wwemzKWzjKYJFfCeiB57q3r4Bcm.png",
+    "image": "https://image.tmdb.org/t/p/original/wwemzKWzjKYJFfCeiB57q3r4Bcm.png",
+    "homepage": "https://www.netflix.com",
+    "headquarters": "Los Gatos, California, USA",
+    "origin_country": null,
+    "type": "network",
+    "gradient": "from-red-600 to-black"
+  },
+  {
+    "id": 453,
+    "name": "Hulu",
+    "slug": "hulu",
+    "logo_path": "/pqUTCleNUiTLAVlelGxUgWn1ELh.png",
+    "image": "https://image.tmdb.org/t/p/original/pqUTCleNUiTLAVlelGxUgWn1ELh.png",
+    "homepage": "https://www.hulu.com",
+    "headquarters": "Santa Monica, California",
+    "origin_country": "US",
+    "type": "network",
+    "gradient": "from-emerald-400 to-teal-700"
+  },
+  {
+    "id": 2739,
+    "name": "Disney+",
+    "slug": "disney+",
+    "logo_path": "/1edZOYAfoyZyZ3rklNSiUpXX30Q.png",
+    "image": "https://image.tmdb.org/t/p/original/1edZOYAfoyZyZ3rklNSiUpXX30Q.png",
+    "homepage": "https://www.disneyplus.com",
+    "headquarters": "Burbank, California, USA",
+    "origin_country": null,
+    "type": "network",
+    "gradient": "from-blue-500 to-indigo-300"
+  },
+  {
+    "id": 2552,
+    "name": "Apple TV",
+    "slug": "apple-tv",
+    "logo_path": "/bngHRFi794mnMq34gfVcm9nDxN1.png",
+    "image": "https://image.tmdb.org/t/p/original/bngHRFi794mnMq34gfVcm9nDxN1.png",
+    "homepage": "https://www.apple.com/apple-tv",
+    "headquarters": "Cupertino, California, USA",
+    "origin_country": null,
+    "type": "network",
+    "gradient": "from-slate-200 to-slate-900"
+  },
+  {
+    "id": 3353,
+    "name": "Peacock",
+    "slug": "peacock",
+    "logo_path": "/gIAcGTjKKr0KOHL5s4O36roJ8p7.png",
+    "image": "https://image.tmdb.org/t/p/original/gIAcGTjKKr0KOHL5s4O36roJ8p7.png",
+    "homepage": "http://www.peacocktv.com",
+    "headquarters": "New York City, New York",
+    "origin_country": "US",
+    "type": "network",
+    "gradient": "from-purple-600 to-fuchsia-700"
+  },
+  {
+    "id": 67,
+    "name": "Showtime",
+    "slug": "showtime",
+    "logo_path": "/Allse9kbjiP6ExaQrnSpIhkurEi.png",
+    "image": "https://image.tmdb.org/t/p/original/Allse9kbjiP6ExaQrnSpIhkurEi.png",
+    "homepage": "http://www.sho.com",
+    "headquarters": "New York City, New York",
+    "origin_country": "US",
+    "type": "network",
+    "gradient": "from-red-700 to-red-950"
+  }
+]
