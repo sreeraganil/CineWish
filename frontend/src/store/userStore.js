@@ -14,6 +14,7 @@ const userStore = create((set, get) => {
     recommended: [],
     nowPlaying: [],
     searchResult: [],
+    similar: [],
     stats: null,
 
     // Auth Actions
@@ -90,6 +91,15 @@ const userStore = create((set, get) => {
         set({ nowPlaying: res.data });
       } catch (err) {
         console.error("Failed to fetch now playing:", err.message);
+      }
+    },
+
+    fetchSimilar: async (media, id, related) => {
+      try {
+        const res = await API.get(`/tmdb/${media}/${id}/${related}`);
+        set({ similar: res.data.results });
+      } catch (err) {
+        console.error("Failed to fetch similar content:", err.message);
       }
     },
 

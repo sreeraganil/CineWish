@@ -29,7 +29,7 @@ const WatchOverviewPage = () => {
   return (
     <>
       <BackHeader title="History" />
-      <div className="min-h-screen bg-slate-950 px-6 pb-8">
+      <div className="min-h-[calc(100%-72px)] bg-slate-950 px-6 pb-8">
         <ContinueWatching
           items={continueWatching}
           onRemove={removeFromHistory}

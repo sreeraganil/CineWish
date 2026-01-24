@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const TrendingCard = ({ id, title, name, year, vote_average, poster_path, media_type }) => {
+const TrendingCard = ({ id, title, name, year, vote_average, poster_path, media_type = 'movie' }) => {
   
   const navigate = useNavigate();
 

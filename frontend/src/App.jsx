@@ -14,6 +14,7 @@ import { Toaster } from "react-hot-toast"
 import Watch from "./pages/Watch";
 import WatchOverviewPage from "./pages/WatchOverviewPage";
 import GenrePage from "./pages/GenrePage";
+import Collection from "./pages/Collection";
 
 const App = () => {
   return (
@@ -97,6 +98,12 @@ const App = () => {
           path="/genre/:id"
           element={
             <GenrePage />
+          }
+        />
+        <Route
+          path="/collection/:id"
+          element={
+            <Collection />
           }
         />
         <Route path="*" element={<NotFound />} />

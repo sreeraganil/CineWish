@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import BackHeader from "../components/Backheader";
 import Loader from "../components/Loader";
 import userStore from "../store/userStore";
+import SimilarContent from "../components/SimilarContent";
 
 const Details = () => {
   const { media, id } = useParams();
@@ -26,6 +27,10 @@ const Details = () => {
   useEffect(() => {
     if (user) checkStatus();
   }, [id, user]);
+
+  useEffect(() => {
+    document.title = `CineWish - ${item?.title || item?.name || "Loading..."}`;
+  }, [item]);
 
   const extraEvent = () => {
     setIsTransitioning(true);
@@ -62,7 +67,7 @@ const Details = () => {
         status,
       });
       toast.success(
-        `Added to ${status === "towatch" ? "wishlist" : "watched list"}`
+        `Added to ${status === "towatch" ? "wishlist" : "watched list"}`,
       );
       checkStatus();
     } catch (err) {
@@ -74,16 +79,14 @@ const Details = () => {
 
   useEffect(() => {
     const el = document.getElementById(ep_id);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [item]);
-
 
   useEffect(() => {
     const fetchDetails = async () => {
       try {
         const { data } = await API.get(`/tmdb/details/${media}/${id}`);
         setItem(data);
-        console.log(data.episodes);
       } catch (err) {
         console.error("Failed to fetch details:", err);
       } finally {
@@ -216,7 +219,9 @@ const Details = () => {
           </div>
         )}
 
-        <h1 className="text-2xl sm:text-4xl font-bold st title pt-5">
+        <h1
+          className={`text-2xl sm:text-4xl font-bold st title pt-5 ${!item.tagline && "mb-6"}`}
+        >
           {item.title || item.name}
         </h1>
 
@@ -439,50 +444,53 @@ const Details = () => {
         </div>
 
         {hasProviders && (
-  <div className="pt-6 space-y-6 border-t border-gray-700/50">
-    <h3 className="text-lg md:text-xl font-bold text-teal-400 flex items-center">
-      <i className="fas fa-tv mr-2"></i> Watch Options
-    </h3>
+          <div className="pt-6 space-y-6 border-t border-gray-700/50">
+            <h3 className="text-lg md:text-xl font-bold text-teal-400 flex items-center">
+              <i className="fas fa-tv mr-2"></i> Watch Options
+            </h3>
 
-    <div className="space-y-4">
-      {[
-        { title: "Stream Subscription", data: flatrateProviders },
-        { title: "Rent", data: rentProviders },
-        { title: "Buy", data: buyProviders },
-      ].map(
-        (category) =>
-          category.data.length > 0 && (
-            <div key={category.title} className="bg-gray-800/40 p-4 rounded-xl border border-gray-700/30">
-              <p className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wider">
-                {category.title}
-              </p>
-              
-              {/* Responsive Grid System */}
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-y-6 gap-x-2">
-                {category.data.map((provider) => (
-                  <div
-                    key={provider.provider_id}
-                    className="group flex flex-col items-center justify-start text-center"
-                  >
-                    <div className="relative">
-                      <img
-                        src={`${IMAGE_BASE_URL}${provider.logo_path}`}
-                        alt={provider.provider_name}
-                        className="w-14 h-14 md:w-16 md:h-16 object-cover rounded-xl shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:ring-2 group-hover:ring-teal-500"
-                      />
+            <div className="space-y-4">
+              {[
+                { title: "Stream Subscription", data: flatrateProviders },
+                { title: "Rent", data: rentProviders },
+                { title: "Buy", data: buyProviders },
+              ].map(
+                (category) =>
+                  category.data.length > 0 && (
+                    <div
+                      key={category.title}
+                      className="bg-gray-800/40 p-4 rounded-xl border border-gray-700/30"
+                    >
+                      <p className="text-sm font-semibold text-gray-300 mb-4 uppercase tracking-wider">
+                        {category.title}
+                      </p>
+
+                      {/* Responsive Grid System */}
+                      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-y-6 gap-x-2">
+                        {category.data.map((provider) => (
+                          <div
+                            key={provider.provider_id}
+                            className="group flex flex-col items-center justify-start text-center"
+                          >
+                            <div className="relative">
+                              <img
+                                src={`${IMAGE_BASE_URL}${provider.logo_path}`}
+                                alt={provider.provider_name}
+                                className="w-14 h-14 md:w-16 md:h-16 object-cover rounded-xl shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:ring-2 group-hover:ring-teal-500"
+                              />
+                            </div>
+                            <p className="mt-2 text-[10px] md:text-xs text-gray-400 group-hover:text-white transition-colors w-full px-1 overflow-hidden whitespace-nowrap text-ellipsis">
+                              {provider.provider_name}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                    <p className="mt-2 text-[10px] md:text-xs text-gray-400 group-hover:text-white transition-colors w-full px-1 overflow-hidden whitespace-nowrap text-ellipsis">
-                      {provider.provider_name}
-                    </p>
-                  </div>
-                ))}
-              </div>
+                  ),
+              )}
             </div>
-          )
-      )}
-    </div>
-  </div>
-)}
+          </div>
+        )}
 
         {/* New TV Next/Last Episode Info */}
         {media === "tv" && (item.lastEpisodeToAir || item.nextEpisodeToAir) && (
@@ -511,18 +519,28 @@ const Details = () => {
 
         {/* Collection (Movies Only) */}
         {media === "movie" && item.belongs_to_collection && (
-          <div className="pt-8 st">
+          <div className="pt-8">
             <h3 className="text-lg font-semibold mb-2">Collection</h3>
-            <div className="flex items-center gap-4 bg-gray-900/50 p-4 rounded-lg">
-              {item.belongs_to_collection.poster_path && (
-                <img
-                  src={`https://image.tmdb.org/t/p/w200${item.belongs_to_collection.poster_path}`}
-                  className="w-20 rounded"
-                  alt={item.belongs_to_collection.name}
-                />
-              )}
-              <p>{item.belongs_to_collection.name}</p>
-            </div>
+
+            <Link
+              to={`/collection/${item.belongs_to_collection.id}`}
+              className="flex items-center gap-4 bg-gray-900/50 p-4 rounded-lg hover:bg-gray-800 transition"
+            >
+              <img
+                src={
+                  item.belongs_to_collection.poster_path
+                    ? `https://image.tmdb.org/t/p/w200${item.belongs_to_collection.poster_path}`
+                    : "/poster-placeholder.png"
+                }
+                className="w-20 rounded object-cover"
+                alt={`${item.belongs_to_collection.name} poster`}
+                loading="lazy"
+              />
+
+              <p className="text-white font-medium">
+                {item.belongs_to_collection.name}
+              </p>
+            </Link>
           </div>
         )}
 
@@ -607,68 +625,69 @@ const Details = () => {
 
                     {/* EPISODES DROPDOWN */}
                     {isOpen && season.episodes?.length > 0 && (
-  <div className="w-full md:w-[95%] lg:w-[90%] ml-auto border-t border-gray-700 divide-y divide-gray-700">
-    {season.episodes.map((ep, i) => (
-      <div
-        key={ep.id}
-        className="hover:bg-gray-700/40 flex flex-col md:flex-row md:items-center justify-between p-4 gap-4 scroll-mt-32"
-        id={`s01e0${i + 1}`}
-      >
-        <div className="flex flex-col sm:flex-row gap-4 flex-1">
-          {/* Thumbnail - Larger on mobile, fixed on desktop */}
-          <img
-            src={
-              ep.still_path
-                ? `https://image.tmdb.org/t/p/w300${ep.still_path}` // Increased quality slightly for mobile full-width
-                : "/placeholder.png"
-            }
-            alt={ep.name}
-            className="w-full sm:w-32 md:w-40 aspect-video object-cover rounded shadow-md"
-          />
+                      <div className="w-full md:w-[95%] lg:w-[90%] ml-auto border-t border-gray-700 divide-y divide-gray-700">
+                        {season.episodes.map((ep, i) => (
+                          <div
+                            key={ep.id}
+                            className="hover:bg-gray-700/40 flex flex-col md:flex-row md:items-center justify-between p-4 gap-4 scroll-mt-32"
+                            id={`s01e0${i + 1}`}
+                          >
+                            <div className="flex flex-col sm:flex-row gap-4 flex-1">
+                              {/* Thumbnail - Larger on mobile, fixed on desktop */}
+                              <img
+                                src={
+                                  ep.still_path
+                                    ? `https://image.tmdb.org/t/p/w300${ep.still_path}` // Increased quality slightly for mobile full-width
+                                    : "/placeholder.png"
+                                }
+                                alt={ep.name}
+                                className="w-full sm:w-32 md:w-40 aspect-video object-cover rounded shadow-md"
+                              />
 
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-1">
-              <p className="text-sm md:text-base font-semibold truncate">
-                E{ep.episode_number} • {ep.name}
-              </p>
-            </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between mb-1">
+                                  <p className="text-sm md:text-base font-semibold truncate">
+                                    E{ep.episode_number} • {ep.name}
+                                  </p>
+                                </div>
 
-            <p className="text-xs text-gray-400 mb-2">
-              {ep.air_date ?? "TBA"}
-              {ep.runtime ? ` • ${ep.runtime} min` : ""}
-            </p>
+                                <p className="text-xs text-gray-400 mb-2">
+                                  {ep.air_date ?? "TBA"}
+                                  {ep.runtime ? ` • ${ep.runtime} min` : ""}
+                                </p>
 
-            {ep.overview && (
-              <p className="text-xs line-clamp-2 md:line-clamp-3 text-gray-300 leading-relaxed">
-                {ep.overview}
-              </p>
-            )}
-          </div>
-        </div>
+                                {ep.overview && (
+                                  <p className="text-xs line-clamp-2 md:line-clamp-3 text-gray-300 leading-relaxed">
+                                    {ep.overview}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
 
-        {/* Action Button - Full width on mobile */}
-        <Link
-          className="flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 text-xs md:text-sm text-white px-4 py-2 md:py-1.5 rounded transition-colors whitespace-nowrap font-medium w-full md:w-auto"
-          state={{
-            title: item.title || item.name,
-            poster: item.poster_path
-              ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
-              : "/placeholder.png",
-            backdrop: ep.still_path
-              ? `https://image.tmdb.org/t/p/w185${ep.still_path}`
-              : "/placeholder.png",
-            mediaType: media,
-            mediaId: id,
-          }}
-          to={`/watch/${media}/${id}/${openSeason}/${ep.episode_number}`}
-        >
-          <span>Watch S{openSeason}E{ep.episode_number}</span>
-          {/* Adding a play icon would be a nice touch here */}
-        </Link>
-      </div>
-    ))}
-  </div>
-)}
+                            {/* Action Button - Full width on mobile */}
+                            <Link
+                              className="flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 text-xs md:text-sm text-white px-4 py-2 md:py-1.5 rounded transition-colors whitespace-nowrap font-medium w-full md:w-auto"
+                              state={{
+                                title: item.title || item.name,
+                                poster: item.poster_path
+                                  ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+                                  : "/placeholder.png",
+                                backdrop: ep.still_path
+                                  ? `https://image.tmdb.org/t/p/w185${ep.still_path}`
+                                  : "/placeholder.png",
+                                mediaType: media,
+                                mediaId: id,
+                              }}
+                              to={`/watch/${media}/${id}/${openSeason}/${ep.episode_number}`}
+                            >
+                              <span>
+                                Watch S{openSeason}E{ep.episode_number}
+                              </span>
+                            </Link>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -676,6 +695,7 @@ const Details = () => {
           </div>
         )}
       </div>
+      <SimilarContent media={media} id={id} />
     </div>
   );
 };

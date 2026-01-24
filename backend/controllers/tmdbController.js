@@ -660,7 +660,7 @@ export const discoverTMDB = async (req, res) => {
 
 export const relatedContent = async (req, res) => {
   try {
-    const { media = "movie", id } = req.params;
+    const { related = 'similar', media = "movie", id } = req.params;
     const { page = 1 } = req.query;
 
     if (!["movie", "tv"].includes(media)) {
@@ -675,7 +675,7 @@ export const relatedContent = async (req, res) => {
       });
     }
 
-    const { data } = await axios.get(`${BASE_URL}/${media}/${id}/similar`, {
+    const { data } = await axios.get(`${BASE_URL}/${media}/${id}/${related}`, {
       headers: {
         Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
         accept: "application/json",
@@ -684,7 +684,7 @@ export const relatedContent = async (req, res) => {
         language: "en-US",
         page,
       },
-      timeout: 4000,
+      timeout: 2000,
     });
 
     res.json({
@@ -701,6 +701,53 @@ export const relatedContent = async (req, res) => {
 
     res.status(500).json({
       message: "Failed to fetch related results",
+    });
+  }
+};
+
+export const collectionTMDB = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id || isNaN(id)) {
+      return res.status(400).json({
+        message: "Invalid collection id",
+      });
+    }
+
+    const { data } = await axios.get(`${BASE_URL}/collection/${id}`, {
+      headers: {
+        Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+        accept: "application/json",
+      },
+      params: {
+        language: "en-US",
+      },
+      timeout: 4000,
+    });
+
+    res.json({
+      id: data.id,
+      name: data.name,
+      overview: data.overview,
+      poster_path: data.poster_path,
+      backdrop_path: data.backdrop_path,
+      parts: data.parts?.map((item) => ({
+        ...item,
+        media_type: "movie",
+      })),
+    });
+  } catch (err) {
+    console.error("collectionTMDB error:", err.message);
+
+    if (err.response?.status === 404) {
+      return res.status(404).json({
+        message: "Collection not found",
+      });
+    }
+
+    res.status(500).json({
+      message: "Failed to fetch collection",
     });
   }
 };

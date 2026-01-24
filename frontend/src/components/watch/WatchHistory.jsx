@@ -4,7 +4,7 @@ const WatchHistory = ({ items, onRemove }) => {
   if (!items?.length) return null;
 
   return (
-    <section className="mb-10">
+    <section>
       <h2 className="text-2xl font-bold mb-4 text-teal-400">
         Watch History
       </h2>

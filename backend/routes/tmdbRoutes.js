@@ -1,5 +1,5 @@
 import express from "express";
-import { discoverTMDB, getDetails, getLatestOTT, getNowPlaying, getRecommendations, getTrending, getUpcoming, getUpcomingList, relatedContent, searchTMDB } from "../controllers/tmdbController.js";
+import { collectionTMDB, discoverTMDB, getDetails, getLatestOTT, getNowPlaying, getRecommendations, getTrending, getUpcoming, getUpcomingList, relatedContent, searchTMDB } from "../controllers/tmdbController.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
@@ -14,6 +14,7 @@ router.get("/search", searchTMDB);
 router.get("/details/:media/:id", getDetails);
 router.get("/recommendations/:media/:id", authMiddleware, getRecommendations);
 router.get("/discover", discoverTMDB);
-router.get("/related/:media/:id", relatedContent);
+router.get("/:media/:id/:related", relatedContent);
+router.get("/collection/:id", collectionTMDB);
 
 export default router;

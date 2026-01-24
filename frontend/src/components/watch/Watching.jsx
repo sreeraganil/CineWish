@@ -7,7 +7,7 @@ const Watching = () => {
     continueWatching,
     loading,
     fetchWatchProgress, // ✅ get the action
-    removeFromContinueWatching,
+    removeFromHistory,
   } = watchStore();
 
   // ✅ CALL THE FETCH ONCE
@@ -22,7 +22,7 @@ const Watching = () => {
       <div className="max-w-7xl mx-auto">
         <ContinueWatching
           items={continueWatching.slice(0, 5)}
-          onRemove={removeFromContinueWatching}
+          onRemove={removeFromHistory}
         />
       </div>
     </div>
