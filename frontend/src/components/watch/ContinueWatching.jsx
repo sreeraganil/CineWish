@@ -30,33 +30,41 @@ const ContinueWatching = ({ items, onRemove }) => {
 
   return (
     <section className="pb-8">
-      <h2 className="text-2xl font-bold mb-4 text-teal-400">
+      <h2 className="text-2xl font-bold mb-6 text-teal-400">
         Continue Watching
       </h2>
 
-      <div className="relative px-2 md:px-5">
+      <div className="relative group px-2">
+        {/* Left Arrow */}
         {canScroll && (
           <button
             onClick={() => scroll(-1)}
-            className="hidden absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full sm:flex items-center justify-center"
+            aria-label="Scroll left"
+            className="hidden sm:flex absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 z-20 bg-teal-500 hover:bg-teal-400 text-white p-3 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 items-center justify-center"
           >
-            <span className="material-symbols-outlined">chevron_left</span>
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
           </button>
         )}
 
+        {/* Right Arrow */}
         {canScroll && (
           <button
             onClick={() => scroll(1)}
-            className="hidden absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full sm:flex items-center justify-center"
+            aria-label="Scroll right"
+            className="hidden sm:flex absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 z-20 bg-teal-500 hover:bg-teal-400 text-white p-3 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 items-center justify-center"
           >
-            <span className="material-symbols-outlined">chevron_right</span>
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </button>
         )}
 
         {/* Scroll container */}
         <div
           ref={scrollRef}
-          className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth"
+          className="flex gap-4 md:gap-5 overflow-x-auto scrollbar-hide scroll-smooth"
         >
           {items.map((item) => {
             const percent = progressPercent(
@@ -72,7 +80,7 @@ const ContinueWatching = ({ items, onRemove }) => {
             return (
               <div
                 key={`${item.mediaType}-${item.mediaId}-${item.season}-${item.episode}`}
-                className="group flex-none w-[240px] sm:w-[260px] lg:w-[280px]"
+                className="group/card flex-none w-[200px] sm:w-[240px] lg:w-[280px]"
               >
                 <div className="relative">
                   <Link
@@ -84,26 +92,48 @@ const ContinueWatching = ({ items, onRemove }) => {
                       backdrop: item.backdrop,
                     }}
                   >
-                    <div className="relative aspect-video rounded-md overflow-hidden bg-slate-800">
+                    <div className="relative aspect-video rounded-xl overflow-hidden bg-gray-800 transition-all duration-300 border border-gray-800 hover:border-teal-500/50">
+                      {/* Backdrop Image */}
                       {item.backdrop ? (
                         <img
                           src={item.backdrop}
                           alt={item.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                          className="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-500"
+                          loading="lazy"
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-slate-500 text-xs">
-                          No Image
+                        <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
+                          <svg className="w-16 h-16 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
                         </div>
                       )}
 
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                      {/* Dark Gradient Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-                      <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-black/40">
+                      {/* Play Icon Overlay */}
+                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300">
+                        <div className="bg-teal-500/90 backdrop-blur-sm rounded-full p-3 transform group-hover/card:scale-110 transition-transform duration-300 shadow-xl border border-teal-400/50">
+                          <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                          </svg>
+                        </div>
+                      </div>
+
+                      {/* Progress Bar */}
+                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/50 backdrop-blur-sm">
                         <div
-                          className="h-full bg-teal-500"
+                          className="h-full bg-gradient-to-r from-teal-400 to-teal-500 transition-all duration-300"
                           style={{ width: `${percent}%` }}
                         />
+                      </div>
+
+                      {/* Media Type Badge */}
+                      <div className="absolute top-1 left-2">
+                        <span className="bg-teal-600 backdrop-blur-sm text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase shadow-lg border border-white/20">
+                          {item.mediaType === "tv" ? `S${item.season}E${item.episode}` : "Movie"}
+                        </span>
                       </div>
                     </div>
                   </Link>
@@ -115,25 +145,30 @@ const ContinueWatching = ({ items, onRemove }) => {
                       e.stopPropagation();
                       onRemove?.(item);
                     }}
-                    className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/70 text-white text-sm hover:bg-teal-600 transition"
+                    aria-label="Remove from continue watching"
+                    className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/70 backdrop-blur-sm text-white text-sm hover:bg-red-600 hover:scale-110 transition-all duration-200 flex items-center justify-center border border-white/20 shadow-lg"
                   >
-                    ✕
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                   </button>
                 </div>
 
-                <div className="mt-1 text-sm text-white font-medium truncate">
-                  {item.title ?? `Media ${item.mediaId}`}
-                </div>
+                {/* Title and Info */}
+                <div className="mt-2 px-1">
+                  <h3 className="text-xs sm:text-sm font-semibold text-white truncate group-hover/card:text-teal-400 transition-colors mb-1">
+                    {item.title ?? `Media ${item.mediaId}`}
+                  </h3>
 
-                <div className="flex justify-between text-xs text-slate-400">
-                  {item.mediaType === "tv" ? (
-                    <span>
-                      S{item.season} • E{item.episode}
-                    </span>
-                  ) : (
-                    <span>Movie</span>
-                  )}
-                  <span>{formatTime(item.progressSeconds)}</span>
+                  <div className="flex items-center justify-between text-[10px] sm:text-xs text-gray-400">
+                    <div className="flex items-center gap-1">
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>{formatTime(item.progressSeconds)}</span>
+                    </div>
+                    <span className="text-teal-400 font-medium">{Math.round(percent)}%</span>
+                  </div>
                 </div>
               </div>
             );

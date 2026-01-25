@@ -10,6 +10,10 @@ const genreStore = create((set, get) => ({
   totalPages: 1,
   loading: false,
 
+  scrollPosition: 0, 
+  
+  setScrollPosition: (val) => set({ scrollPosition: val }),
+
   resetGenre: () =>
     set({
       genreId: null,

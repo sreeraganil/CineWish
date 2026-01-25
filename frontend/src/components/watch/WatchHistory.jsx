@@ -31,17 +31,14 @@ const WatchHistory = ({ items, onRemove }) => {
             >
               {/* Poster */}
               <div className="relative h-[240px] bg-slate-800 overflow-hidden">
-                {item.poster ? (
                   <img
                     src={item.poster}
                     alt={item.title}
+                    onError={(e) => {
+                      e.currentTarget.src = "/placeholder.png";
+                    }}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                   />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-slate-500 text-xs">
-                    —
-                  </div>
-                )}
               </div>
 
               <button

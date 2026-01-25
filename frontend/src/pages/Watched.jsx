@@ -5,6 +5,7 @@ import Loader from "../components/Loader";
 import { useNavigate } from "react-router-dom";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import CardSkeleton from "../components/CardSkeleton";
 
 const Watched = () => {
   const { watched, watchedCount, fetchWatched, removeFromWishlist } =
@@ -19,7 +20,7 @@ const Watched = () => {
   const ITEMS_PER_PAGE = 20;
   const totalPages = Math.max(
     Math.ceil(watchedCount.totalCount / ITEMS_PER_PAGE),
-    1
+    1,
   );
 
   useEffect(() => {
@@ -42,7 +43,7 @@ const Watched = () => {
         root: null,
         rootMargin: "600px 0px",
         threshold: 0,
-      }
+      },
     );
 
     if (loaderRef.current) observer.observe(loaderRef.current);
@@ -98,9 +99,9 @@ const Watched = () => {
         ) : (
           <>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4">
-              {watched?.map((item) => (
+              {watched?.map((item, i) => (
                 <div
-                  key={item._id}
+                  key={`${item._id}-${i}`}
                   className="relative bg-gray-900 border border-gray-800 rounded-lg overflow-hidden shadow hover:shadow-teal-500/20 transition hover:scale-105"
                   onClick={() => handleClick(item.type, item.tmdbId)}
                 >
@@ -133,6 +134,11 @@ const Watched = () => {
                   </button>
                 </div>
               ))}
+
+              {loading &&
+                Array.from({ length: 12 }).map((_, i) => (
+                  <CardSkeleton key={`skeleton-${i}`} />
+                ))}
             </div>
 
             <div

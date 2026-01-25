@@ -130,9 +130,6 @@ const Details = () => {
 
   const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/original";
 
-  const btnBase =
-    "flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors disabled:opacity-60 disabled:pointer-events-none";
-
   const castData =
     media === "tv" ? item.aggregate_credits?.cast : item.credits?.cast;
   const crewData =
@@ -229,8 +226,9 @@ const Details = () => {
           <p className="italic text-gray-300 mb-6 st">"{item.tagline}"</p>
         )}
 
-        <div className="flex flex-col md:flex-row gap-8 items-center st">
-          <div>
+        <div className="flex flex-col md:flex-row gap-6 items-start st">
+          {/* Poster */}
+          <div className="flex-shrink-0 mx-auto md:mx-0">
             <img
               src={
                 item.poster_path
@@ -239,183 +237,240 @@ const Details = () => {
               }
               alt={item.title || item.name}
               loading="eager"
-              className="w-64 aspect-[2/3] rounded-xl shadow-lg flex-shrink-0"
+              className="w-48 sm:w-56 md:w-64 aspect-[2/3] rounded-xl shadow-2xl"
             />
           </div>
 
-          <div className="flex-1 space-y-5 my-2">
+          {/* Info Section */}
+          <div className="flex-1 space-y-4">
+            {/* Overview */}
             {item.overview && (
-              <p className="text-gray-300 leading-relaxed">{item.overview}</p>
+              <p className="text-sm sm:text-base text-gray-300 leading-relaxed">
+                {item.overview}
+              </p>
             )}
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-              {/* Release Date vs First Air Date */}
+            {/* Details Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-2.5 text-sm">
               {item.release_date && (
                 <div>
-                  <span className="text-gray-400">Release Date:</span>{" "}
-                  {item.release_date}
+                  <span className="text-gray-400">Release:</span>{" "}
+                  <span className="text-white font-medium">
+                    {item.release_date}
+                  </span>
                 </div>
               )}
+
               {item.first_air_date && media === "tv" && (
                 <div>
-                  <span className="text-gray-400">First Air Date:</span>{" "}
-                  {item.first_air_date}
+                  <span className="text-gray-400">First Aired:</span>{" "}
+                  <span className="text-white font-medium">
+                    {item.first_air_date}
+                  </span>
                 </div>
               )}
 
-              {/* Runtime: Movie vs TV */}
               {media === "movie" && item.runtime > 0 && (
                 <div>
-                  <span className="text-gray-400">Runtime:</span> {item.runtime}{" "}
-                  min
-                </div>
-              )}
-              {media === "tv" && item.episode_run_time?.length > 0 && (
-                <div>
-                  <span className="text-gray-400">Episode Length:</span>{" "}
-                  {formatDuration(item.episode_run_time)}
+                  <span className="text-gray-400">Runtime:</span>{" "}
+                  <span className="text-white font-medium">
+                    {item.runtime} min
+                  </span>
                 </div>
               )}
 
-              {/* TV Specific Counts */}
+              {media === "tv" && item.episode_run_time?.length > 0 && (
+                <div>
+                  <span className="text-gray-400">Episode:</span>{" "}
+                  <span className="text-white font-medium">
+                    {formatDuration(item.episode_run_time)}
+                  </span>
+                </div>
+              )}
+
               {media === "tv" && item.number_of_seasons > 0 && (
                 <div>
                   <span className="text-gray-400">Seasons:</span>{" "}
-                  {item.number_of_seasons}
+                  <span className="text-white font-medium">
+                    {item.number_of_seasons}
+                  </span>
                 </div>
               )}
+
               {media === "tv" && item.number_of_episodes > 0 && (
                 <div>
-                  <span className="text-gray-400">Total Episodes:</span>{" "}
-                  {item.number_of_episodes}
+                  <span className="text-gray-400">Episodes:</span>{" "}
+                  <span className="text-white font-medium">
+                    {item.number_of_episodes}
+                  </span>
                 </div>
               )}
 
-              {/* Movie Specific Financials */}
               {item.budget > 0 && media === "movie" && (
                 <div>
-                  <span className="text-gray-400">Budget:</span> $
-                  {item.budget.toLocaleString()}
+                  <span className="text-gray-400">Budget:</span>{" "}
+                  <span className="text-white font-medium">
+                    ${item.budget.toLocaleString()}
+                  </span>
                 </div>
               )}
+
               {item.revenue > 0 && media === "movie" && (
                 <div>
-                  <span className="text-gray-400">Box Office:</span> $
-                  {item.revenue.toLocaleString()}
-                </div>
-              )}
-
-              {/* Shared Details */}
-              {item.genres?.length > 0 && (
-                <div>
-                  <span className="text-gray-400">Genres:</span>{" "}
-                  {item.genres.map((g) => g.name).join(", ")}
-                </div>
-              )}
-
-              {item.production_countries?.length > 0 && (
-                <div>
-                  <span className="text-gray-400">Countries:</span>{" "}
-                  {item.production_countries.map((c) => c.name).join(", ")}
-                </div>
-              )}
-
-              {item.spoken_languages?.length > 0 && (
-                <div>
-                  <span className="text-gray-400">Languages:</span>{" "}
-                  {item.spoken_languages.map((l) => l.english_name).join(", ")}
+                  <span className="text-gray-400">Revenue:</span>{" "}
+                  <span className="text-white font-medium">
+                    ${item.revenue.toLocaleString()}
+                  </span>
                 </div>
               )}
 
               {item.status && (
                 <div>
-                  <span className="text-gray-400">Status:</span> {item.status}
+                  <span className="text-gray-400">Status:</span>{" "}
+                  <span className="text-white font-medium">{item.status}</span>
                 </div>
               )}
             </div>
 
-            {/* Crew/Creators Section */}
+            {/* Genres */}
+            {item.genres?.length > 0 && (
+              <div>
+                <span className="text-gray-400 text-sm">Genres:</span>
+                <div className="flex flex-wrap gap-2 mt-1.5">
+                  {item.genres.map((g) => (
+                    <span
+                      key={g.id}
+                      className="bg-teal-500/20 text-teal-300 px-2.5 py-1 rounded-md text-xs font-medium border border-teal-500/30"
+                    >
+                      {g.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Crew */}
             {!!(
               director ||
               creators?.length ||
               composers?.length ||
               producers?.length
             ) && (
-              <div className="pt-4 text-sm space-y-1">
-                {/* TV Creator */}
+              <div className="text-sm space-y-1.5 pt-2">
                 {media === "tv" && creators?.length > 0 && (
                   <div>
                     <span className="text-gray-400">Created By:</span>{" "}
-                    {creators.map((c) => c.name).join(", ")}
+                    <span className="text-white font-medium">
+                      {creators.map((c) => c.name).join(", ")}
+                    </span>
                   </div>
                 )}
-                {/* Movie Director */}
                 {media === "movie" && director && (
                   <div>
                     <span className="text-gray-400">Director:</span>{" "}
-                    {director.name}
+                    <span className="text-white font-medium">
+                      {director.name}
+                    </span>
                   </div>
                 )}
                 {composers.length > 0 && (
                   <div>
                     <span className="text-gray-400">Music:</span>{" "}
-                    {composers.map((c) => c.name).join(", ")}
+                    <span className="text-white font-medium">
+                      {composers.map((c) => c.name).join(", ")}
+                    </span>
                   </div>
                 )}
                 {producers.length > 0 && (
                   <div>
                     <span className="text-gray-400">Producers:</span>{" "}
-                    {producers.map((p) => p.name).join(", ")}
+                    <span className="text-white font-medium">
+                      {producers.map((p) => p.name).join(", ")}
+                    </span>
                   </div>
                 )}
               </div>
             )}
 
+            {/* Action Buttons */}
             {user && (
-              <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {/* Wishlist */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 pt-3">
                 <button
                   onClick={() => handleAdd("towatch")}
                   disabled={isInWishlist || clicked}
-                  className={`${btnBase} ${
+                  className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-all ${
                     isInWishlist
-                      ? "bg-gray-700 text-gray-300"
+                      ? "bg-gray-700 text-gray-400 cursor-not-allowed"
                       : "bg-teal-600 hover:bg-teal-700 text-white"
                   }`}
                 >
-                  <span className="material-symbols-outlined text-base">
-                    {isInWishlist ? "bookmark_added" : "bookmark_add"}
-                  </span>
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d={
+                        isInWishlist
+                          ? "M5 13l4 4L19 7"
+                          : "M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                      }
+                    />
+                  </svg>
                   <span className="truncate">
                     {isInWishlist ? "In Wishlist" : "Add to Wishlist"}
                   </span>
                 </button>
 
-                {/* Watched */}
                 {!isInWishlist && (
                   <button
                     onClick={() => handleAdd("watched")}
                     disabled={clicked}
-                    className={`${btnBase} bg-teal-600 hover:bg-teal-700 text-white`}
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm bg-teal-600 hover:bg-teal-700 text-white transition-all"
                   >
-                    <span className="material-symbols-outlined text-base">
-                      preview
-                    </span>
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
                     <span className="truncate">Mark as Watched</span>
                   </button>
                 )}
 
-                {/* Watch */}
                 {media === "tv" ? (
-                  <a
-                    href="#s01e01"
-                    className={`${btnBase} bg-amber-500 hover:bg-amber-600 text-black`}
+                  <span
+                    onClick={() => {
+                      const el = document.getElementById("s01e01");
+                      if (el) {
+                        el.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start",
+                        });
+                      }
+                    }}
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm bg-amber-500 hover:bg-amber-600 text-black transition-all"
                   >
-                    <span className="material-symbols-outlined text-base">
-                      live_tv
-                    </span>
+                    <svg
+                      className="w-4 h-4"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                    </svg>
                     <span className="truncate">Watch</span>
-                  </a>
+                  </span>
                 ) : (
                   <Link
                     to={`/watch/${media}/${id}`}
@@ -430,11 +485,15 @@ const Details = () => {
                       mediaType: media,
                       mediaId: id,
                     }}
-                    className={`${btnBase} bg-amber-500 hover:bg-amber-600 text-black`}
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm bg-amber-500 hover:bg-amber-600 text-black transition-all"
                   >
-                    <span className="material-symbols-outlined text-base">
-                      live_tv
-                    </span>
+                    <svg
+                      className="w-4 h-4"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                    </svg>
                     <span className="truncate">Watch</span>
                   </Link>
                 )}
@@ -444,7 +503,7 @@ const Details = () => {
         </div>
 
         {hasProviders && (
-          <div className="pt-6 space-y-6 border-t border-gray-700/50">
+          <div className="pt-6 space-y-6 border-t border-gray-700/50 st">
             <h3 className="text-lg md:text-xl font-bold text-teal-400 flex items-center">
               <i className="fas fa-tv mr-2"></i> Watch Options
             </h3>
@@ -464,9 +523,12 @@ const Details = () => {
                       {/* Category Label with Vertical Text */}
                       <div className="flex items-stretch">
                         <div className="flex-shrink-0 bg-teal-600 flex items-center justify-center w-5 md:w-6">
-                          <span 
+                          <span
                             className="text-white font-black text-[10px] md:text-[12px] tracking-widest whitespace-nowrap"
-                            style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}
+                            style={{
+                              writingMode: "vertical-rl",
+                              transform: "rotate(180deg)",
+                            }}
                           >
                             {category.title}
                           </span>
@@ -476,7 +538,8 @@ const Details = () => {
                         <div className="flex-1 p-3 md:p-4">
                           <div className="grid grid-cols-4 xs:grid-cols-5 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12 gap-3 md:gap-4">
                             {category.data.map((provider) => (
-                              <div
+                              <Link
+                                to={`/provider/${provider.provider_id}`}
                                 key={provider.provider_id}
                                 className="group flex flex-col items-center justify-start text-center cursor-pointer"
                               >
@@ -493,7 +556,7 @@ const Details = () => {
                                 <p className="mt-1.5 text-[10px] md:text-xs text-gray-300 group-hover:text-teal-300 transition-colors duration-200 w-full line-clamp-2 leading-tight font-medium">
                                   {provider.provider_name}
                                 </p>
-                              </div>
+                              </Link>
                             ))}
                           </div>
                         </div>
@@ -560,25 +623,25 @@ const Details = () => {
         {/* Cast - Note: Uses 'aggregate_credits' structure for TV */}
         {topCast.length > 0 && (
           <div className="pt-8 st">
-            <h3 className="text-lg font-semibold mb-4">Top Cast</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4 overflow-x-auto pb-4">
+            <h3 className="text-xl font-bold text-teal-400 mb-4">Top Cast</h3>
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3 sm:gap-4">
               {topCast.map((c) => (
-                <div
-                  key={c.id || c.credit_id}
-                  className="text-center w-full min-w-[100px]"
-                >
-                  <img
-                    src={`https://image.tmdb.org/t/p/w185${c.profile_path}`}
-                    alt={c.name}
-                    onError={(e) => {
-                      e.currentTarget.src = "/placeholder.png";
-                    }}
-                    className="aspect-[2/3] rounded-lg mb-2 w-full h-auto object-cover"
-                  />
-
-                  <p className="text-sm font-medium leading-tight">{c.name}</p>
-                  <p className="text-xs text-gray-400 leading-tight">
-                    {/* Character is nested differently for TV shows */}
+                <div key={c.id || c.credit_id} className="group">
+                  <div className="relative overflow-hidden rounded-lg mb-2 bg-gray-800">
+                    <img
+                      src={`https://image.tmdb.org/t/p/w185${c.profile_path}`}
+                      alt={c.name}
+                      onError={(e) => {
+                        e.currentTarget.src = "/placeholder.png";
+                      }}
+                      className="aspect-[2/3] w-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                  </div>
+                  <p className="text-xs sm:text-sm font-semibold text-white leading-tight mb-0.5 truncate">
+                    {c.name}
+                  </p>
+                  <p className="text-[10px] sm:text-xs text-gray-400 leading-tight truncate">
                     {media === "tv" ? c.roles?.[0]?.character : c.character}
                   </p>
                 </div>

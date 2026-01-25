@@ -28,7 +28,7 @@ const StudiosGrid = () => {
           {/* Left Arrow */}
           <button
             onClick={() => scroll(-1)}
-            className="hidden absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full sm:flex items-center justify-center opacity-0 group-hover/button:opacity-100"
+            className="hidden absolute left-0 top-1/2 transform -translate-y-1/2 z-40 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full sm:flex items-center justify-center opacity-0 group-hover/button:opacity-100"
           >
             <span className="material-symbols-outlined">chevron_left</span>
           </button>
@@ -36,7 +36,7 @@ const StudiosGrid = () => {
           {/* Right Arrow */}
           <button
             onClick={() => scroll(1)}
-            className="hidden absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full sm:flex items-center justify-center opacity-0 group-hover/button:opacity-100"
+            className="hidden absolute right-0 top-1/2 transform -translate-y-1/2 z-40 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full sm:flex items-center justify-center opacity-0 group-hover/button:opacity-100"
           >
             <span className="material-symbols-outlined">chevron_right</span>
           </button>
@@ -49,7 +49,7 @@ const StudiosGrid = () => {
             {studios.map((studio) => (
               <Link
                 key={studio.id}
-                to={`#/studio/${studio.id}`}
+                to={`/studio/${studio.id}`}
                 className="group/card relative rounded-xl overflow-hidden shadow-md hover:shadow-xl hover:ring-1 hover:ring-teal-500 flex-shrink-0 w-[140px] md:w-[200px] aspect-video transition-all duration-300"
               >
                 {/* Gradient Background */}

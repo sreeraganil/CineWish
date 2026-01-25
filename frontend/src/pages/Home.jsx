@@ -35,11 +35,11 @@ const Home = () => {
         <Suspense fallback={<SectionLoader />}>
           <TrendingSection />
           <UpcomingSection />
+          <StudiosGrid />
           <OTTSection />
           <NowPlaying />
         </Suspense>
         <GenreRow />
-        <StudiosGrid />
         <NetWorkGrid />
       </div>
     </div>

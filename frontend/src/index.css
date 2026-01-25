@@ -1,10 +1,5 @@
 @import "tailwindcss";
 
-
-html {
-  scroll-behavior: smooth;
-}
-
 body {
   background: #101828;
   overflow-x: auto;

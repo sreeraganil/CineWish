@@ -25,7 +25,7 @@ const fetchFromTMDB = async (endpoint) => {
     return data.results;
   } catch (err) {
     console.error("TMDB Fetch Error:", err.code || err.message);
-    throw new Error("Failed to fetch data from TMDB");
+    // throw new Error("Failed to fetch data from TMDB");
   }
 };
 

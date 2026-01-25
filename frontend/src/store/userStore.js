@@ -103,6 +103,9 @@ const userStore = create((set, get) => {
       }
     },
 
+    resetSimilar: () => set({ similar: [] }),
+
+
     setSearchResult: (data) => {
       set({ searchResult: data });
     },

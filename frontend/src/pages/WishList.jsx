@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import CardSkeleton from "../components/CardSkeleton";
 
 const WishList = () => {
   const [loading, setLoading] = useState(true);
@@ -41,7 +42,7 @@ const WishList = () => {
     setGenreFilter("");
     setYearFilter("");
     setRatingFilter("");
-    setPage(1); 
+    setPage(1);
   };
 
   const applyFilters = () => {
@@ -50,20 +51,24 @@ const WishList = () => {
     setShowFilter(false);
   };
 
-
   const ITEMS_PER_PAGE = 20;
   const totalPages = Math.max(
     Math.ceil(
       (wishlistCount.filterTotalCount || wishlistCount.totalCount) /
-        ITEMS_PER_PAGE
+        ITEMS_PER_PAGE,
     ),
-    1
+    1,
   );
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !loading && !loadingMore && page < totalPages) {
+        if (
+          entries[0].isIntersecting &&
+          !loading &&
+          !loadingMore &&
+          page < totalPages
+        ) {
           setPage((prev) => prev + 1);
         }
       },
@@ -71,7 +76,7 @@ const WishList = () => {
         root: null,
         rootMargin: "600px 0px",
         threshold: 0,
-      }
+      },
     );
 
     const currentLoaderRef = loaderRef.current;
@@ -105,7 +110,6 @@ const WishList = () => {
     setLoading(false);
     setLoadingMore(false);
   };
-
 
   useEffect(() => {
     fetchData();
@@ -250,16 +254,18 @@ const WishList = () => {
                 }}
               />
               <p className="text-gray-500 text-center">
-                {activeFilterCount > 0 ? "No results found matching your filters." : "Your wishlist is empty."}
+                {activeFilterCount > 0
+                  ? "No results found matching your filters."
+                  : "Your wishlist is empty."}
               </p>
             </div>
           </>
         ) : (
           <>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4">
-              {wishlist?.map((item) => (
+              {wishlist?.map((item, i) => (
                 <div
-                  key={item._id}
+                  key={`${item._id}-${i}`}
                   className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden shadow hover:shadow-teal-500/20 transition hover:scale-105 relative cursor-pointer"
                   onClick={() => handleClick(item.type, item.tmdbId)}
                 >
@@ -306,6 +312,11 @@ const WishList = () => {
                   </span>
                 </div>
               ))}
+
+              {loadingMore &&
+                Array.from({ length: 12 }).map((_, i) => (
+                  <CardSkeleton key={`skeleton-${i}`} />
+                ))}
             </div>
             <div
               ref={loaderRef}

@@ -4,6 +4,7 @@ import API from "../config/axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import userStore from "../store/userStore";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import CardSkeleton from "../components/CardSkeleton";
 
 const Search = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -34,7 +35,6 @@ const Search = () => {
   const query = searchParams.get("q") || "";
   const type = searchParams.get("t") || "";
 
-  
   useEffect(() => {
     if (!query) {
       setSearchResult([]);
@@ -42,14 +42,12 @@ const Search = () => {
     }
   }, []);
 
-  
   useEffect(() => {
     if (query.trim()) {
       handleSearch(); // Re-search for page 1
     }
   }, [type]);
 
-  
   useEffect(() => {
     if (query.trim().length < 2) {
       setSuggestions([]);
@@ -67,7 +65,6 @@ const Search = () => {
     return () => clearTimeout(timer);
   }, [query]);
 
-  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -82,7 +79,6 @@ const Search = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  
   useEffect(() => {
     if (activeIndex < 0 || !suggestionsContainerRef.current) return;
     const itemEl = suggestionItemRefs.current[activeIndex];
@@ -91,29 +87,26 @@ const Search = () => {
     }
   }, [activeIndex]);
 
-  
   useEffect(() => {
     if (page > 1) {
       fetchMoreData();
     }
   }, [page]);
 
-  
   useEffect(() => {
-  if (!hasMore) return;
+    if (!hasMore) return;
 
-  const observer = new IntersectionObserver((entries) => {
-    if (entries[0].isIntersecting && !loading) {
-      setPage((prev) => prev + 1);
-    }
-  });
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !loading) {
+        setPage((prev) => prev + 1);
+      }
+    });
 
-  const elem = observerRef.current;
-  if (elem) observer.observe(elem);
+    const elem = observerRef.current;
+    if (elem) observer.observe(elem);
 
-  return () => elem && observer.unobserve(elem);
-}, [hasMore, loading]);
-
+    return () => elem && observer.unobserve(elem);
+  }, [hasMore, loading]);
 
   const fetchSuggestions = async (currentQuery) => {
     setIsSuggestionsLoading(true);
@@ -126,7 +119,7 @@ const Search = () => {
 
       const topResults = items
         .filter(
-          (item) => item.media_type === "tv" || item.media_type === "movie"
+          (item) => item.media_type === "tv" || item.media_type === "movie",
         )
         .slice(0, 7);
 
@@ -203,7 +196,7 @@ const Search = () => {
     const currentParams = Object.fromEntries(searchParams.entries());
     setSearchParams(
       { ...currentParams, [param]: e.target.value },
-      { replace: true }
+      { replace: true },
     );
     setFocused(true);
   };
@@ -221,14 +214,14 @@ const Search = () => {
       case "ArrowDown":
         e.preventDefault();
         setActiveIndex((prev) =>
-          prev === suggestions.length - 1 ? 0 : prev + 1
+          prev === suggestions.length - 1 ? 0 : prev + 1,
         );
         break;
 
       case "ArrowUp":
         e.preventDefault();
         setActiveIndex((prev) =>
-          prev <= 0 ? suggestions.length - 1 : prev - 1
+          prev <= 0 ? suggestions.length - 1 : prev - 1,
         );
         break;
 
@@ -258,7 +251,10 @@ const Search = () => {
         ref={searchContainerRef}
         className="relative max-w-xl mx-1 sm:mx-auto my-6 flex gap-1 sm:gap-2 items-center"
       >
-        <form onSubmit={handleSearch} className="relative flex items-center flex-1">
+        <form
+          onSubmit={handleSearch}
+          className="relative flex items-center flex-1"
+        >
           <input
             type="text"
             ref={inputRef}
@@ -270,8 +266,8 @@ const Search = () => {
               type === "movie"
                 ? "Search for movies..."
                 : type === "tv"
-                ? "Search for series..."
-                : "Search for movies or series..."
+                  ? "Search for series..."
+                  : "Search for movies or series..."
             }
             className="flex-1 px-4 pr-12 py-2 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
             autoComplete="off"
@@ -380,39 +376,57 @@ const Search = () => {
       )}
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 2xl:grid-cols-8 gap-4 px-4 md:mx-5 pb-4">
-        {searchResult?.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => handleClick(item.media_type || type, item.id)}
-                className="relative bg-gray-900 border border-gray-800 rounded-lg overflow-hidden shadow hover:shadow-teal-500/10 transition"
-              >
-                <img
-                  src={
-                    item.poster_path
-                      ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
-                      : "/placeholder.png"
-                  }
-                  alt={item.title || item.name}
-                  className="h-60 w-full object-cover object-top"
-                />
-                <div className="p-3">
-                  <h3 className="text-sm font-semibold truncate">
-                    {item.title || item.name}
-                  </h3>
-                  <p className="text-xs text-gray-400 mt-1">
-                    {item.release_date?.slice(0, 4) ||
-                      item.first_air_date?.slice(0, 4) ||
-                      "N/A"}
-                  </p>
-                  <p className="text-xs text-teal-400 mt-1">
-                    Rating: {parseFloat(item.vote_average?.toFixed(1)) || "N/A"}
-                  </p>
+        {searchResult?.map((item, i) => (
+          <div
+            key={`${item.id}-${i}`}
+            onClick={() => handleClick(item.media_type || type, item.id)}
+            className="relative bg-gray-900 border border-gray-800 rounded-lg overflow-hidden shadow hover:shadow-teal-500/10 transition"
+          >
+            <img
+              src={
+                item.poster_path
+                  ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+                  : "/placeholder.png"
+              }
+              alt={item.title || item.name}
+              className="h-60 w-full object-cover object-top"
+            />
+            <div className="p-3">
+              <h3 className="text-sm font-semibold truncate">
+                {item.title || item.name}
+              </h3>
+              <p className="text-xs text-gray-400 mt-1">
+                {item.release_date?.slice(0, 4) ||
+                  item.first_air_date?.slice(0, 4) ||
+                  "N/A"}
+              </p>
+              {!!(item.vote_average && parseFloat(item.vote_average) > 0) && (
+                <div className="absolute top-2 left-2">
+                  <div className="flex items-center gap-1 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-full">
+                    <svg
+                      className="w-3 h-3 text-yellow-400"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    <span className="text-white text-xs font-semibold">
+                      {item.vote_average.toFixed(1)}
+                    </span>
+                  </div>
                 </div>
-                <span className="absolute top-2 right-2 bg-teal-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase shadow-md">
-                  {item.media_type || type}
-                </span>
-              </div>
-            ))}
+              )}
+            </div>
+            <span className="absolute top-2 right-2 bg-teal-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase shadow-md">
+              {item.media_type || type}
+            </span>
+          </div>
+        ))}
+
+        {loading &&
+          Array.from({ length: 12 }).map((_, i) => (
+            <CardSkeleton key={`skeleton-${i}`} />
+          ))}
       </div>
 
       <div ref={observerRef} className="h-20 flex justify-center items-center">
