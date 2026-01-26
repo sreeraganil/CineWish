@@ -25,12 +25,13 @@ const Details = () => {
   const ep_id = hash?.slice(1);
 
   useEffect(() => {
-    if (user) checkStatus();
-  }, [id, user]);
+    window.scrollTo({ top: 0, behavior: "instant" });
+    document.title = `CineWish - ${item?.title || item?.name || "Loading..."}`;
+  }, [item, id]);
 
   useEffect(() => {
-    document.title = `CineWish - ${item?.title || item?.name || "Loading..."}`;
-  }, [item]);
+    if (user) checkStatus();
+  }, [id, user]);
 
   const extraEvent = () => {
     setIsTransitioning(true);
@@ -626,7 +627,11 @@ const Details = () => {
             <h3 className="text-xl font-bold text-teal-400 mb-4">Top Cast</h3>
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3 sm:gap-4">
               {topCast.map((c) => (
-                <div key={c.id || c.credit_id} className="group">
+                <Link
+                  to={`/people/${c.id}`}
+                  key={c.id || c.credit_id}
+                  className="group"
+                >
                   <div className="relative overflow-hidden rounded-lg mb-2 bg-gray-800">
                     <img
                       src={`https://image.tmdb.org/t/p/w185${c.profile_path}`}
@@ -644,7 +649,7 @@ const Details = () => {
                   <p className="text-[10px] sm:text-xs text-gray-400 leading-tight truncate">
                     {media === "tv" ? c.roles?.[0]?.character : c.character}
                   </p>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
@@ -695,7 +700,27 @@ const Details = () => {
                       </div>
 
                       <span className="material-symbols-outlined text-xl">
-                        {isOpen ? "expand_less" : "expand_more"}
+                        {isOpen ? (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            width="24"
+                            height="24"
+                            fill="currentColor"
+                          >
+                            <path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z" />
+                          </svg>
+                        ) : (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            width="24"
+                            height="24"
+                            fill="currentColor"
+                          >
+                            <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" />
+                          </svg>
+                        )}
                       </span>
                     </div>
 
@@ -771,7 +796,7 @@ const Details = () => {
           </div>
         )}
       </div>
-      <SimilarContent media={media} id={id} />
+      <SimilarContent key={item?.id} media={media} id={id} />
     </div>
   );
 };

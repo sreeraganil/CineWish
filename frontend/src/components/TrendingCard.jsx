@@ -24,6 +24,9 @@ const TrendingCard = ({
       <img
         src={`https://image.tmdb.org/t/p/w500${poster_path}`}
         alt={name || title}
+        onError={(e) => {
+          e.currentTarget.src = "/placeholder.png";
+        }}
         className="h-48 w-full object-cover group-hover:object-bottom transition-all"
       />
       <div className="p-3 text-white">

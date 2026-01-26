@@ -30,7 +30,9 @@ const StudiosGrid = () => {
             onClick={() => scroll(-1)}
             className="hidden absolute left-0 top-1/2 transform -translate-y-1/2 z-40 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full sm:flex items-center justify-center opacity-0 group-hover/button:opacity-100"
           >
-            <span className="material-symbols-outlined">chevron_left</span>
+            <span className="material-symbols-outlined"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+  <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+</svg></span>
           </button>
 
           {/* Right Arrow */}
@@ -38,7 +40,9 @@ const StudiosGrid = () => {
             onClick={() => scroll(1)}
             className="hidden absolute right-0 top-1/2 transform -translate-y-1/2 z-40 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full sm:flex items-center justify-center opacity-0 group-hover/button:opacity-100"
           >
-            <span className="material-symbols-outlined">chevron_right</span>
+            <span className="material-symbols-outlined"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+  <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+</svg></span>
           </button>
 
           {/* Studios Slider */}

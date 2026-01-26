@@ -660,7 +660,7 @@ export const discoverTMDB = async (req, res) => {
 
 export const relatedContent = async (req, res) => {
   try {
-    const { related = 'similar', media = "movie", id } = req.params;
+    const { related = "similar", media = "movie", id } = req.params;
     const { page = 1 } = req.query;
 
     if (!["movie", "tv"].includes(media)) {
@@ -749,6 +749,27 @@ export const collectionTMDB = async (req, res) => {
     res.status(500).json({
       message: "Failed to fetch collection",
     });
+  }
+};
+
+export const getPersonDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const { data } = await axios.get(`${BASE_URL}/person/${id}`, {
+      headers: {
+        Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+        accept: "application/json",
+      },
+      params: {
+        language: "en-US",
+      },
+    });
+
+    res.json(data);
+  } catch (err) {
+    console.error("Person details error:", err.message);
+    res.status(500).json({ error: "Failed to fetch person details" });
   }
 };
 

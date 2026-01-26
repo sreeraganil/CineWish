@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
+import Person from "./pages/Person";
 
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
@@ -117,6 +118,7 @@ const App = () => {
           <Route path="/studio/:id" element={<Studio />} />
           <Route path="/network/:id" element={<Network />} />
           <Route path="/provider/:id" element={<Provider />} />
+          <Route path="/people/:id" element={<Person />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -104,8 +104,20 @@ const Studio = () => {
             <div className="flex flex-wrap gap-3 sm:gap-4 justify-center md:justify-start text-xs sm:text-sm text-gray-300">
               {studio?.headquarters && (
                 <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full">
-                  <span className="material-symbols-outlined text-teal-400">location_on</span>
-                  <span className="truncate max-w-[200px] sm:max-w-none">{studio.headquarters}</span>
+                  <span className="material-symbols-outlined text-teal-400">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                    >
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                    </svg>
+                  </span>
+                  <span className="truncate max-w-[200px] sm:max-w-none">
+                    {studio.headquarters}
+                  </span>
                 </div>
               )}
 
@@ -116,7 +128,17 @@ const Studio = () => {
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full hover:bg-white/20 transition-colors"
                 >
-                  <span className="material-symbols-outlined text-teal-400">link_2</span>
+                  <span className="material-symbols-outlined text-teal-400">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                    >
+                      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" />
+                    </svg>
+                  </span>
                   <span>Website</span>
                 </a>
               )}
@@ -139,7 +161,9 @@ const Studio = () => {
                 {media === "movie" ? "Movies" : "TV Shows"}
               </h2>
               <p className="text-gray-400 text-xs sm:text-sm">
-                {items.length > 0 ? `${items.length} ${items.length === 1 ? 'item' : 'items'} loaded` : '...'}
+                {items.length > 0
+                  ? `${items.length} ${items.length === 1 ? "item" : "items"} loaded`
+                  : "..."}
               </p>
             </div>
 
@@ -194,7 +218,8 @@ const Studio = () => {
               No {media === "movie" ? "movies" : "TV shows"} found
             </h3>
             <p className="text-sm sm:text-base text-gray-500 px-4">
-              This studio doesn't have any {media === "movie" ? "movies" : "TV shows"} yet.
+              This studio doesn't have any{" "}
+              {media === "movie" ? "movies" : "TV shows"} yet.
             </p>
           </div>
         )}

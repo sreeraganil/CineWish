@@ -41,11 +41,20 @@ const Header = () => {
             </NavLink>
           </nav>
 
-          {user ? <Link to="/profile">
-            <div className="w-9 h-9 bg-teal-600 text-white rounded-full flex items-center justify-center text-2xl font-semibold uppercase">
-              {user.username?.charAt(0)}
-            </div>
-          </Link> : <Link to="/login" className="bg-teal-500 rounded px-4 py-1 font-semibold hover:scale-105 transition duration-300">Login</Link>}
+          {user ? (
+            <Link to="/profile">
+              <div className="w-9 h-9 bg-teal-600 text-white rounded-full flex items-center justify-center text-2xl font-semibold uppercase">
+                {user.username?.charAt(0)}
+              </div>
+            </Link>
+          ) : (
+            <Link
+              to="/login"
+              className="bg-teal-500 rounded px-4 py-1 font-semibold hover:scale-105 transition duration-300"
+            >
+              Login
+            </Link>
+          )}
         </div>
       </header>
 
@@ -53,7 +62,17 @@ const Header = () => {
         <NavLink to="/" className={iconLinkClass}>
           {({ isActive }) => (
             <>
-              <span className="material-symbols-outlined">home</span>
+              <span className="material-symbols-outlined">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                >
+                  <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+              </span>
               {!isActive && <p className="text-[10px]">Home</p>}
             </>
           )}
@@ -61,15 +80,35 @@ const Header = () => {
         <NavLink to="/wishlist" className={iconLinkClass}>
           {({ isActive }) => (
             <>
-              <span className="material-symbols-outlined">playlist_add</span>
+              <span className="material-symbols-outlined">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                >
+                  <path d="M14 10H2v2h12v-2zm0-4H2v2h12V6zm4 8v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM2 16h8v-2H2v2z" />
+                </svg>
+              </span>
               {!isActive && <p className="text-[10px]">Wishlist</p>}
             </>
           )}
         </NavLink>
         <NavLink to="/watched" className={iconLinkClass}>
-         {({ isActive }) => (
+          {({ isActive }) => (
             <>
-              <span className="material-symbols-outlined">playlist_add_check</span>
+              <span className="material-symbols-outlined">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                >
+                  <path d="M14 10H2v2h12v-2zm0-4H2v2h12V6zM2 16h8v-2H2v2zm19.5-4.5L23 13l-6.99 7-4.51-4.5L13 14l3.01 3 5.49-5.5z" />
+                </svg>
+              </span>
               {!isActive && <p className="text-[10px]">Watched</p>}
             </>
           )}
@@ -77,7 +116,17 @@ const Header = () => {
         <NavLink to="/search" className={iconLinkClass}>
           {({ isActive }) => (
             <>
-              <span className="material-symbols-outlined">search</span>
+              <span className="material-symbols-outlined">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                >
+                  <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                </svg>
+              </span>
               {!isActive && <p className="text-[10px]">Search</p>}
             </>
           )}

@@ -82,7 +82,15 @@ const SimilarContent = ({ media, id }) => {
                   className="hidden absolute sm:flex justify-center items-center left-0 top-1/2 -translate-y-1/2 z-10 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full opacity-0 group-hover/button:opacity-100"
                 >
                   <span className="material-symbols-outlined">
-                    chevron_left
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                    >
+                      <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+                    </svg>
                   </span>
                 </button>
 
@@ -91,7 +99,15 @@ const SimilarContent = ({ media, id }) => {
                   className="hidden absolute sm:flex justify-center items-center right-0 top-1/2 -translate-y-1/2 z-10 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full opacity-0 group-hover/button:opacity-100"
                 >
                   <span className="material-symbols-outlined">
-                    chevron_right
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                    >
+                      <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+                    </svg>
                   </span>
                 </button>
 

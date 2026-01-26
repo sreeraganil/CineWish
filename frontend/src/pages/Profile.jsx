@@ -63,13 +63,11 @@ const Profile = () => {
 
       <div className="min-h-[calc(100%-72px)] bg-gradient-to-br from-black via-gray-950 to-gray-900 text-white pt-3 md:pt-8 pb-16 md:pb-20">
         <div className="max-w-4xl mx-auto px-3 md:px-4 space-y-5 md:space-y-8">
-
           {/* ===== PROFILE CARD ===== */}
           <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900/90 via-gray-900/50 to-gray-900/90 border border-gray-800/50 shadow-2xl p-4 md:p-6 backdrop-blur-sm">
             <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 via-transparent to-emerald-500/5 pointer-events-none" />
-            
-            <div className="relative flex items-center gap-3 md:gap-5">
 
+            <div className="relative flex items-center gap-3 md:gap-5">
               <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-teal-500 via-teal-400 to-emerald-500 flex items-center justify-center text-xl md:text-2xl font-bold shadow-lg shadow-teal-500/20 ring-2 ring-teal-400/20 shrink-0">
                 {user?.username?.charAt(0)}
               </div>
@@ -84,11 +82,22 @@ const Profile = () => {
                 </p>
 
                 <p className="text-[10px] md:text-xs text-gray-500 mt-1 md:mt-1.5 flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-xs">calendar_today</span>
-                  <span className="truncate">Member since {formatDate(profileData?.user?.createdAt)}</span>
+                  <span className="material-symbols-outlined text-xs">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                    >
+                      <path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z" />
+                    </svg>
+                  </span>
+                  <span className="truncate">
+                    Member since {formatDate(profileData?.user?.createdAt)}
+                  </span>
                 </p>
               </div>
-
             </div>
           </div>
 
@@ -96,7 +105,6 @@ const Profile = () => {
 
           {/* Big numbers */}
           <div className="grid grid-cols-3 gap-2 md:gap-4">
-
             <BigStat
               label="Total"
               value={
@@ -117,12 +125,10 @@ const Profile = () => {
               value={profileData?.wishlistCount?.totalCount || 0}
               color="yellow"
             />
-
           </div>
 
           {/* Breakdown - Compact on mobile */}
           <div className="grid grid-cols-2 gap-3 md:gap-5">
-
             <GroupCard title="Watched">
               <MiniStat
                 label="Movies"
@@ -144,24 +150,29 @@ const Profile = () => {
                 value={profileData?.wishlistCount?.showCount || 0}
               />
             </GroupCard>
-
           </div>
 
           {/* ===== MANAGE ===== */}
           <div>
-
             <h3 className="text-sm md:text-base font-semibold mb-3 md:mb-4 tracking-wide">
               Quick Access
             </h3>
 
             <div className="grid grid-cols-3 gap-2 md:gap-3">
-
               <NavButton
                 title="Wishlist"
                 path="/wishlist"
                 icon={
                   <span className="material-symbols-outlined text-sm md:text-base">
-                    list_alt
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                    >
+                      <path d="M19 5v14H5V5h14m1.1-2H3.9c-.5 0-.9.4-.9.9v16.2c0 .4.4.9.9.9h16.2c.4 0 .9-.5.9-.9V3.9c0-.5-.5-.9-.9-.9zM11 7h6v2h-6V7zm0 4h6v2h-6v-2zm0 4h6v2h-6zM7 7h2v2H7zm0 4h2v2H7zm0 4h2v2H7z" />
+                    </svg>
                   </span>
                 }
               />
@@ -171,7 +182,15 @@ const Profile = () => {
                 path="/watched"
                 icon={
                   <span className="material-symbols-outlined text-sm md:text-base">
-                    task_alt
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                    >
+                      <path d="M22 5.18L10.59 16.6l-4.24-4.24 1.41-1.41 2.83 2.83 10-10L22 5.18zM12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8c1.57 0 3.04.46 4.28 1.25l1.45-1.45C16.1 2.67 14.13 2 12 2 6.48 2 2 6.48 2 12s4.48 10 10 10c1.73 0 3.36-.44 4.78-1.22l-1.5-1.5c-1 .46-2.11.72-3.28.72z" />
+                    </svg>
                   </span>
                 }
               />
@@ -181,17 +200,23 @@ const Profile = () => {
                 path="/watch/history"
                 icon={
                   <span className="material-symbols-outlined text-sm md:text-base">
-                    history
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                    >
+                      <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z" />
+                    </svg>
                   </span>
                 }
               />
-
             </div>
           </div>
 
           {/* ===== ACTIONS ===== */}
           <div className="pt-2 md:pt-4">
-
             <button
               onClick={() => setShowLogoutModal(true)}
               className="
@@ -203,7 +228,6 @@ const Profile = () => {
             >
               Logout
             </button>
-
           </div>
         </div>
       </div>
@@ -252,7 +276,7 @@ const BigStat = ({ label, value, color }) => {
       `}
     >
       <div className="absolute top-0 right-0 w-16 md:w-24 h-16 md:h-24 bg-white/5 rounded-full blur-2xl -mr-8 md:-mr-12 -mt-8 md:-mt-12" />
-      
+
       <p className="text-[10px] md:text-xs uppercase opacity-60 tracking-wider font-medium">
         {label}
       </p>
@@ -268,7 +292,7 @@ const GroupCard = ({ title, children }) => {
   return (
     <div className="relative rounded-xl md:rounded-2xl border border-gray-800/50 bg-gradient-to-br from-gray-900/80 to-gray-900/40 p-3 md:p-4 backdrop-blur-sm shadow-xl hover:border-gray-700/50 transition-all duration-300">
       <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent rounded-xl md:rounded-2xl pointer-events-none" />
-      
+
       <h4 className="text-xs md:text-sm font-bold mb-2 md:mb-4 uppercase tracking-wider text-gray-200 flex items-center gap-2">
         <div className="w-0.5 md:w-1 h-3 md:h-4 bg-gradient-to-b from-teal-400 to-emerald-400 rounded-full" />
         {title}
@@ -288,9 +312,7 @@ const MiniStat = ({ label, value }) => {
         {label}
       </p>
 
-      <p className="text-lg md:text-xl font-bold mt-1  text-white">
-        {value}
-      </p>
+      <p className="text-lg md:text-xl font-bold mt-1  text-white">{value}</p>
     </div>
   );
 };

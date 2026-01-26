@@ -143,7 +143,15 @@ const WishList = () => {
                 }`}
                 onClick={() => setShowFilter((prev) => !prev)}
               >
-                tune
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                >
+                  <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z" />
+                </svg>
               </span>
               {activeFilterCount > 0 && (
                 <span className="absolute rounded-full bg-teal-500 px-1 top-[-30%] right-[-50%] text-xs font-semibold">
@@ -302,7 +310,15 @@ const WishList = () => {
                         }}
                       >
                         <span className="material-symbols-outlined">
-                          delete
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            width="22"
+                            height="22"
+                            fill="currentColor"
+                          >
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                          </svg>
                         </span>
                       </button>
                     </div>
