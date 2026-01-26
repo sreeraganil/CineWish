@@ -226,7 +226,7 @@ const Details = () => {
           <p className="italic text-gray-300 mb-6 st">"{item.tagline}"</p>
         )}
 
-        <div className="flex flex-col md:flex-row gap-6 items-start st">
+        <div className="flex flex-col md:flex-row gap-6 items-start pb-1 st">
           {/* Poster */}
           <div className="flex-shrink-0 mx-auto md:mx-0">
             <img
@@ -398,7 +398,7 @@ const Details = () => {
                 <button
                   onClick={() => handleAdd("towatch")}
                   disabled={isInWishlist || clicked}
-                  className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-all ${
+                  className={`flex items-center disabled:bg-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed justify-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm transition-all ${
                     isInWishlist
                       ? "bg-gray-700 text-gray-400 cursor-not-allowed"
                       : "bg-teal-600 hover:bg-teal-700 text-white"
@@ -430,7 +430,7 @@ const Details = () => {
                   <button
                     onClick={() => handleAdd("watched")}
                     disabled={clicked}
-                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm bg-teal-600 hover:bg-teal-700 text-white transition-all"
+                    className="flex items-center justify-center disabled:bg-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed gap-2 px-4 py-2.5 rounded-lg font-medium text-sm bg-teal-600 hover:bg-teal-700 text-white transition-all"
                   >
                     <svg
                       className="w-4 h-4"

@@ -58,7 +58,7 @@ const NetworkGrid = () => {
                 {/* Network Logo */}
                 <div className="absolute inset-0 flex items-center justify-center p-4">
                   <img
-                    src={network.backdrop || network.image}
+                    src={network.card_image}
                     alt={network.name}
                     className="max-w-full max-h-full object-contain drop-shadow-2xl group-hover/card:scale-110 transition-transform duration-500"
                     loading="lazy"

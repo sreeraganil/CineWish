@@ -12,7 +12,7 @@ const RecommendationSection = () => {
       const watched = await fetchWatched();
       const randomIndex = Math.floor(Math.random() * watched.length);
       const { type, tmdbId } = watched[randomIndex];
-      tmdbId && await fetchRecommendations(type, tmdbId);
+      user && tmdbId && await fetchRecommendations(type, tmdbId);
     } catch (err) {
       console.log(`error in fetching recommendations: ${err?.message}`);
     }

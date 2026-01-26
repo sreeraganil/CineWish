@@ -4,13 +4,11 @@ import HeroSection from "../components/HeroSection";
 import GenreRow from "../components/GenreRow";
 import StudiosGrid from "../components/StudiosGrid";
 import NetWorkGrid from "../components/NetWorkGrid";
+import StatsSection from "../components/StatsSection";
+import Watching from "../components/watch/Watching";
+import RecommendationSection from "../components/RecommendationSection";
 
-// Lazy load sections that aren't immediately visible (below the fold)
-const StatsSection = lazy(() => import("../components/StatsSection"));
-const Watching = lazy(() => import("../components/watch/Watching"));
-const RecommendationSection = lazy(
-  () => import("../components/RecommendationSection"),
-);
+// Lazy load ONLY below-the-fold sections
 const TrendingSection = lazy(() => import("../components/TrendingSection"));
 const UpcomingSection = lazy(() => import("../components/UpcomingSection"));
 const OTTSection = lazy(() => import("../components/OTTSection"));
@@ -28,20 +26,21 @@ const Home = () => {
       <Header />
       <HeroSection />
 
-      <div>
-        <StatsSection />
-        <Watching />
-        <RecommendationSection />
-        <Suspense fallback={<SectionLoader />}>
-          <TrendingSection />
-          <UpcomingSection />
-          <StudiosGrid />
-          <OTTSection />
-          <NowPlaying />
-        </Suspense>
+      {/* Likely above-the-fold — keep eager */}
+      <StatsSection />
+      <Watching />
+      <RecommendationSection />
+
+      {/* Below-the-fold */}
+      <Suspense fallback={<SectionLoader />}>
+        <TrendingSection />
+        <UpcomingSection />
+        <StudiosGrid />
+        <OTTSection />
+        <NowPlaying />
         <GenreRow />
         <NetWorkGrid />
-      </div>
+      </Suspense>
     </div>
   );
 };

@@ -43,7 +43,7 @@ const TrendingCard = ({
             />
           </svg>
           <p className="text-xs text-gray-400 py-0.5">
-            {m_year ? m_year?.slice(0, 4) : s_year.slice(0, 4)}
+            {m_year ? m_year?.slice(0, 4) : s_year?.slice(0, 4)}
           </p>
         </div>
       </div>

@@ -1,18 +1,20 @@
 import { useEffect } from "react";
 import watchStore from "../../store/watchStore";
 import ContinueWatching from "./ContinueWatching";
+import userStore from "../../store/userStore";
 
 const Watching = () => {
   const {
     continueWatching,
     loading,
-    fetchWatchProgress, // ✅ get the action
+    fetchWatchProgress,
     removeFromHistory,
   } = watchStore();
 
-  // ✅ CALL THE FETCH ONCE
+  const { user } = userStore();
+
   useEffect(() => {
-    fetchWatchProgress();
+    user && fetchWatchProgress();
   }, [fetchWatchProgress]);
 
   if (loading || !continueWatching.length) return null;

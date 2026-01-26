@@ -18,8 +18,25 @@
     />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta charset="UTF-8" />
     <meta name="theme-color" content="#0f172a" />
+
+    <!-- Preconnect for Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Preload likely LCP image -->
+    <link
+      rel="preload"
+      as="image"
+      href="/logo/logo.png"
+      fetchpriority="high"
+    />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -53,18 +70,16 @@
       content="https://cinewish.deno.dev/logo/logo.png"
     />
 
+    <!-- Icons -->
     <link rel="icon" href="/logo/logo.ico" type="image/x-icon" />
     <link rel="icon" href="/logo/logo.png" type="image/png" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
-      rel="stylesheet"
-    />
     <meta
       name="google-site-verification"
       content="tjx4zFrOvX9tu1r6ahNsBb7y1Df_0SCm0Ynub4JjxcM"
     />
+
+    <!-- Schema -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -89,7 +104,7 @@
       }
     </script>
 
-    <!-- Google tag (gtag.js) -->
+    <!-- Google tag -->
     <script
       async
       src="https://www.googletagmanager.com/gtag/js?id=G-Q6NZJ2R40H"
@@ -100,15 +115,12 @@
         dataLayer.push(arguments);
       }
       gtag("js", new Date());
-
       gtag("config", "G-Q6NZJ2R40H");
     </script>
 
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7133037911836409"
-     crossorigin="anonymous"></script>
-
     <title>CineWish</title>
   </head>
+
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>

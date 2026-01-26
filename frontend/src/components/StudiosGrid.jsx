@@ -58,7 +58,7 @@ const StudiosGrid = () => {
                 {/* Studio Logo */}
                 <div className="absolute inset-0 flex items-center justify-center p-4">
                   <img
-                    src={studio.backdrop || studio.image}
+                    src={studio.card_image}
                     alt={studio.name}
                     className="max-w-full max-h-full object-contain drop-shadow-2xl group-hover/card:scale-110 transition-transform duration-500"
                     loading="lazy"
