@@ -5,12 +5,15 @@ const WatchHistory = ({ items, onRemove }) => {
 
   return (
     <section>
-      <h2 className="text-2xl font-bold mb-4 text-teal-400">
-        Watch History
-      </h2>
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-teal-400">
+          Watch History
+        </h2>
+        <div className="h-1 w-20 bg-gradient-to-r from-teal-400 to-cyan-400 rounded-full mt-2" />
+      </div>
 
       {/* Card Row */}
-      <div className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth px-2 md:px-5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4">
         {items.map((item) => {
           const watchUrl =
             item.mediaType === "tv"
@@ -27,56 +30,59 @@ const WatchHistory = ({ items, onRemove }) => {
                 poster: item.poster,
                 backdrop: item.backdrop,
               }}
-              className="relative group flex-none w-[160px] bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-teal-400 transition"
+              className="group relative bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-teal-500/50 hover:shadow-lg hover:shadow-teal-500/10 transition-all duration-300 hover:-translate-y-1"
             >
               {/* Poster */}
-              <div className="relative h-[240px] bg-slate-800 overflow-hidden">
-                  <img
-                    src={item.poster}
-                    alt={item.title}
-                    onError={(e) => {
-                      e.currentTarget.src = "/placeholder.png";
-                    }}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                  />
+              <div className="relative h-[240px] bg-gray-800 overflow-hidden">
+                <img
+                  src={item.poster}
+                  alt={item.title}
+                  onError={(e) => {
+                    e.currentTarget.src = "/placeholder.png";
+                  }}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
 
+              {/* Remove Button */}
               <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      onRemove?.(item);
-                    }}
-                    className="
-                      absolute top-2 right-2 z-20
-                      w-6 h-6
-                      rounded-full
-                      bg-black/70 text-white
-                      text-sm
-                      hover:bg-teal-600
-                      transition
-                    "
-                  >
-                    ✕
-                  </button>
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onRemove?.(item);
+                }}
+                className="absolute top-2 right-2 z-20 w-7 h-7 rounded-full bg-black/80 backdrop-blur-sm text-white flex items-center justify-center hover:bg-red-500 hover:scale-110 transition-all duration-200 shadow-lg opacity-0 group-hover:opacity-100"
+              >
+                <span className="text-sm font-bold">✕</span>
+              </button>
 
               {/* Meta */}
-              <div className="p-3">
-                <h3 className="text-sm font-semibold text-white truncate">
+              <div className="p-3 space-y-1.5">
+                <h3 className="text-sm font-semibold text-white truncate group-hover:text-teal-300 transition-colors duration-200">
                   {item.title ?? "Unknown"}
                 </h3>
 
-                <p className="text-xs text-gray-400 mt-1">
-                  {item.mediaType === "tv"
-                    ? `S${item.season} • E${item.episode}`
-                    : "Movie"}
-                </p>
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-gray-800 rounded text-[11px] text-gray-300 font-medium">
+                    {item.mediaType === "tv" ? (
+                      <>
+                        <span>S{item.season}</span>
+                        <span className="text-gray-600">•</span>
+                        <span>E{item.episode}</span>
+                      </>
+                    ) : (
+                      "Movie"
+                    )}
+                  </span>
+                </div>
 
-                <p className="text-[11px] text-teal-400 mt-1">
+                <p className="text-[11px] text-teal-400 font-medium">
                   {new Date(item.lastWatchedAt).toLocaleDateString()}
                 </p>
               </div>
-
             </Link>
           );
         })}

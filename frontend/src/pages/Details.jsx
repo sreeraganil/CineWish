@@ -369,9 +369,9 @@ const Details = () => {
                 {media === "movie" && director && (
                   <div>
                     <span className="text-gray-400">Director:</span>{" "}
-                    <span className="text-white font-medium">
+                    <Link to={`/people/${director.id}`} className="text-teal-500 underline font-medium">
                       {director.name}
-                    </span>
+                    </Link>
                   </div>
                 )}
                 {composers.length > 0 && (

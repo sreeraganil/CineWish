@@ -34,13 +34,13 @@ const ContinueWatching = ({ items, onRemove }) => {
         Continue Watching
       </h2>
 
-      <div className="relative group px-2">
+      <div className="relative group/button px-2">
         {/* Left Arrow */}
         {canScroll && (
           <button
             onClick={() => scroll(-1)}
             aria-label="Scroll left"
-            className="hidden sm:flex absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 z-20 bg-teal-500 hover:bg-teal-400 text-white p-3 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 items-center justify-center"
+            className="hidden absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full sm:flex items-center justify-center opacity-0 group-hover/button:opacity-100"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -53,7 +53,7 @@ const ContinueWatching = ({ items, onRemove }) => {
           <button
             onClick={() => scroll(1)}
             aria-label="Scroll right"
-            className="hidden sm:flex absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 z-20 bg-teal-500 hover:bg-teal-400 text-white p-3 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 items-center justify-center"
+            className="hidden absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full sm:flex items-center justify-center opacity-0 group-hover/button:opacity-100"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
