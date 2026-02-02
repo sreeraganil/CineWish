@@ -4,6 +4,7 @@ import API from "../config/axios";
 import TrendingCard from "../components/TrendingCard";
 import CardSkeleton from "../components/CardSkeleton";
 import BackHeader from "../components/Backheader";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const BIO_LIMIT = 280;
 
@@ -44,6 +45,10 @@ const Person = () => {
     loadPerson();
   }, [id]);
 
+  useEffect(() => {
+    document.title = person?.name ? `CineWish - ${person.name}` : 'CineWish loading'
+  },[person])
+
   /* ---------------- DISCOVER ---------------- */
 
   const getRoleQuery = () => {
@@ -68,9 +73,7 @@ const Person = () => {
         },
       });
 
-      setItems((prev) =>
-        p === 1 ? data.results : [...prev, ...data.results],
-      );
+      setItems((prev) => (p === 1 ? data.results : [...prev, ...data.results]));
 
       setPage(data.page);
       setTotalPages(data.total_pages);
@@ -128,11 +131,7 @@ const Person = () => {
       <div className="bg-gray-950 min-h-screen text-white">
         <BackHeader title="People" />
 
-        <div className="max-w-7xl mx-auto p-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <CardSkeleton key={i} />
-          ))}
-        </div>
+        <PersonDetailsSkeleton />
       </div>
     );
   }
@@ -151,6 +150,9 @@ const Person = () => {
                 ? `https://image.tmdb.org/t/p/w500${person.profile_path}`
                 : "/placeholder-person.png"
             }
+            onError={(e) => {
+              e.currentTarget.src = "/placeholder.png";
+            }}
             alt={person?.name}
             className="w-56 mx-auto rounded-xl shadow-2xl border border-gray-800 group-hover:border-teal-500/50 transition-all duration-300 group-hover:shadow-teal-500/20"
           />
@@ -174,15 +176,21 @@ const Person = () => {
           <div className="flex flex-wrap gap-3 pt-1">
             {person?.birthday && (
               <div className="flex items-center gap-2 px-4 py-2 bg-gray-800/50 rounded-lg border border-gray-700 hover:border-teal-500/40 transition-all duration-200">
-                <span className="text-gray-400 text-sm font-medium">Birthday:</span>
+                <span className="text-gray-400 text-sm font-medium">
+                  Birthday:
+                </span>
                 <span className="text-gray-200 text-sm">{person.birthday}</span>
               </div>
             )}
 
             {person?.place_of_birth && (
               <div className="flex items-center gap-2 px-4 py-2 bg-gray-800/50 rounded-lg border border-gray-700 hover:border-teal-500/40 transition-all duration-200">
-                <span className="text-gray-400 text-sm font-medium">Birthplace:</span>
-                <span className="text-gray-200 text-sm">{person.place_of_birth}</span>
+                <span className="text-gray-400 text-sm font-medium">
+                  Birthplace:
+                </span>
+                <span className="text-gray-200 text-sm">
+                  {person.place_of_birth}
+                </span>
               </div>
             )}
           </div>
@@ -212,9 +220,7 @@ const Person = () => {
       <section className="max-w-7xl mx-auto px-6 pb-6">
         <div className="flex flex-wrap gap-4 justify-between items-center">
           <div className="space-y-1">
-            <h2 className="text-2xl font-bold text-teal-400">
-              Filmography
-            </h2>
+            <h2 className="text-2xl font-bold text-teal-400">Filmography</h2>
             <div className="h-1 w-16 bg-gradient-to-r from-teal-400 to-cyan-400 rounded-full" />
           </div>
 
@@ -231,11 +237,7 @@ const Person = () => {
                       : "text-gray-400 hover:text-white"
                   }`}
                 >
-                  {r === "both"
-                    ? "All"
-                    : r === "actor"
-                    ? "Acting"
-                    : "Crew"}
+                  {r === "both" ? "All" : r === "actor" ? "Acting" : "Crew"}
                 </button>
               ))}
             </div>
@@ -245,7 +247,7 @@ const Person = () => {
               {["movie"].map((m) => (
                 <button
                   key={m}
-                //   onClick={() => setMedia(m)}
+                  //   onClick={() => setMedia(m)}
                   className={`px-3 py-1 rounded-md text-xs md:text-sm font-medium transition-all duration-200 ${
                     media === m
                       ? "bg-teal-500 text-white shadow-lg shadow-teal-500/20"
@@ -263,18 +265,30 @@ const Person = () => {
       {/* ---------------- GRID ---------------- */}
 
       <section className="max-w-7xl mx-auto px-6 pb-20">
+        {!items.length && !listLoading && (
+          <div className="relative w-full flex flex-col items-center justify-center gap-4">
+            <DotLottieReact
+              src="/lottie/no_result.lottie"
+              loop
+              autoplay
+              style={{
+                width: "clamp(100px, 40vw, 200px)",
+                height: "clamp(100px, 40vw, 200px)",
+                borderRadius: "50%",
+                overflow: "hidden",
+                marginTop: "100px",
+              }}
+            />
+            <p className="text-center text-gray-600">No results</p>
+          </div>
+        )}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {items.map((item) => (
-            <TrendingCard
-              key={`${item.id}-${item.media_type}`}
-              {...item}
-            />
+            <TrendingCard key={`${item.id}-${item.media_type}`} {...item} />
           ))}
 
           {listLoading &&
-            Array.from({ length: 8 }).map((_, i) => (
-              <CardSkeleton key={i} />
-            ))}
+            Array.from({ length: 8 }).map((_, i) => <CardSkeleton key={i} />)}
         </div>
 
         {/* SENTINEL */}
@@ -292,3 +306,77 @@ const Person = () => {
 };
 
 export default Person;
+
+const PersonDetailsSkeleton = () => {
+  return (
+    <>
+      <section className="max-w-7xl mx-auto px-6 py-16 flex flex-col md:flex-row gap-10 animate-pulse">
+        {/* IMAGE */}
+        <div className="relative flex-shrink-0 mx-auto md:mx-0">
+          <div className="w-56 h-[336px] rounded-xl bg-gray-800 border border-gray-700" />
+        </div>
+
+        {/* INFO */}
+        <div className="space-y-6 flex-1">
+          {/* NAME */}
+          <div className="space-y-3">
+            <div className="h-10 w-72 bg-gray-800 rounded-md" />
+
+            {/* DEPARTMENT BADGE */}
+            <div className="h-7 w-44 bg-teal-500/20 border border-teal-400/20 rounded-lg" />
+          </div>
+
+          {/* META */}
+          <div className="flex flex-wrap gap-3">
+            <div className="h-10 w-40 bg-gray-800 rounded-lg border border-gray-700" />
+            <div className="h-10 w-56 bg-gray-800 rounded-lg border border-gray-700" />
+          </div>
+
+          {/* BIO */}
+          <div className="pt-2 space-y-3 max-w-2xl">
+            <div className="h-5 w-40 bg-gray-800 rounded" />
+
+            <div className="space-y-2">
+              <div className="h-4 w-full bg-gray-800 rounded" />
+              <div className="h-4 w-full bg-gray-800 rounded" />
+              <div className="h-4 w-5/6 bg-gray-800 rounded" />
+              <div className="h-4 w-4/6 bg-gray-800 rounded" />
+            </div>
+
+            {/* READ MORE */}
+            <div className="h-4 w-24 bg-gray-700 rounded mt-2" />
+          </div>
+        </div>
+      </section>
+      <section className="max-w-7xl mx-auto px-6 pb-6 animate-pulse">
+        <div className="flex flex-wrap gap-4 justify-between items-center">
+          {/* TITLE */}
+          <div className="space-y-2">
+            <div className="h-7 w-40 bg-gray-800 rounded-md" />
+            <div className="h-1 w-16 bg-gray-700 rounded-full" />
+          </div>
+
+          {/* FILTERS */}
+          <div className="flex gap-3 w-full justify-between md:w-auto">
+            {/* ROLE GROUP */}
+            <div className="inline-flex bg-gray-900 rounded-lg p-1 border border-gray-800 gap-1">
+              <div className="h-7 w-14 bg-gray-800 rounded-md" />
+              <div className="h-7 w-16 bg-gray-800 rounded-md" />
+              <div className="h-7 w-14 bg-gray-800 rounded-md" />
+            </div>
+
+            {/* MEDIA GROUP */}
+            <div className="inline-flex bg-gray-900 rounded-lg p-1 border border-gray-800 gap-1">
+              <div className="h-7 w-20 bg-gray-800 rounded-md" />
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-2 mt-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <CardSkeleton key={i} />
+          ))}
+        </div>
+      </section>
+    </>
+  );
+};

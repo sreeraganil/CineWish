@@ -27,6 +27,7 @@ const Profile = () => {
   // Always reset scroll
   useEffect(() => {
     window.scrollTo(0, 0);
+    document.title = 'CineWish - Profile page'
   }, []);
 
   useEffect(() => {

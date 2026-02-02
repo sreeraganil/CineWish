@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import userStore from "../store/userStore";
 import toast from "react-hot-toast";
@@ -13,6 +13,10 @@ const Register = () => {
 
   const { registerUser } = userStore();
   const navigate = useNavigate();
+
+   useEffect(() => {
+      document.title = "CineWish – Register";
+    }, []);
 
   const handleRegister = async (e) => {
     e.preventDefault();

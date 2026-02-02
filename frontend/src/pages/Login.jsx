@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import userStore from "../store/userStore";
 import toast from "react-hot-toast";
@@ -11,6 +11,10 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const { loginUser } = userStore()
   const navigate = useNavigate();
+
+   useEffect(() => {
+      document.title = "CineWish – Login";
+    }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();

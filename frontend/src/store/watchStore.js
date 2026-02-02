@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import API from "../config/axios";
+import toast from "react-hot-toast";
 
 const watchStore = create((set, get) => ({
   continueWatching: [],
@@ -53,7 +54,9 @@ const watchStore = create((set, get) => ({
             ? { season: item.season, episode: item.episode }
             : {},
       });
+      toast.success("Item removed")
     } catch (err) {
+      toast.error("Failed to remove item")
       console.error("Failed to remove item", err);
 
       set((state) => ({

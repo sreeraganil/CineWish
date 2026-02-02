@@ -4,11 +4,17 @@ import BackHeader from "../components/Backheader";
 import TrendingCard from "../components/TrendingCard";
 import CardSkeleton from "../components/CardSkeleton";
 
-import providers from "../utilities/watchProviders.json";
 import providerStore from "../store/providerStore";
 
 const Provider = () => {
   const { id } = useParams();
+  const [providers, setProviders] = useState([]);
+
+  useEffect(() => {
+    import("../utilities/watchProviders.json").then((mod) => {
+      setProviders(mod.default);
+    });
+  }, []);
 
   const provider = providers.find((p) => String(p.id) === id);
 

@@ -27,7 +27,7 @@ const GenreGrid = ({ items, loading, hasMore, onLoadMore }) => {
     return () => observer.disconnect();
   }, [hasMore, loading, onLoadMore]);
 
-  if(!items.length) {
+  if(!items.length && !loading) {
     return <div className="relative w-full flex flex-col items-center justify-center gap-4">
           <DotLottieReact
             src="/lottie/no_result.lottie"

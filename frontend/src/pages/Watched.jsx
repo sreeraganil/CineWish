@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import CardSkeleton from "../components/CardSkeleton";
+import genreList from "../utilities/genres.json";
 
 const Watched = () => {
   const { watched, watchedCount, fetchWatched, removeFromWishlist } =
@@ -16,26 +17,82 @@ const Watched = () => {
   const [idToDelete, setIdToDelete] = useState(null);
   const loaderRef = useRef(null);
   const navigate = useNavigate();
+  const [showFilter, setShowFilter] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  const [typeFilter, setTypeFilter] = useState("");
+  const [genreFilter, setGenreFilter] = useState("");
+  const [yearFilter, setYearFilter] = useState("");
+  const [ratingFilter, setRatingFilter] = useState("");
+
+  const activeFilterCount = [
+    typeFilter,
+    genreFilter,
+    yearFilter,
+    ratingFilter,
+  ].filter(Boolean).length;
+
+  const clearFilters = () => {
+    setTypeFilter("");
+    setGenreFilter("");
+    setYearFilter("");
+    setRatingFilter("");
+    setPage(1);
+    fetchData();
+  };
+
+  const applyFilters = () => {
+    setPage(1);
+    fetchData();
+    setShowFilter(false);
+  };
 
   const ITEMS_PER_PAGE = 20;
   const totalPages = Math.max(
-    Math.ceil(watchedCount.totalCount / ITEMS_PER_PAGE),
+    Math.ceil(
+      (watchedCount.filterTotalCount || watchedCount.totalCount) /
+        ITEMS_PER_PAGE,
+    ),
     1,
   );
 
-  useEffect(() => {
-    const load = async () => {
+  const fetchData = async () => {
+    if (page === 1) {
       setLoading(true);
-      await fetchWatched(page);
-      setLoading(false);
-    };
-    load();
+    } else {
+      setLoadingMore(true);
+    }
+
+    const queries = new URLSearchParams({
+      t: typeFilter,
+      g: genreFilter,
+      y: yearFilter,
+      r: ratingFilter,
+    }).toString();
+
+    await fetchWatched(page, queries);
+
+    setLoading(false);
+    setLoadingMore(false);
+  };
+
+  useEffect(() => {
+    fetchData();
   }, [page]);
+
+  useEffect(() => {
+    document.title = "CineWish – Your Watched List";
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !loading && page < totalPages) {
+        if (
+          entries[0].isIntersecting &&
+          !loading &&
+          !loadingMore &&
+          page < totalPages
+        ) {
           setPage((prev) => prev + 1);
         }
       },
@@ -46,12 +103,13 @@ const Watched = () => {
       },
     );
 
-    if (loaderRef.current) observer.observe(loaderRef.current);
+    const currentLoaderRef = loaderRef.current;
+    if (currentLoaderRef) observer.observe(currentLoaderRef);
 
     return () => {
-      if (loaderRef.current) observer.unobserve(loaderRef.current);
+      if (currentLoaderRef) observer.unobserve(currentLoaderRef);
     };
-  }, [loading, page, totalPages]);
+  }, [loading, loadingMore, page, totalPages]);
 
   const handleClick = (media, id) => {
     navigate(`/details/${media}/${id}`);
@@ -67,14 +125,137 @@ const Watched = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black text-white pb-20 md:pb-0">
       <Header />
       <div className="max-w-7xl mx-auto px-4 py-6">
-        <h1 className="text-2xl font-bold mb-4 flex items-center">
-          Watched
-          {!loading && (
-            <span className="ml-3 text-lg rounded-full bg-teal-600 px-2">
-              {watchedCount.totalCount}
-            </span>
+        <div className="relative mb-4 flex flex-col items-end">
+          <div className="flex items-center justify-between w-full">
+            <h1 className="text-2xl font-bold flex items-center">
+              Watched
+              {!loading && (
+                <span className="ml-3 text-lg rounded-full bg-teal-600 px-2">
+                  {watchedCount.filterTotalCount || watchedCount.totalCount}
+                </span>
+              )}
+            </h1>
+            <div className="relative">
+              <span
+                className={`material-symbols-outlined cursor-pointer select-none ${
+                  showFilter && "text-teal-500"
+                }`}
+                onClick={() => setShowFilter((prev) => !prev)}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                >
+                  <path d="M3 17v2h6v-2H3zM3 5v2h10V5H3zm10 16v-2h8v-2h-8v-2h-2v6h2zM7 9v2H3v2h4v2h2V9H7zm14 4v-2H11v2h10zm-6-4h2V7h4V5h-4V3h-2v6z" />
+                </svg>
+              </span>
+              {activeFilterCount > 0 && (
+                <span className="absolute rounded-full bg-teal-500 px-1 top-[-30%] right-[-50%] text-xs font-semibold">
+                  {activeFilterCount}
+                </span>
+              )}
+            </div>
+          </div>
+          {showFilter && (
+            <>
+              {/* Backdrop */}
+              <div
+                className="fixed inset-0 z-40"
+                onClick={() => setShowFilter(false)}
+              />
+
+              {/* Filter Panel */}
+              <div className="absolute top-4 z-50 mt-4 bg-gray-900 border border-gray-800 text-white p-4 rounded-lg shadow-xl max-w-lg">
+                <div className="flex gap-3 justify-center flex-wrap">
+                  {/* Type Filter */}
+                  <div>
+                    <label className="block text-[11px] font-medium text-gray-400 mb-1">
+                      Type
+                    </label>
+                    <select
+                      className="bg-gray-800 border border-gray-700 px-2 py-1 rounded text-xs focus:outline-none focus:border-teal-500 transition-all duration-200"
+                      onChange={(e) => setTypeFilter(e.target.value)}
+                      value={typeFilter}
+                    >
+                      <option value="">All</option>
+                      <option value="movie">Movie</option>
+                      <option value="tv">TV</option>
+                    </select>
+                  </div>
+
+                  {/* Genre Filter */}
+                  <div>
+                    <label className="block text-[11px] font-medium text-gray-400 mb-1">
+                      Genre
+                    </label>
+                    <select
+                      className="bg-gray-800 border border-gray-700 px-2 py-1 rounded text-xs focus:outline-none focus:border-teal-500 transition-all duration-200"
+                      onChange={(e) => setGenreFilter(e.target.value)}
+                      value={genreFilter}
+                    >
+                      <option value="">All</option>
+                      {genreList?.map((genre) => (
+                        <option key={genre.id} value={genre.name}>
+                          {genre.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Year Filter */}
+                  <div>
+                    <label className="block text-[11px] font-medium text-gray-400 mb-1">
+                      Year
+                    </label>
+                    <input
+                      type="number"
+                      className="bg-gray-800 border border-gray-700 px-2 py-1 rounded w-20 text-xs focus:outline-none focus:border-teal-500 transition-all duration-200"
+                      placeholder="2023"
+                      value={yearFilter}
+                      onChange={(e) => setYearFilter(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Rating Filter */}
+                  <div>
+                    <label className="block text-[11px] font-medium text-gray-400 mb-1">
+                      Min Rating
+                    </label>
+                    <input
+                      type="number"
+                      className="bg-gray-800 border border-gray-700 px-2 py-1 rounded w-20 text-xs focus:outline-none focus:border-teal-500 transition-all duration-200"
+                      step="0.1"
+                      min="0"
+                      max="10"
+                      placeholder="6.0"
+                      value={ratingFilter}
+                      onChange={(e) => setRatingFilter(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-4 flex justify-between items-center gap-2">
+                  <button
+                    onClick={clearFilters}
+                    className="px-3 py-1 bg-gray-800 border border-gray-700 text-gray-300 text-xs rounded hover:border-red-500/50 hover:text-red-400 transition-all duration-200"
+                  >
+                    Clear
+                  </button>
+
+                  <button
+                    onClick={applyFilters}
+                    className="px-3 py-1 bg-teal-500 text-white text-xs rounded hover:bg-teal-600 transition-all duration-200 font-medium"
+                  >
+                    Show Results
+                  </button>
+                </div>
+              </div>
+            </>
           )}
-        </h1>
+        </div>
 
         {loading && page === 1 ? (
           <Loader />
@@ -93,7 +274,9 @@ const Watched = () => {
               }}
             />
             <p className="text-gray-400 text-center">
-              You haven’t marked anything as watched.
+              {activeFilterCount > 0
+                ? "No results found matching your filters."
+                : "You haven't marked anything as watched."}
             </p>
           </div>
         ) : (
@@ -115,15 +298,26 @@ const Watched = () => {
                       {item.title}
                     </h3>
                     <p className="text-xs text-gray-400">{item.year}</p>
-                    <p className="text-xs text-teal-400 mt-1">
-                      Rating: {parseFloat(item.rating).toFixed(1) || "N/A"}
-                    </p>
+                    <div className="absolute top-2 left-2">
+                      <div className="flex items-center gap-1 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-full">
+                        <svg
+                          className="w-3 h-3 text-yellow-400"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <span className="text-white text-xs font-semibold">
+                          {parseFloat(item.rating).toFixed(1) || 0.0}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                   <span className="absolute top-2 right-2 bg-teal-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase shadow-md">
                     {item.type}
                   </span>
                   <button
-                    className="absolute z-10 bottom-2 right-2 bg-red-500 p-0.5 rounded flex items-center justify-center hover:bg-red-800"
+                    className="absolute z-10 bottom-1 right-1 bg-red-500 p-0.5 rounded flex items-center justify-center hover:bg-red-800"
                     onClick={(e) => {
                       e.stopPropagation();
                       setIdToDelete(item._id);
@@ -145,7 +339,7 @@ const Watched = () => {
                 </div>
               ))}
 
-              {loading &&
+              {loadingMore &&
                 Array.from({ length: 12 }).map((_, i) => (
                   <CardSkeleton key={`skeleton-${i}`} />
                 ))}
@@ -155,7 +349,7 @@ const Watched = () => {
               ref={loaderRef}
               className="h-10 mt-4 flex justify-center items-center"
             >
-              {loading && page > 1 && (
+              {loadingMore && page > 1 && (
                 <span className="text-teal-400">Loading more...</span>
               )}
             </div>

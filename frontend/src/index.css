@@ -10,20 +10,16 @@ body {
 }
 
 .scrollbar-hide {
-  -ms-overflow-style: none; 
+  -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
-::-webkit-scrollbar {
-  width: 8px;
-  background: #1e2939;
+@media (pointer: fine) {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: #2dd4bf #1e2939;
+  }
 }
-
-::-webkit-scrollbar-thumb{
-  background: oklch(70.4% 0.14 182.503);
-  border-radius: 3px;
-}
-
 @keyframes filmScroll {
   0% {
     transform: translateX(0);
@@ -70,9 +66,9 @@ body {
   animation: underlineScale 2s ease infinite;
 }
 
-
 @keyframes bg-animation {
-  0%,100% {
+  0%,
+  100% {
     background-size: 200% 200%;
     background-position: left center;
   }
@@ -146,11 +142,16 @@ body {
 
 /* subtle life */
 @keyframes pulse {
-  0%, 100% { box-shadow: 0 0 10px rgba(255, 0, 0, 0.4); }
-  50% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.9); }
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.9);
+  }
 }
 .portal-open {
-  animation: portalExpand 750ms cubic-bezier(.22,1,.36,1) forwards;
+  animation: portalExpand 750ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 @keyframes portalExpand {

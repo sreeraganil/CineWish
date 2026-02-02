@@ -4,7 +4,8 @@ import { Toaster } from "react-hot-toast";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
-import Person from "./pages/Person";
+
+/* ---------- Lazy Pages ---------- */
 
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
@@ -22,24 +23,35 @@ const Collection = lazy(() => import("./pages/Collection"));
 const Studio = lazy(() => import("./pages/Studio"));
 const Network = lazy(() => import("./pages/Network"));
 const Provider = lazy(() => import("./pages/Provider"));
+const Person = lazy(() => import("./pages/Person"));
+
+/* ---------- Loader ---------- */
 
 const PageLoader = () => (
-  <div className="min-h-screen flex items-center justify-center bg-gray-950 text-teal-400">
+  <div className="min-h-screen flex flex-col items-center justify-center gap-5 bg-gray-950">
+    {/* Logo */}
+    <img
+      src="logo/logo.svg"
+      alt="Cinewish"
+      className="w-28 rounded-lg"
+    />
+
+    {/* Dots */}
     <div className="flex gap-2">
-      <div className="w-3 h-3 bg-teal-400 rounded-full animate-bounce" />
+      <div className="w-2.5 h-2.5 bg-teal-400 rounded-full animate-bounce" />
       <div
-        className="w-3 h-3 bg-teal-400 rounded-full animate-bounce"
+        className="w-2.5 h-2.5 bg-teal-400 rounded-full animate-bounce"
         style={{ animationDelay: "150ms" }}
       />
       <div
-        className="w-3 h-3 bg-teal-400 rounded-full animate-bounce"
+        className="w-2.5 h-2.5 bg-teal-400 rounded-full animate-bounce"
         style={{ animationDelay: "300ms" }}
       />
     </div>
   </div>
 );
 
-const App = () => {
+export default function App() {
   return (
     <>
       <Suspense fallback={<PageLoader />}>
@@ -83,7 +95,6 @@ const App = () => {
           />
 
           <Route path="/search" element={<Search />} />
-
           <Route path="/details/:media/:id" element={<Details />} />
 
           <Route
@@ -124,9 +135,7 @@ const App = () => {
         </Routes>
       </Suspense>
 
-      <Toaster position="top-center" reverseOrder={false} />
+      <Toaster position="top-center" />
     </>
   );
-};
-
-export default App;
+}

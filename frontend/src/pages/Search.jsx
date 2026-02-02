@@ -93,6 +93,10 @@ const Search = () => {
     }
   }, [page]);
 
+   useEffect(() => {
+    document.title = `CineWish – Search ${query}`;
+  }, [query]);
+
   useEffect(() => {
     if (!hasMore) return;
 

@@ -16,7 +16,7 @@ const StudiosGrid = () => {
   };
 
   return (
-    <section className="bg-gray-950 text-white py-4 relative px-2">
+    <section className="bg-gray-950 text-white p-4 relative">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-3">
           <h2 className="text-2xl font-bold text-teal-400">

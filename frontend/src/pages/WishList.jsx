@@ -6,6 +6,7 @@ import Loader from "../components/Loader";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import CardSkeleton from "../components/CardSkeleton";
+import genreList from "../utilities/genres.json";
 
 const WishList = () => {
   const [loading, setLoading] = useState(true);
@@ -43,6 +44,7 @@ const WishList = () => {
     setYearFilter("");
     setRatingFilter("");
     setPage(1);
+    fetchData();
   };
 
   const applyFilters = () => {
@@ -59,6 +61,10 @@ const WishList = () => {
     ),
     1,
   );
+
+  useEffect(() => {
+    document.title = "CineWish - Your WishList"
+  },[])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -161,86 +167,100 @@ const WishList = () => {
             </div>
           </div>
           {showFilter && (
-            <div className="mt-4 bg-gray-800 text-white p-4 rounded-lg space-y-4 max-w-lg">
-              <div className="flex gap-4 justify-center flex-wrap">
-                {/* Type Filter */}
-                <div>
-                  <label className="block text-sm mb-1">Type</label>
-                  <select
-                    className="bg-gray-900 px-2 py-1 rounded"
-                    onChange={(e) => setTypeFilter(e.target.value)}
-                    value={typeFilter}
+            <>
+              {/* Backdrop */}
+              <div
+                className="fixed inset-0 z-40"
+                onClick={() => setShowFilter(false)}
+              />
+
+              {/* Filter Panel */}
+              <div className="absolute top-4 z-50 mt-4 bg-gray-900 border border-gray-800 text-white p-4 rounded-lg shadow-xl max-w-lg">
+                <div className="flex gap-3 justify-center flex-wrap">
+                  {/* Type Filter */}
+                  <div>
+                    <label className="block text-[11px] font-medium text-gray-400 mb-1">
+                      Type
+                    </label>
+                    <select
+                      className="bg-gray-800 border border-gray-700 px-2 py-1 rounded text-xs focus:outline-none focus:border-teal-500 transition-all duration-200"
+                      onChange={(e) => setTypeFilter(e.target.value)}
+                      value={typeFilter}
+                    >
+                      <option value="">All</option>
+                      <option value="movie">Movie</option>
+                      <option value="tv">TV</option>
+                    </select>
+                  </div>
+
+                  {/* Genre Filter */}
+                  <div>
+                    <label className="block text-[11px] font-medium text-gray-400 mb-1">
+                      Genre
+                    </label>
+                    <select
+                      className="bg-gray-800 border border-gray-700 px-2 py-1 rounded text-xs focus:outline-none focus:border-teal-500 transition-all duration-200"
+                      onChange={(e) => setGenreFilter(e.target.value)}
+                      value={genreFilter}
+                    >
+                      <option value="">All</option>
+                      {genreList?.map((genre) => (
+                        <option key={genre.id} value={genre.name}>
+                          {genre.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Year Filter */}
+                  <div>
+                    <label className="block text-[11px] font-medium text-gray-400 mb-1">
+                      Year
+                    </label>
+                    <input
+                      type="number"
+                      className="bg-gray-800 border border-gray-700 px-2 py-1 rounded w-20 text-xs focus:outline-none focus:border-teal-500 transition-all duration-200"
+                      placeholder="2023"
+                      value={yearFilter}
+                      onChange={(e) => setYearFilter(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Rating Filter */}
+                  <div>
+                    <label className="block text-[11px] font-medium text-gray-400 mb-1">
+                      Min Rating
+                    </label>
+                    <input
+                      type="number"
+                      className="bg-gray-800 border border-gray-700 px-2 py-1 rounded w-20 text-xs focus:outline-none focus:border-teal-500 transition-all duration-200"
+                      step="0.1"
+                      min="0"
+                      max="10"
+                      placeholder="6.0"
+                      value={ratingFilter}
+                      onChange={(e) => setRatingFilter(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-4 flex justify-between items-center gap-2">
+                  <button
+                    onClick={clearFilters}
+                    className="px-3 py-1 bg-gray-800 border border-gray-700 text-gray-300 text-xs rounded hover:border-red-500/50 hover:text-red-400 transition-all duration-200"
                   >
-                    <option value="">All</option>
-                    <option value="movie">Movie</option>
-                    <option value="tv">TV</option>
-                  </select>
-                </div>
+                    Clear
+                  </button>
 
-                {/* Genre Filter */}
-                <div>
-                  <label className="block text-sm mb-1">Genre</label>
-                  <select
-                    className="bg-gray-900 px-2 py-1 rounded"
-                    onChange={(e) => setGenreFilter(e.target.value)}
-                    value={genreFilter}
+                  <button
+                    onClick={applyFilters}
+                    className="px-3 py-1 bg-teal-500 text-white text-xs rounded hover:bg-teal-600 transition-all duration-200 font-medium"
                   >
-                    <option value="">All</option>
-                    <option value="Action">Action</option>
-                    <option value="Adventure">Adventure</option>
-                    <option value="Drama">Drama</option>
-                    <option value="Comedy">Comedy</option>
-                    <option value="Thriller">Thriller</option>
-                    <option value="Mystery">Mystery</option>
-                    <option value="Fantasy">Fantasy</option>
-                    <option value="Science Fiction">Sci-Fi</option>
-                  </select>
-                </div>
-
-                {/* Year Filter */}
-                <div>
-                  <label className="block text-sm mb-1">Year</label>
-                  <input
-                    type="number"
-                    className="bg-gray-900 px-2 py-1 rounded w-24"
-                    placeholder="e.g. 2023"
-                    value={yearFilter}
-                    onChange={(e) => setYearFilter(e.target.value)}
-                  />
-                </div>
-
-                {/* Rating Filter */}
-                <div>
-                  <label className="block text-sm mb-1">Min Rating</label>
-                  <input
-                    type="number"
-                    className="bg-gray-900 px-2 py-1 rounded w-24"
-                    step="0.1"
-                    min="0"
-                    max="10"
-                    placeholder="e.g. 6"
-                    value={ratingFilter}
-                    onChange={(e) => setRatingFilter(e.target.value)}
-                  />
+                    Show Results
+                  </button>
                 </div>
               </div>
-
-              <div className="text-right w-full flex justify-between">
-                <button
-                  onClick={clearFilters}
-                  className="px-3 py-[2px] bg-red-600 rounded hover:bg-red-700 transition duration-300"
-                >
-                  Clear Filters
-                </button>
-                {/* FIX: Button now calls applyFilters */}
-                <button
-                  onClick={applyFilters}
-                  className="px-3 py-[2px] bg-teal-500 rounded hover:bg-teal-700 transition duration-300"
-                >
-                  Show Results
-                </button>
-              </div>
-            </div>
+            </>
           )}
         </div>
 
@@ -287,9 +307,20 @@ const WishList = () => {
                       {item.title}
                     </h3>
                     <p className="text-xs text-gray-400">{item.year}</p>
-                    <p className="text-xs text-teal-400 mt-1">
-                      Rating: {parseFloat(item.rating).toFixed(1) || "N/A"}
-                    </p>
+                    <div className="absolute top-2 left-2">
+                      <div className="flex items-center gap-1 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-full">
+                        <svg
+                          className="w-3 h-3 text-yellow-400"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <span className="text-white text-xs font-semibold">
+                          {parseFloat(item.rating).toFixed(1) || 0.0}
+                        </span>
+                      </div>
+                    </div>
 
                     <div className="relative mt-2 flex items-center justify-between">
                       <button

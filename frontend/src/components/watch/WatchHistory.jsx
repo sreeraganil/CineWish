@@ -15,15 +15,15 @@ const WatchHistory = ({ items, onRemove }) => {
       {/* Card Row */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4">
         {items.map((item) => {
-          const watchUrl =
+          const url =
             item.mediaType === "tv"
-              ? `/watch/tv/${item.mediaId}/${item.season}/${item.episode}`
-              : `/watch/movie/${item.mediaId}`;
+              ? `/details/tv/${item.mediaId}`
+              : `/details/movie/${item.mediaId}`;
 
           return (
             <Link
               key={`${item.mediaType}-${item.mediaId}-${item.season}-${item.episode}`}
-              to={watchUrl}
+              to={url}
               state={{
                 title: item.title,
                 progressSeconds: item.progressSeconds,
@@ -54,7 +54,7 @@ const WatchHistory = ({ items, onRemove }) => {
                   e.stopPropagation();
                   onRemove?.(item);
                 }}
-                className="absolute top-2 right-2 z-20 w-7 h-7 rounded-full bg-black/80 backdrop-blur-sm text-white flex items-center justify-center hover:bg-red-500 hover:scale-110 transition-all duration-200 shadow-lg opacity-0 group-hover:opacity-100"
+                className="absolute top-2 right-2 z-20 w-7 h-7 rounded-full bg-black/80 backdrop-blur-sm text-white flex items-center justify-center hover:bg-red-500 hover:scale-110 transition-all"
               >
                 <span className="text-sm font-bold">✕</span>
               </button>

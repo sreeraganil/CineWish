@@ -1,5 +1,5 @@
 import { Link, useLocation, useParams } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import API from "../config/axios";
 import wishlistStore from "../store/wishlistStore";
 import toast from "react-hot-toast";
@@ -339,12 +339,13 @@ const Details = () => {
                 <span className="text-gray-400 text-sm">Genres:</span>
                 <div className="flex flex-wrap gap-2 mt-1.5">
                   {item.genres.map((g) => (
-                    <span
+                    <Link
+                      to={`/genre/${g.id}`}
                       key={g.id}
                       className="bg-teal-500/20 text-teal-300 px-2.5 py-1 rounded-md text-xs font-medium border border-teal-500/30"
                     >
                       {g.name}
-                    </span>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -362,14 +363,28 @@ const Details = () => {
                   <div>
                     <span className="text-gray-400">Created By:</span>{" "}
                     <span className="text-white font-medium">
-                      {creators.map((c) => c.name).join(", ")}
+                      {creators.map((c, i, t) => (
+                        <React.Fragment key={c.id}>
+                          <Link
+                            key={c.id}
+                            className="text-teal-500 underline font-medium"
+                            to={`/people/${c.id}`}
+                          >
+                            {c.name}
+                          </Link>
+                          {t.length !== i + 1 && ", "}
+                        </React.Fragment>
+                      ))}
                     </span>
                   </div>
                 )}
                 {media === "movie" && director && (
                   <div>
                     <span className="text-gray-400">Director:</span>{" "}
-                    <Link to={`/people/${director.id}`} className="text-teal-500 underline font-medium">
+                    <Link
+                      to={`/people/${director.id}`}
+                      className="text-teal-500 underline font-medium"
+                    >
                       {director.name}
                     </Link>
                   </div>
@@ -378,7 +393,18 @@ const Details = () => {
                   <div>
                     <span className="text-gray-400">Music:</span>{" "}
                     <span className="text-white font-medium">
-                      {composers.map((c) => c.name).join(", ")}
+                      {composers.map((c, i, t) => (
+                        <React.Fragment key={c.id}>
+                          <Link
+                            key={c.id}
+                            className="text-teal-500 underline font-medium"
+                            to={`/people/${c.id}`}
+                          >
+                            {c.name}
+                          </Link>
+                          {t.length !== i + 1 && ", "}
+                        </React.Fragment>
+                      ))}
                     </span>
                   </div>
                 )}
@@ -386,7 +412,18 @@ const Details = () => {
                   <div>
                     <span className="text-gray-400">Producers:</span>{" "}
                     <span className="text-white font-medium">
-                      {producers.map((p) => p.name).join(", ")}
+                      {producers.map((p, i, t) => (
+                        <React.Fragment key={p.id}>
+                          <Link
+                            key={p.id}
+                            className="text-teal-500 underline font-medium"
+                            to={`/people/${p.id}`}
+                          >
+                            {p.name}
+                          </Link>
+                          {t.length !== i + 1 && ", "}
+                        </React.Fragment>
+                      ))}
                     </span>
                   </div>
                 )}
@@ -541,7 +578,7 @@ const Details = () => {
                             {category.data.map((provider) => (
                               <Link
                                 to={`/provider/${provider.provider_id}`}
-                                key={provider.provider_id}
+                                key={`${provider.provider_id}-${category.title}`}
                                 className="group flex flex-col items-center justify-start text-center cursor-pointer"
                               >
                                 <div className="relative w-full aspect-square max-w-[50px] md:max-w-[60px] mx-auto">
@@ -682,6 +719,9 @@ const Details = () => {
                             ? `https://image.tmdb.org/t/p/w185${season.poster_path}`
                             : "https://via.placeholder.com/100x150"
                         }
+                        onError={(e) => {
+                          e.currentTarget.src = "/placeholder.png";
+                        }}
                         alt={season.name}
                         className="w-16 h-24 object-cover rounded-md flex-shrink-0"
                       />

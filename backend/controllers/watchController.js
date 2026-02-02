@@ -1,4 +1,69 @@
+import WatchList from "../models/watchListModel.js";
 import WatchProgress from "../models/WatchProgressModel.js";
+
+// export const saveProgress = async (req, res) => {
+//   try {
+//     if (!req.user) {
+//       return res.status(401).json({ error: "Unauthorized" });
+//     }
+
+//     const userId = req.user.id;
+
+//     const {
+//       mediaType,
+//       mediaId,
+//       season,
+//       episode,
+//       progressSeconds,
+//       durationSeconds,
+
+//       // optional UI cache
+//       title,
+//       poster,
+//       backdrop,
+//     } = req.body;
+
+//     if (!mediaType || !mediaId) {
+//       return res.status(400).json({ error: "Invalid payload" });
+//     }
+
+//     const status =
+//       durationSeconds &&
+//       progressSeconds / durationSeconds >= 0.9
+//         ? "completed"
+//         : "watching";
+
+//     const filter = {
+//       userId,
+//       mediaType,
+//       mediaId,
+//       season: season ?? null,
+//       episode: episode ?? null,
+//     };
+
+//     const update = {
+//       $set: {
+//         progressSeconds,
+//         durationSeconds,
+//         status,
+//         lastWatchedAt: new Date(),
+//       },
+//       $setOnInsert: {},
+//     };
+
+//     // write UI cache ONLY on first insert
+//     if (title) update.$setOnInsert.title = title;
+//     if (poster) update.$setOnInsert.poster = poster;
+//     if (backdrop) update.$setOnInsert.backdrop = backdrop;
+
+//     await WatchProgress.updateOne(filter, update, { upsert: true });
+
+//     res.sendStatus(204);
+//   } catch (err) {
+//     console.error("saveProgress error:", err);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// };
 
 export const saveProgress = async (req, res) => {
   try {
@@ -16,23 +81,29 @@ export const saveProgress = async (req, res) => {
       progressSeconds,
       durationSeconds,
 
-      // optional UI cache
       title,
       poster,
       backdrop,
+      year,
+      genre,
     } = req.body;
 
     if (!mediaType || !mediaId) {
       return res.status(400).json({ error: "Invalid payload" });
     }
 
-    const status =
-      durationSeconds &&
-      progressSeconds / durationSeconds >= 0.9
-        ? "completed"
-        : "watching";
+    const ratio =
+      durationSeconds && progressSeconds
+        ? progressSeconds / durationSeconds
+        : 0;
 
-    const filter = {
+    const status = ratio >= 0.9 ? "completed" : "watching";
+
+    /* -----------------------------
+       1) UPSERT WATCH PROGRESS
+    ------------------------------ */
+
+    const progressFilter = {
       userId,
       mediaType,
       mediaId,
@@ -40,24 +111,67 @@ export const saveProgress = async (req, res) => {
       episode: episode ?? null,
     };
 
-    const update = {
+    const progressUpdate = {
       $set: {
         progressSeconds,
         durationSeconds,
         status,
         lastWatchedAt: new Date(),
       },
-      $setOnInsert: {},
+
+      $setOnInsert: {
+        title,
+        poster,
+        backdrop,
+      },
     };
 
-    // write UI cache ONLY on first insert
-    if (title) update.$setOnInsert.title = title;
-    if (poster) update.$setOnInsert.poster = poster;
-    if (backdrop) update.$setOnInsert.backdrop = backdrop;
+    const progressDoc = await WatchProgress.findOneAndUpdate(
+      progressFilter,
+      progressUpdate,
+      {
+        upsert: true,
+        new: true,
+        setDefaultsOnInsert: true,
+      }
+    );
 
-    await WatchProgress.updateOne(filter, update, { upsert: true });
+    /* -----------------------------
+       2) IF COMPLETED → UPSERT WATCHLIST
+    ------------------------------ */
 
-    res.sendStatus(204);
+    if (status === "completed") {
+      const watchListFilter = {
+        userId,
+        tmdbId: mediaId,
+        type: mediaType,
+      };
+
+      const watchListUpdate = {
+        $set: {
+          status: "watched",
+        },
+
+        $setOnInsert: {
+          title,
+          poster,
+          year,
+          genre,
+        },
+      };
+
+      await WatchList.findOneAndUpdate(
+        watchListFilter,
+        watchListUpdate,
+        {
+          upsert: true,
+          new: true,
+          setDefaultsOnInsert: true,
+        }
+      );
+    }
+
+    return res.sendStatus(204);
   } catch (err) {
     console.error("saveProgress error:", err);
     res.status(500).json({ error: "Internal server error" });

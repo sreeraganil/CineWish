@@ -44,9 +44,9 @@ const wishlistStore = create((set, get) => ({
     }
   },
 
- fetchWatched: async (page = 1) => {
+ fetchWatched: async (page = 1, queries) => {
   try {
-    const { data } = await API.get(`/wishlist?status=watched&page=${page}`);
+    const { data } = await API.get(`/wishlist?status=watched&page=${page}&${queries}`);
     set((state) => ({
       watched: page === 1 ? data.data : [...state.watched, ...data.data],
       watchedCount: data.total

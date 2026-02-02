@@ -59,7 +59,7 @@ const GenrePage = () => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(20,184,166,0.1),transparent_50%)]" />
 
         {/* Content */}
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-20">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-12">
           {/* Genre Info */}
           <div className="text-center md:text-left">
             {/* Genre Icon (if available) */}
@@ -124,7 +124,7 @@ const GenrePage = () => {
       </section>
 
       {/* CONTENT SECTION */}
-      <section className="max-w-7xl mx-auto px-3 sm:px-5 py-6 sm:py-8">
+      <section className="max-w-7xl mx-auto px-3 sm:px-5 pb-6 sm:pb-8">
         {/* Header with Media Toggle */}
         <div className="flex flex-col gap-4 mb-6 sm:mb-8">
           {/* Title & Toggle Container */}

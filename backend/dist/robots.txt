@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+Disallow: /register
+Disallow: /profile
+Disallow: /wishlist
+Disallow: /watched
+Disallow: /watch
+
+Sitemap: https://cinewish.deno.dev/sitemap.xml

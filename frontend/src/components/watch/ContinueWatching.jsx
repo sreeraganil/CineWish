@@ -29,7 +29,7 @@ const ContinueWatching = ({ items, onRemove }) => {
   };
 
   return (
-    <section className="pb-8">
+    <section>
       <h2 className="text-2xl font-bold mb-6 text-teal-400">
         Continue Watching
       </h2>
