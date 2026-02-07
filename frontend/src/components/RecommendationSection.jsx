@@ -25,12 +25,12 @@ const RecommendationSection = () => {
   if (recommended?.length == 0) return null;
 
   return (
-    <section className="bg-gray-950 p-4 text-white pt-5">
+    <section className="bg-gray-950 p-2 sm:p-4 text-white pt-3 sm:pt-4 md:pt-5">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-2xl font-bold mb-6 text-teal-400">
+        <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-5 md:mb-6 text-teal-400">
           Recommended For You
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-5 lg:gap-6 px-2 sm:px-0">
           {recommended?.map((item, idx) => (
             <RecommendationCard key={idx} {...item} />
           ))}

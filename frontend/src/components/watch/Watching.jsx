@@ -4,12 +4,8 @@ import ContinueWatching from "./ContinueWatching";
 import userStore from "../../store/userStore";
 
 const Watching = () => {
-  const {
-    continueWatching,
-    loading,
-    fetchWatchProgress,
-    removeFromHistory,
-  } = watchStore();
+  const { continueWatching, loading, fetchWatchProgress, removeFromHistory } =
+    watchStore();
 
   const { user } = userStore();
 
@@ -20,7 +16,7 @@ const Watching = () => {
   if (loading || !continueWatching.length) return null;
 
   return (
-    <div className="bg-gray-950 pt-8 px-4 text-white relative">
+    <div className="bg-gray-950 pt-4 sm:pt-6 md:pt-8 px-2 sm:px-4 text-white relative">
       <div className="max-w-7xl mx-auto">
         <ContinueWatching
           items={continueWatching.slice(0, 5)}

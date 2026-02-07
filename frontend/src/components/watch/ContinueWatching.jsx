@@ -30,17 +30,17 @@ const ContinueWatching = ({ items, onRemove }) => {
 
   return (
     <section>
-      <h2 className="text-2xl font-bold mb-6 text-teal-400">
+      <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-teal-400">
         Continue Watching
       </h2>
 
-      <div className="relative group/button px-2">
-        {/* Left Arrow */}
+      <div className="relative group/button">
+        {/* LEFT BUTTON */}
         {canScroll && (
           <button
             onClick={() => scroll(-1)}
             aria-label="Scroll left"
-            className="hidden absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full sm:flex items-center justify-center opacity-0 group-hover/button:opacity-100"
+            className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition-all duration-200 p-2 rounded-full items-center justify-center opacity-0 group-hover/button:opacity-100"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -48,12 +48,12 @@ const ContinueWatching = ({ items, onRemove }) => {
           </button>
         )}
 
-        {/* Right Arrow */}
+        {/* RIGHT BUTTON */}
         {canScroll && (
           <button
             onClick={() => scroll(1)}
             aria-label="Scroll right"
-            className="hidden absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition p-2 rounded-full sm:flex items-center justify-center opacity-0 group-hover/button:opacity-100"
+            className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-teal-500 bg-opacity-75 hover:bg-opacity-100 hover:scale-105 transition-all duration-200 p-2 rounded-full items-center justify-center opacity-0 group-hover/button:opacity-100"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -61,10 +61,10 @@ const ContinueWatching = ({ items, onRemove }) => {
           </button>
         )}
 
-        {/* Scroll container */}
+        {/* SCROLL CONTAINER */}
         <div
           ref={scrollRef}
-          className="flex gap-4 md:gap-5 overflow-x-auto scrollbar-hide scroll-smooth"
+          className="flex gap-2 sm:gap-3 md:gap-4 lg:gap-5 overflow-x-auto scrollbar-hide scroll-smooth px-2 sm:px-3 md:px-5 -mx-2 sm:mx-0 pb-1"
         >
           {items.map((item) => {
             const percent = progressPercent(
@@ -80,7 +80,7 @@ const ContinueWatching = ({ items, onRemove }) => {
             return (
               <div
                 key={`${item.mediaType}-${item.mediaId}-${item.season}-${item.episode}`}
-                className="group/card flex-none w-[200px] sm:w-[240px] lg:w-[280px]"
+                className="group/card flex-none w-[160px] sm:w-[200px] md:w-[240px] lg:w-[280px]"
               >
                 <div className="relative">
                   <Link
@@ -92,7 +92,7 @@ const ContinueWatching = ({ items, onRemove }) => {
                       backdrop: item.backdrop,
                     }}
                   >
-                    <div className="relative aspect-video rounded-xl overflow-hidden bg-gray-800 transition-all duration-300 border border-gray-800 hover:border-teal-500/50">
+                    <div className="relative aspect-video rounded-lg sm:rounded-xl overflow-hidden bg-gray-800 transition-all duration-300 border border-gray-800 hover:border-teal-500/50 shadow-md hover:shadow-xl">
                       {/* Backdrop Image */}
                       {item.backdrop ? (
                         <img
@@ -103,7 +103,7 @@ const ContinueWatching = ({ items, onRemove }) => {
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
-                          <svg className="w-16 h-16 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-12 sm:w-16 h-12 sm:h-16 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
                         </div>
@@ -114,8 +114,8 @@ const ContinueWatching = ({ items, onRemove }) => {
 
                       {/* Play Icon Overlay */}
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300">
-                        <div className="bg-teal-500/90 backdrop-blur-sm rounded-full p-3 transform group-hover/card:scale-110 transition-transform duration-300 shadow-xl border border-teal-400/50">
-                          <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <div className="bg-teal-500/90 backdrop-blur-sm rounded-full p-2 sm:p-3 transform group-hover/card:scale-110 transition-transform duration-300 shadow-xl border border-teal-400/50">
+                          <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
                           </svg>
                         </div>
@@ -130,8 +130,8 @@ const ContinueWatching = ({ items, onRemove }) => {
                       </div>
 
                       {/* Media Type Badge */}
-                      <div className="absolute top-1 left-2">
-                        <span className="bg-teal-600 backdrop-blur-sm text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase shadow-lg border border-white/20">
+                      <div className="absolute top-1 sm:top-1.5 left-1.5 sm:left-2">
+                        <span className="bg-teal-600 backdrop-blur-sm text-white text-[8px] sm:text-[9px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full uppercase shadow-lg border border-white/20">
                           {item.mediaType === "tv" ? `S${item.season}E${item.episode}` : "Movie"}
                         </span>
                       </div>
@@ -146,23 +146,23 @@ const ContinueWatching = ({ items, onRemove }) => {
                       onRemove?.(item);
                     }}
                     aria-label="Remove from continue watching"
-                    className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/70 backdrop-blur-sm text-white text-sm hover:bg-red-600 hover:scale-110 transition-all duration-200 flex items-center justify-center border border-white/20 shadow-lg"
+                    className="absolute top-1.5 sm:top-2 right-1.5 sm:right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-black/70 backdrop-blur-sm text-white text-sm hover:bg-red-600 hover:scale-110 transition-all duration-200 flex items-center justify-center border border-white/20 shadow-lg"
                   >
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3 sm:w-3.5 h-3 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
                 </div>
 
                 {/* Title and Info */}
-                <div className="mt-2 px-1">
-                  <h3 className="text-xs sm:text-sm font-semibold text-white truncate group-hover/card:text-teal-400 transition-colors mb-1">
+                <div className="mt-1.5 sm:mt-2 px-1">
+                  <h3 className="text-xs sm:text-sm font-semibold text-white truncate group-hover/card:text-teal-400 transition-colors mb-0.5 sm:mb-1">
                     {item.title ?? `Media ${item.mediaId}`}
                   </h3>
 
                   <div className="flex items-center justify-between text-[10px] sm:text-xs text-gray-400">
                     <div className="flex items-center gap-1">
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       <span>{formatTime(item.progressSeconds)}</span>

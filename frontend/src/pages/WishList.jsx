@@ -63,8 +63,8 @@ const WishList = () => {
   );
 
   useEffect(() => {
-    document.title = "CineWish - Your WishList"
-  },[])
+    document.title = "CineWish - Your WishList";
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -290,73 +290,88 @@ const WishList = () => {
           </>
         ) : (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2 sm:gap-3 md:gap-4">
               {wishlist?.map((item, i) => (
                 <div
                   key={`${item._id}-${i}`}
-                  className="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden shadow hover:shadow-teal-500/20 transition hover:scale-105 relative cursor-pointer"
+                  className="group relative bg-gray-900 border border-gray-800 rounded-lg overflow-hidden shadow hover:shadow-teal-500/20 transition cursor-pointer sm:hover:scale-105"
                   onClick={() => handleClick(item.type, item.tmdbId)}
                 >
-                  <img
-                    src={`https://image.tmdb.org/t/p/w500${item.poster}`}
-                    alt={item.title}
-                    className="h-60 w-full object-cover"
-                  />
-                  <div className="p-3">
-                    <h3 className="text-sm font-semibold truncate">
-                      {item.title}
-                    </h3>
-                    <p className="text-xs text-gray-400">{item.year}</p>
-                    <div className="absolute top-2 left-2">
-                      <div className="flex items-center gap-1 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-full">
+                  {/* Poster */}
+                  <div className="relative w-full aspect-[4/5] sm:aspect-[3/4] bg-gray-800 overflow-hidden">
+                    <img
+                      src={`https://image.tmdb.org/t/p/w500${item.poster}`}
+                      alt={item.title}
+                      loading="lazy"
+                      onError={(e) => {
+                        e.currentTarget.src = "/placeholder.png";
+                      }}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+
+                    {/* Rating */}
+                    <div className="absolute top-1 left-1">
+                      <div className="flex items-center gap-0.5 bg-black/60 backdrop-blur-sm px-1.5 py-0.5 rounded-full">
                         <svg
-                          className="w-3 h-3 text-yellow-400"
+                          className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-yellow-400"
                           fill="currentColor"
                           viewBox="0 0 20 20"
                         >
                           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                         </svg>
-                        <span className="text-white text-xs font-semibold">
-                          {parseFloat(item.rating).toFixed(1) || 0.0}
+                        <span className="text-white text-[10px] sm:text-xs font-semibold">
+                          {parseFloat(item.rating || 0).toFixed(1)}
                         </span>
                       </div>
                     </div>
 
-                    <div className="relative mt-2 flex items-center justify-between">
+                    {/* Type */}
+                    <span className="absolute top-1 right-1 bg-teal-600 text-white text-[8px] sm:text-[10px] font-semibold px-1.5 py-0.5 rounded-full uppercase shadow-md">
+                      {item.type}
+                    </span>
+                  </div>
+
+                  {/* Meta */}
+                  <div className="p-2 sm:p-3">
+                    <h3 className="text-xs sm:text-sm font-semibold truncate">
+                      {item.title}
+                    </h3>
+                    <p className="text-[10px] sm:text-xs text-gray-400">
+                      {item.year}
+                    </p>
+
+                    {/* Actions */}
+                    <div className="mt-1.5 flex items-center gap-1.5">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           markAsWatched(item._id);
                         }}
-                        className="w-3/4 bg-teal-600 hover:bg-teal-700 text-white text-xs font-semibold py-1.5 rounded"
+                        className="flex-1 bg-teal-600 hover:bg-teal-700 text-white text-[10px] sm:text-xs font-semibold py-1 rounded"
                       >
                         Watched
                       </button>
+
                       <button
-                        className="bg-red-500 p-0.5 rounded flex items-center justify-center hover:bg-red-800"
                         onClick={(e) => {
                           e.stopPropagation();
                           setIdToDelete(item._id);
                           setShowModal(true);
                         }}
+                        className="bg-red-500 p-1 rounded hover:bg-red-800 flex items-center justify-center"
                       >
-                        <span className="material-symbols-outlined">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            width="22"
-                            height="22"
-                            fill="currentColor"
-                          >
-                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
-                          </svg>
-                        </span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          width="18"
+                          height="18"
+                          fill="currentColor"
+                        >
+                          <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                        </svg>
                       </button>
                     </div>
                   </div>
-                  <span className="absolute top-2 right-2 bg-teal-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase shadow-md">
-                    {item.type}
-                  </span>
                 </div>
               ))}
 
@@ -365,6 +380,7 @@ const WishList = () => {
                   <CardSkeleton key={`skeleton-${i}`} />
                 ))}
             </div>
+
             <div
               ref={loaderRef}
               className="h-10 mt-4 flex justify-center items-center"

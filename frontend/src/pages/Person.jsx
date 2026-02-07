@@ -142,78 +142,88 @@ const Person = () => {
 
       {/* ---------------- HERO ---------------- */}
 
-      <section className="max-w-7xl mx-auto px-6 py-16 flex flex-col md:flex-row gap-10">
-        <div className="relative group flex-shrink-0">
-          <img
-            src={
-              person?.profile_path
-                ? `https://image.tmdb.org/t/p/w500${person.profile_path}`
-                : "/placeholder-person.png"
-            }
-            onError={(e) => {
-              e.currentTarget.src = "/placeholder.png";
-            }}
-            alt={person?.name}
-            className="w-56 mx-auto rounded-xl shadow-2xl border border-gray-800 group-hover:border-teal-500/50 transition-all duration-300 group-hover:shadow-teal-500/20"
-          />
-          <div className="absolute inset-0 rounded-xl bg-gradient-to-t from-teal-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+      <section className="max-w-7xl mx-auto px-3 sm:px-6 py-8 sm:py-16 flex flex-col md:flex-row gap-6 md:gap-10">
+  {/* IMAGE */}
+  <div className="relative group flex-shrink-0 self-center md:self-start">
+    <img
+      src={
+        person?.profile_path
+          ? `https://image.tmdb.org/t/p/w500${person.profile_path}`
+          : "/placeholder-person.png"
+      }
+      onError={(e) => {
+        e.currentTarget.src = "/placeholder.png";
+      }}
+      alt={person?.name}
+      className="w-36 sm:w-44 md:w-56 rounded-xl shadow-2xl border border-gray-800 group-hover:border-teal-500/50 transition-all duration-300 group-hover:shadow-teal-500/20"
+    />
+
+    <div className="absolute inset-0 rounded-xl bg-gradient-to-t from-teal-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+  </div>
+
+  {/* CONTENT */}
+  <div className="space-y-4 sm:space-y-5">
+    <div>
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
+        {person?.name}
+      </h1>
+
+      {person?.known_for_department && (
+        <div className="mt-2 sm:mt-3 inline-flex items-center gap-2 px-2.5 py-1 bg-teal-500/20 backdrop-blur-sm rounded-lg border border-teal-400/30">
+          <span className="text-teal-300 font-semibold text-xs sm:text-sm">
+            {person.known_for_department}
+          </span>
         </div>
+      )}
+    </div>
 
-        <div className="space-y-5">
-          <div>
-            <h1 className="text-4xl font-bold text-white">{person?.name}</h1>
-
-            {person?.known_for_department && (
-              <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-teal-500/20 backdrop-blur-sm rounded-lg border border-teal-400/30">
-                <span className="text-teal-300 font-semibold text-sm">
-                  {person.known_for_department}
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* META */}
-          <div className="flex flex-wrap gap-3 pt-1">
-            {person?.birthday && (
-              <div className="flex items-center gap-2 px-4 py-2 bg-gray-800/50 rounded-lg border border-gray-700 hover:border-teal-500/40 transition-all duration-200">
-                <span className="text-gray-400 text-sm font-medium">
-                  Birthday:
-                </span>
-                <span className="text-gray-200 text-sm">{person.birthday}</span>
-              </div>
-            )}
-
-            {person?.place_of_birth && (
-              <div className="flex items-center gap-2 px-4 py-2 bg-gray-800/50 rounded-lg border border-gray-700 hover:border-teal-500/40 transition-all duration-200">
-                <span className="text-gray-400 text-sm font-medium">
-                  Birthplace:
-                </span>
-                <span className="text-gray-200 text-sm">
-                  {person.place_of_birth}
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* BIO */}
-          <div className="pt-2">
-            <h2 className="text-lg font-semibold text-white mb-3">Biography</h2>
-
-            <p className="max-w-2xl leading-relaxed text-gray-300">
-              {showFullBio ? biography : shortBio}
-            </p>
-
-            {biography.length > BIO_LIMIT && (
-              <button
-                onClick={() => setShowFullBio((p) => !p)}
-                className="mt-3 text-teal-400 text-sm font-medium hover:text-teal-300 transition-colors duration-200"
-              >
-                {showFullBio ? "Show less" : "Read more"}
-              </button>
-            )}
-          </div>
+    {/* META */}
+    <div className="flex flex-wrap gap-2 sm:gap-3 pt-1">
+      {person?.birthday && (
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-800/50 rounded-lg border border-gray-700 hover:border-teal-500/40 transition-all">
+          <span className="text-gray-400 text-xs sm:text-sm font-medium">
+            Birthday:
+          </span>
+          <span className="text-gray-200 text-xs sm:text-sm">
+            {person.birthday}
+          </span>
         </div>
-      </section>
+      )}
+
+      {person?.place_of_birth && (
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-800/50 rounded-lg border border-gray-700 hover:border-teal-500/40 transition-all">
+          <span className="text-gray-400 text-xs sm:text-sm font-medium">
+            Birthplace:
+          </span>
+          <span className="text-gray-200 text-xs sm:text-sm">
+            {person.place_of_birth}
+          </span>
+        </div>
+      )}
+    </div>
+
+    {/* BIO */}
+    <div className="pt-1">
+      <h2 className="text-base sm:text-lg font-semibold text-white mb-2 sm:mb-3">
+        Biography
+      </h2>
+
+      <p className="max-w-2xl leading-relaxed text-sm sm:text-base text-gray-300">
+        {showFullBio ? biography : shortBio}
+      </p>
+
+      {biography.length > BIO_LIMIT && (
+        <button
+          onClick={() => setShowFullBio((p) => !p)}
+          className="mt-2 sm:mt-3 text-teal-400 text-xs sm:text-sm font-medium hover:text-teal-300 transition-colors"
+        >
+          {showFullBio ? "Show less" : "Read more"}
+        </button>
+      )}
+    </div>
+  </div>
+</section>
+
 
       {/* ---------------- FILTER BAR ---------------- */}
 

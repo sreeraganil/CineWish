@@ -40,7 +40,8 @@ const userStore = create((set, get) => {
         const res = await API.post("/auth/register", formData);
         return res.data;
       } catch (err) {
-        throw err?.response?.data?.message || "Registration failed";
+        const msg = err?.response?.data?.message || "Registration failed";
+        throw new Error(msg)
       }
     },
 
@@ -52,7 +53,8 @@ const userStore = create((set, get) => {
         }
         return res.data;
       } catch (err) {
-        throw err?.response?.data?.message || "Login failed";
+        const msg =  err?.response?.data?.message || "Login failed";
+        throw new Error(msg)
       }
     },
 
