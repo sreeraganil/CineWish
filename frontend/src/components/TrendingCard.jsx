@@ -18,7 +18,7 @@ const TrendingCard = ({
 
   return (
     <div
-      className="min-w-[120px] sm:min-w-[140px] md:min-w-[160px] my-1 relative bg-gray-900 rounded-xl border border-gray-800 overflow-hidden shadow hover:border-teal-300 transition-all group"
+      className="min-w-[120px] sm:min-w-[140px] md:min-w-[160px] my-1 relative bg-gray-900 rounded-xl border border-gray-800 overflow-hidden shadow hover:border-teal-300 transition-all group will-change-transform"
       onClick={() => handleClick(media_type, id)}
     >
       <div className="relative w-full aspect-[3/4] overflow-hidden">

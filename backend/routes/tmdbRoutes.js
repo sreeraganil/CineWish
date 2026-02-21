@@ -15,7 +15,7 @@ router.get("/now-playing", cache("30 minutes"), getNowPlaying);
 router.get("/upcoming/list", cache("30 minutes"), getUpcomingList);
 router.get("/ott", cache("30 minutes"), getLatestOTT);
 router.get("/search", searchTMDB);
-router.get("/details/:media/:id", getDetails);
+router.get("/details/:media/:id",cache("30 minutes"), getDetails);
 router.get("/recommendations/:media/:id", authMiddleware, getRecommendations);
 router.get("/discover", cache("30 minutes"), discoverTMDB);
 router.get("/:media/:id/:related", relatedContent);

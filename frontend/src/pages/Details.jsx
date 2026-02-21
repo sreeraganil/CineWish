@@ -7,6 +7,7 @@ import BackHeader from "../components/Backheader";
 import Loader from "../components/Loader";
 import userStore from "../store/userStore";
 import SimilarContent from "../components/SimilarContent";
+import { useMemo } from "react";
 
 const Details = () => {
   const { media, id } = useParams();
@@ -15,6 +16,7 @@ const Details = () => {
   const [isInWishlist, setIsInWishlist] = useState(false);
   const [clicked, setClicked] = useState(false);
   const [openSeason, setOpenSeason] = useState(1);
+  const [progress, setProgress] = useState(null);
   const detailpageRef = useRef();
 
   const { addToWishlist } = wishlistStore();
@@ -94,7 +96,23 @@ const Details = () => {
         setLoading(false);
       }
     };
+    const fetchProgress = async () => {
+      try {
+        const { data } = await API.get(`/watch/progress/${media}/${id}`);
+        setProgress(data);
+        if (media === "tv" && data?.length) {
+          const watching = data.find((p) => p.status === "watching");
+          const target = watching || data[0];
+          setOpenSeason(target.season);
+        }
+      } catch (err) {
+        console.error("Failed to fetch details:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchDetails();
+    fetchProgress();
   }, [media, id]);
 
   const formatVotes = (v) => {
@@ -114,6 +132,25 @@ const Details = () => {
   const toggleSeason = (seasonNumber) => {
     setOpenSeason((prev) => (prev === seasonNumber ? null : seasonNumber));
   };
+
+  const getLatestEpisode = () => {
+    if (!progress?.length) return null;
+
+    const watching = progress.find((p) => p.status === "watching");
+    return watching || progress[0];
+  };
+
+  const progressMap = useMemo(() => {
+    const map = new Map();
+
+    progress?.length &&
+      progress?.forEach((p) => {
+        const key = `${p.season}-${p.episode}`;
+        map.set(key, p);
+      });
+
+    return map;
+  }, [progress]);
 
   if (loading)
     return (
@@ -490,7 +527,13 @@ const Details = () => {
                 {media === "tv" ? (
                   <span
                     onClick={() => {
-                      const el = document.getElementById("s01e01");
+                      const latest = getLatestEpisode();
+
+                      const id = latest ?`s${String(latest.season).padStart(2, "0")}e${String(
+                        latest.episode,
+                      ).padStart(2, "0")}` : 's01e01';
+
+                      const el = document.getElementById(id);
                       if (el) {
                         el.scrollIntoView({
                           behavior: "smooth",
@@ -498,7 +541,7 @@ const Details = () => {
                         });
                       }
                     }}
-                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm bg-amber-500 hover:bg-amber-600 text-black transition-all"
+                    className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm bg-amber-500 hover:bg-amber-600 text-black transition-all cursor-pointer"
                   >
                     <svg
                       className="w-4 h-4"
@@ -507,7 +550,9 @@ const Details = () => {
                     >
                       <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
                     </svg>
-                    <span className="truncate">Watch</span>
+                    <span className="truncate">
+                      {progress?.length ? "Resume" : "Watch"}
+                    </span>
                   </span>
                 ) : (
                   <Link
@@ -694,7 +739,7 @@ const Details = () => {
 
         {/* Seasons & Episodes Section (TV Only) */}
         {media === "tv" && item.episodes?.length > 0 && (
-          <div className="pt-8 st">
+          <div className="pt-8">
             <h3 className="text-lg font-semibold mb-4">
               Seasons ({item.episodes.length})
             </h3>
@@ -705,7 +750,7 @@ const Details = () => {
 
                 return (
                   <div
-                    key={season._id}
+                    key={season.id}
                     className="bg-gray-800/70 rounded-lg overflow-hidden"
                   >
                     {/* SEASON HEADER */}
@@ -717,11 +762,8 @@ const Details = () => {
                         src={
                           season.poster_path
                             ? `https://image.tmdb.org/t/p/w185${season.poster_path}`
-                            : "https://via.placeholder.com/100x150"
+                            : "/placeholder.png"
                         }
-                        onError={(e) => {
-                          e.currentTarget.src = "/placeholder.png";
-                        }}
                         alt={season.name}
                         className="w-16 h-24 object-cover rounded-md flex-shrink-0"
                       />
@@ -739,57 +781,67 @@ const Details = () => {
                         </p>
                       </div>
 
-                      <span className="material-symbols-outlined text-xl">
-                        {isOpen ? (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            width="24"
-                            height="24"
-                            fill="currentColor"
-                          >
-                            <path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z" />
-                          </svg>
-                        ) : (
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            width="24"
-                            height="24"
-                            fill="currentColor"
-                          >
-                            <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" />
-                          </svg>
-                        )}
-                      </span>
+                      <span className="text-xl">{isOpen ? "▲" : "▼"}</span>
                     </div>
 
-                    {/* EPISODES DROPDOWN */}
+                    {/* EPISODES */}
                     {isOpen && season.episodes?.length > 0 && (
                       <div className="w-full md:w-[95%] lg:w-[90%] ml-auto border-t border-gray-700 divide-y divide-gray-700">
-                        {season.episodes.map((ep, i) => (
-                          <div
-                            key={ep.id}
-                            className="hover:bg-gray-700/40 flex flex-col md:flex-row md:items-center justify-between p-4 gap-4 scroll-mt-32"
-                            id={`s01e0${i + 1}`}
-                          >
-                            <div className="flex flex-col sm:flex-row gap-4 flex-1">
-                              {/* Thumbnail - Larger on mobile, fixed on desktop */}
-                              <img
-                                src={
-                                  ep.still_path
-                                    ? `https://image.tmdb.org/t/p/w300${ep.still_path}` // Increased quality slightly for mobile full-width
-                                    : "/placeholder.png"
-                                }
-                                alt={ep.name}
-                                className="w-full sm:w-32 md:w-40 aspect-video object-cover rounded shadow-md"
-                              />
+                        {season.episodes.map((ep) => {
+                          // 🔥 progress lookup
+                          const key = `${season.season_number}-${ep.episode_number}`;
+                          const p = progressMap.get(key);
 
-                              <div className="flex-1 min-w-0">
-                                <div className="flex items-center justify-between mb-1">
-                                  <p className="text-sm md:text-base font-semibold truncate">
+                          const isWatching = p?.status === "watching";
+                          const isWatched = p?.status === "completed";
+
+                          const isLatest =
+                            progress?.[0]?.season === season.season_number &&
+                            progress?.[0]?.episode === ep.episode_number;
+
+                          return (
+                            <div
+                              key={ep.id}
+                              id={`s${String(season.season_number).padStart(2, "0")}e${String(
+                                ep.episode_number,
+                              ).padStart(2, "0")}`}
+                              className={`p-4 flex flex-col mx-1 md:flex-row gap-4 scroll-mt-32 transition
+                        ${isLatest ? "ring-2 ring-teal-400 bg-amber-500/5" : ""}
+                        hover:bg-gray-700/40`}
+                            >
+                              {/* Thumbnail */}
+                              <div className="relative">
+                                <img
+                                  src={
+                                    ep.still_path
+                                      ? `https://image.tmdb.org/t/p/w300${ep.still_path}`
+                                      : "/placeholder.png"
+                                  }
+                                  alt={ep.name}
+                                  className="w-full sm:w-32 md:w-40 aspect-video object-cover rounded shadow-md"
+                                />
+
+                                {/* ✔ Watched Badge */}
+                                {isWatched && (
+                                  <div className="absolute top-1 right-1 bg-emerald-500 text-white text-xs px-1.5 rounded">
+                                    ✓
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Info */}
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <p className="font-semibold truncate">
                                     E{ep.episode_number} • {ep.name}
                                   </p>
+
+                                  {/* ▶ Watching badge */}
+                                  {isWatching && (
+                                    <span className="text-[10px] px-2 py-0.5 bg-amber-500 text-black rounded font-semibold">
+                                      Watching
+                                    </span>
+                                  )}
                                 </div>
 
                                 <p className="text-xs text-gray-400 mb-2">
@@ -798,35 +850,46 @@ const Details = () => {
                                 </p>
 
                                 {ep.overview && (
-                                  <p className="text-xs line-clamp-2 md:line-clamp-3 text-gray-300 leading-relaxed">
+                                  <p className="text-xs line-clamp-2 text-gray-300">
                                     {ep.overview}
                                   </p>
                                 )}
-                              </div>
-                            </div>
 
-                            {/* Action Button - Full width on mobile */}
-                            <Link
-                              className="flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 text-xs md:text-sm text-white px-4 py-2 md:py-1.5 rounded transition-colors whitespace-nowrap font-medium w-full md:w-auto"
-                              state={{
-                                title: item.title || item.name,
-                                poster: item.poster_path
-                                  ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
-                                  : "/placeholder.png",
-                                backdrop: ep.still_path
-                                  ? `https://image.tmdb.org/t/p/w185${ep.still_path}`
-                                  : "/placeholder.png",
-                                mediaType: media,
-                                mediaId: id,
-                              }}
-                              to={`/watch/${media}/${id}/${openSeason}/${ep.episode_number}`}
-                            >
-                              <span>
-                                Watch S{openSeason}E{ep.episode_number}
-                              </span>
-                            </Link>
-                          </div>
-                        ))}
+                                {/* ▶ Progress bar */}
+                                {isWatching && p?.durationSeconds && (
+                                  <div className="w-full h-1 bg-gray-600 rounded mt-2 overflow-hidden">
+                                    <div
+                                      className="h-full bg-amber-400"
+                                      style={{
+                                        width: `${(p.progressSeconds / p.durationSeconds) * 100}%`,
+                                      }}
+                                    />
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Watch Button */}
+                              <Link
+                                className="bg-teal-600 hover:bg-teal-700 text-xs md:text-sm text-white px-4 py-2 rounded font-medium whitespace-nowrap self-start md:self-center"
+                                to={`/watch/${media}/${id}/${season.season_number}/${ep.episode_number}`}
+                                state={{
+                                  title: item.title || item.name,
+                                  poster: item.poster_path
+                                    ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+                                    : "/placeholder.png",
+                                  backdrop: ep.still_path
+                                    ? `https://image.tmdb.org/t/p/w185${ep.still_path}`
+                                    : "/placeholder.png",
+                                  mediaType: media,
+                                  mediaId: id,
+                                }}
+                              >
+                                Watch S{season.season_number}E
+                                {ep.episode_number}
+                              </Link>
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                   </div>

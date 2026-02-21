@@ -28,6 +28,8 @@ const ContinueWatching = ({ items, onRemove }) => {
     el.scrollBy({ left: scrollAmount, behavior: "smooth" });
   };
 
+  if(!items?.length) return;
+
   return (
     <section>
       <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-teal-400">

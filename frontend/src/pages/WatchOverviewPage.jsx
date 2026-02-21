@@ -65,11 +65,11 @@ const WatchOverviewPage = () => {
           </div>
         ) : (
           <div className="max-w-7xl mx-auto space-y-6 sm:space-y-3 md:space-y-5">
-            <ContinueWatching
+            {continueWatching?.length && <ContinueWatching
               items={continueWatching}
               onRemove={removeFromHistory}
-            />
-            <WatchHistory items={history} onRemove={removeFromHistory} />
+            />}
+            {history?.length && <WatchHistory items={history} onRemove={removeFromHistory} />}
           </div>
         )}
       </div>

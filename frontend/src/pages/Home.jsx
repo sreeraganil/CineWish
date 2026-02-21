@@ -4,7 +4,7 @@ import HeroSection from "../components/HeroSection";
 import GenreRow from "../components/GenreRow";
 import StudiosGrid from "../components/StudiosGrid";
 import NetWorkGrid from "../components/NetWorkGrid";
-import StatsSection from "../components/StatsSection";
+// import StatsSection from "../components/StatsSection";
 import Watching from "../components/watch/Watching";
 import RecommendationSection from "../components/RecommendationSection";
 import DiscoverRow from "../components/DiscoverRow";
@@ -44,8 +44,7 @@ const Home = () => {
       <Header />
       <HeroSection />
 
-      {/* Likely above-the-fold — keep eager */}
-      <StatsSection />
+      {/* <StatsSection /> */}
       <Watching />
       <RecommendationSection />
 

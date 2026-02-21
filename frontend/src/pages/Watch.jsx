@@ -21,6 +21,8 @@ const Watch = () => {
     const params = new URLSearchParams({
       color: "009689",
       autoPlay: "true",
+      nextEpisode: "true",
+      episodeSelector: "true"
     });
 
     return `${baseUrl}?${params.toString()}`;

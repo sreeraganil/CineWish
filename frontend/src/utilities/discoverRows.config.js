@@ -311,6 +311,19 @@ const discoverRows = [
       sort_by: "popularity.desc",
     },
   },
+  {
+  title: "Space Adventures",
+  rowKey: "spaceMovies",
+  media: "movie",
+  params: {
+    with_keywords: "9882,3801",
+    with_genres: "878",
+    "vote_count.gte": 200,
+    "vote_average.gte": 5,
+    sort_by: "popularity.desc",
+  },
+},
+
 ];
 
 export default discoverRows;

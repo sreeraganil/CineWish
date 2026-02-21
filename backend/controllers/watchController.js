@@ -1,5 +1,7 @@
+import mediaMetaModel from "../models/mediaMetaModel.js";
 import WatchList from "../models/watchListModel.js";
 import WatchProgress from "../models/WatchProgressModel.js";
+import { getNextEpisode } from "../utilities/getNextEpisode.js";
 
 // export const saveProgress = async (req, res) => {
 //   try {
@@ -80,7 +82,6 @@ export const saveProgress = async (req, res) => {
       episode,
       progressSeconds,
       durationSeconds,
-
       title,
       poster,
       backdrop,
@@ -92,18 +93,22 @@ export const saveProgress = async (req, res) => {
       return res.status(400).json({ error: "Invalid payload" });
     }
 
+    /* -----------------------------
+       1) COMPUTE STATUS
+    ------------------------------ */
+
     const ratio =
       durationSeconds && progressSeconds
         ? progressSeconds / durationSeconds
         : 0;
 
-    const status = ratio >= 0.9 ? "completed" : "watching";
+    const newStatus = ratio >= 0.9 ? "completed" : "watching";
 
     /* -----------------------------
-       1) UPSERT WATCH PROGRESS
+       2) UPSERT PROGRESS
     ------------------------------ */
 
-    const progressFilter = {
+    const filter = {
       userId,
       mediaType,
       mediaId,
@@ -111,64 +116,89 @@ export const saveProgress = async (req, res) => {
       episode: episode ?? null,
     };
 
-    const progressUpdate = {
-      $set: {
-        progressSeconds,
-        durationSeconds,
-        status,
-        lastWatchedAt: new Date(),
-      },
-
-      $setOnInsert: {
-        title,
-        poster,
-        backdrop,
-      },
-    };
-
     const progressDoc = await WatchProgress.findOneAndUpdate(
-      progressFilter,
-      progressUpdate,
+      filter,
       {
-        upsert: true,
-        new: true,
-        setDefaultsOnInsert: true,
-      }
+        $set: {
+          progressSeconds,
+          durationSeconds,
+          status: newStatus,
+          lastWatchedAt: new Date(),
+        },
+        $setOnInsert: { title, poster, backdrop },
+      },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
     );
 
+    // Prevent repeated completion triggers
+    if (newStatus !== "completed") {
+      return res.sendStatus(204);
+    }
+
     /* -----------------------------
-       2) IF COMPLETED → UPSERT WATCHLIST
+       3) MOVIES → DIRECT WATCHED
     ------------------------------ */
 
-    if (status === "completed") {
-      const watchListFilter = {
-        userId,
-        tmdbId: mediaId,
-        type: mediaType,
-      };
-
-      const watchListUpdate = {
-        $set: {
-          status: "watched",
-        },
-
-        $setOnInsert: {
-          title,
-          poster,
-          year,
-          genre,
-        },
-      };
-
-      await WatchList.findOneAndUpdate(
-        watchListFilter,
-        watchListUpdate,
+    if (mediaType === "movie") {
+      await WatchList.updateOne(
+        { userId, tmdbId: mediaId, type: mediaType },
         {
-          upsert: true,
-          new: true,
-          setDefaultsOnInsert: true,
-        }
+          $set: { status: "watched" },
+          $setOnInsert: { title, poster, year, genre },
+        },
+        { upsert: true }
       );
+
+      return res.sendStatus(204);
+    }
+
+    /* -----------------------------
+       4) TV LOGIC (USING MediaMeta)
+    ------------------------------ */
+
+    if (mediaType === "tv" && season != null && episode != null) {
+      const meta = await mediaMetaModel.findOne({ mediaId, type: "tv" });
+
+      if (!meta) {
+        // metadata missing → fail gracefully
+        return res.sendStatus(204);
+      }
+
+      const next = getNextEpisode(meta, season, episode);
+
+      // Next episode exists → create watching row
+      if (next) {
+        await WatchProgress.updateOne(
+          {
+            userId,
+            mediaType,
+            mediaId,
+            season: next.season,
+            episode: next.episode,
+          },
+          {
+            $setOnInsert: {
+              progressSeconds: 0,
+              status: "watching",
+              title,
+              poster,
+              backdrop,
+              lastWatchedAt: new Date(),
+            },
+          },
+          { upsert: true }
+        );
+      } else {
+        // No next episode = full show completed
+        await WatchList.updateOne(
+          { userId, tmdbId: mediaId, type: mediaType },
+          {
+            $set: { status: "watched" },
+            $setOnInsert: { title, poster, year, genre },
+          },
+          { upsert: true }
+        );
+      }
     }
 
     return res.sendStatus(204);
