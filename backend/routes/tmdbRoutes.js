@@ -3,7 +3,12 @@ import { collectionTMDB, discoverTMDB, getDetails, getEpisodeRatings, getLatestO
 import authMiddleware from "../middlewares/authMiddleware.js";
 import apicache from "apicache";
 
-const cache = apicache.middleware;
+const cache = apicache
+  .options({
+    statusCodes: { include: [200] },
+    headers: { "cache-control": "public, max-age=1800" },
+  })
+  .middleware;
 
 
 const router = express.Router();
