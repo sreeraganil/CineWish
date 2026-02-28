@@ -1,12 +1,12 @@
 import { Route, Routes } from "react-router-dom";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { Toaster } from "react-hot-toast";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
+import PageLoader from "./components/PageLoader";
 
 /* ---------- Lazy Pages ---------- */
-
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const Home = lazy(() => import("./pages/Home"));
@@ -24,115 +24,119 @@ const Studio = lazy(() => import("./pages/Studio"));
 const Network = lazy(() => import("./pages/Network"));
 const Provider = lazy(() => import("./pages/Provider"));
 const Person = lazy(() => import("./pages/Person"));
+const EpisodeRatingsPage = lazy(() => import("./pages/EpisodeRatingsPage"));
 
-/* ---------- Loader ---------- */
-
-const PageLoader = () => (
-  <div className="min-h-screen flex flex-col items-center justify-center gap-5 bg-gray-950">
-    {/* Logo */}
-    <img
-      src="logo/logo.svg"
-      alt="Cinewish"
-      className="w-28 rounded-lg"
-    />
-
-    {/* Dots */}
-    <div className="flex gap-2">
-      <div className="w-2.5 h-2.5 bg-teal-400 rounded-full animate-bounce" />
-      <div
-        className="w-2.5 h-2.5 bg-teal-400 rounded-full animate-bounce"
-        style={{ animationDelay: "150ms" }}
-      />
-      <div
-        className="w-2.5 h-2.5 bg-teal-400 rounded-full animate-bounce"
-        style={{ animationDelay: "300ms" }}
-      />
-    </div>
+const FallbackLoader = () => (
+  <div className="flex items-center justify-center min-h-screen bg-black">
+    <div className="w-6 h-6 border-2 border-teal-400 border-t-transparent rounded-full animate-spin" />
   </div>
 );
 
 export default function App() {
+  const [showIntro, setShowIntro] = useState(() => {
+    return !sessionStorage.getItem("cw_intro_seen");
+  });
+
+  useEffect(() => {
+    if (!showIntro) return;
+
+    // Match exactly: CSS loaderOut fires at 3.4s, fade is 0.6s → total 4s
+    // We unmount at the same time so there's zero gap between states
+    const t = setTimeout(() => {
+      sessionStorage.setItem("cw_intro_seen", "1");
+      setShowIntro(false);
+    }, 4000);
+
+    return () => clearTimeout(t);
+  }, [showIntro]);
+
   return (
     <>
-      <Suspense fallback={<PageLoader />}>
-        <Routes>
-          <Route path="/" element={<Home />} />
+      <Suspense fallback={showIntro ? null : <FallbackLoader />}>
+        {showIntro && <PageLoader />}
 
-          <Route
-            path="/login"
-            element={
-              <GuestRoute>
-                <Login />
-              </GuestRoute>
-            }
-          />
+        {/* Always render routes so lazy imports resolve in the background */}
+        <div style={{ visibility: showIntro ? "hidden" : "visible" }}>
+          <Routes>
+            <Route path="/" element={<Home />} />
 
-          <Route
-            path="/register"
-            element={
-              <GuestRoute>
-                <Register />
-              </GuestRoute>
-            }
-          />
+            <Route
+              path="/login"
+              element={
+                <GuestRoute>
+                  <Login />
+                </GuestRoute>
+              }
+            />
 
-          <Route
-            path="/wishlist"
-            element={
-              <ProtectedRoute>
-                <WishList />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/register"
+              element={
+                <GuestRoute>
+                  <Register />
+                </GuestRoute>
+              }
+            />
 
-          <Route
-            path="/watched"
-            element={
-              <ProtectedRoute>
-                <Watched />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/wishlist"
+              element={
+                <ProtectedRoute>
+                  <WishList />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route path="/search" element={<Search />} />
-          <Route path="/details/:media/:id" element={<Details />} />
+            <Route
+              path="/watched"
+              element={
+                <ProtectedRoute>
+                  <Watched />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
+            <Route path="/search" element={<Search />} />
+            <Route path="/details/:media/:id" element={<Details />} />
 
-          <Route
-            path="/watch/:media/:id/:s?/:e?"
-            element={
-              <ProtectedRoute>
-                <Watch />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/watch/history"
-            element={
-              <ProtectedRoute>
-                <WatchOverviewPage />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/watch/:media/:id/:s?/:e?"
+              element={
+                <ProtectedRoute>
+                  <Watch />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route path="/genre/:id" element={<GenrePage />} />
-          <Route path="/collection/:id" element={<Collection />} />
-          <Route path="/studio/:id" element={<Studio />} />
-          <Route path="/network/:id" element={<Network />} />
-          <Route path="/provider/:id" element={<Provider />} />
-          <Route path="/people/:id" element={<Person />} />
+            <Route
+              path="/watch/history"
+              element={
+                <ProtectedRoute>
+                  <WatchOverviewPage />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            <Route path="/genre/:id" element={<GenrePage />} />
+            <Route path="/collection/:id" element={<Collection />} />
+            <Route path="/studio/:id" element={<Studio />} />
+            <Route path="/network/:id" element={<Network />} />
+            <Route path="/provider/:id" element={<Provider />} />
+            <Route path="/people/:id" element={<Person />} />
+            <Route path="/ratings/:imdbId" element={<EpisodeRatingsPage />} />
+
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
       </Suspense>
 
       <Toaster position="top-center" />

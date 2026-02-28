@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const TrendingCard = ({
   id,
@@ -10,16 +10,11 @@ const TrendingCard = ({
   poster_path,
   media_type = "movie",
 }) => {
-  const navigate = useNavigate();
-
-  const handleClick = (media = "movie", id) => {
-    navigate(`/details/${media}/${id}`);
-  };
 
   return (
-    <div
+    <Link
       className="min-w-[120px] sm:min-w-[140px] md:min-w-[160px] my-1 relative bg-gray-900 rounded-xl border border-gray-800 overflow-hidden shadow hover:border-teal-300 transition-all group will-change-transform"
-      onClick={() => handleClick(media_type, id)}
+      to={`/details/${media_type}/${id}`}
     >
       <div className="relative w-full aspect-[3/4] overflow-hidden">
         <img
@@ -75,7 +70,7 @@ const TrendingCard = ({
           </div>
         </div>
       )}
-    </div>
+    </Link>
   );
 };
 

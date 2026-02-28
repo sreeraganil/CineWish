@@ -773,3 +773,47 @@ export const getPersonDetails = async (req, res) => {
   }
 };
 
+const OMDB_KEY_2 = process.env.OMDB_KEY_2;
+export const getEpisodeRatings = async (req, res) => {
+  try {
+    const { imdbId } = req.params;
+    const maxSeasons = Number(req.query.maxSeasons) || 20;
+
+    if (!imdbId) {
+      return res.status(400).json({ message: "Missing imdbId" });
+    }
+
+    const all = [];
+
+    for (let season = 1; season <= maxSeasons; season++) {
+      const url = `https://www.omdbapi.com/?i=${imdbId}&Season=${season}&apikey=${OMDB_KEY_2}`;
+
+      const { data } = await axios.get(url);
+
+      // stop when no more seasons
+      if (!data.Episodes) break;
+
+      const episodes = data.Episodes.map(ep => ({
+        season,
+        episode: Number(ep.Episode),
+        title: ep.Title,
+        rating: ep.imdbRating === "N/A" ? null : Number(ep.imdbRating),
+        imdbId: ep.imdbID,
+      }));
+
+      all.push(...episodes);
+    }
+
+    return res.json({
+      imdbId,
+      totalEpisodes: all.length,
+      episodes: all,
+    });
+  } catch (err) {
+    console.error("OMDb controller error:", err.message);
+
+    return res.status(500).json({
+      message: "Failed to fetch episode ratings",
+    });
+  }
+};

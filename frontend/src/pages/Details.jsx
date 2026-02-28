@@ -264,9 +264,9 @@ const Details = () => {
           <p className="italic text-gray-300 mb-6 st">"{item.tagline}"</p>
         )}
 
-        <div className="flex flex-col md:flex-row gap-6 items-start pb-1 st">
+        <div className="flex items-center flex-col md:flex-row gap-6 pb-1 st">
           {/* Poster */}
-          <div className="flex-shrink-0 mx-auto md:mx-0">
+          <div className="relative flex-shrink-0 mx-auto md:mx-0">
             <img
               src={
                 item.poster_path
@@ -286,6 +286,23 @@ const Details = () => {
               <p className="text-sm sm:text-base text-gray-300 leading-relaxed">
                 {item.overview}
               </p>
+            )}
+
+            {media === "tv" && item?.external_ids?.imdb_id && (
+              <div className="pt-1">
+                <Link
+                  to={`/ratings/${item.external_ids.imdb_id}`}
+                  className="inline-flex items-center gap-1 px-3 py-1.5
+                 rounded-md text-sm font-semibold
+                 bg-indigo-600 hover:bg-indigo-600/30
+                 text-indigo-100 hover:text-white
+                 border border-indigo-500/70
+                 transition-all"
+                >
+                  <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" > <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.93 8.719c-.783-.57-.38-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.119-3.292z" /> </svg> 
+                  <span className="h-full flex items-center mb-0.5">Episode-wise Ratings</span>
+                </Link>
+              </div>
             )}
 
             {/* Details Grid */}
@@ -529,9 +546,11 @@ const Details = () => {
                     onClick={() => {
                       const latest = getLatestEpisode();
 
-                      const id = latest ?`s${String(latest.season).padStart(2, "0")}e${String(
-                        latest.episode,
-                      ).padStart(2, "0")}` : 's01e01';
+                      const id = latest
+                        ? `s${String(latest.season).padStart(2, "0")}e${String(
+                            latest.episode,
+                          ).padStart(2, "0")}`
+                        : "s01e01";
 
                       const el = document.getElementById(id);
                       if (el) {

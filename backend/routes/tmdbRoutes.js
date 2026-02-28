@@ -1,5 +1,5 @@
 import express from "express";
-import { collectionTMDB, discoverTMDB, getDetails, getLatestOTT, getNowPlaying, getPersonDetails, getRecommendations, getTrending, getUpcoming, getUpcomingList, relatedContent, searchTMDB } from "../controllers/tmdbController.js";
+import { collectionTMDB, discoverTMDB, getDetails, getEpisodeRatings, getLatestOTT, getNowPlaying, getPersonDetails, getRecommendations, getTrending, getUpcoming, getUpcomingList, relatedContent, searchTMDB } from "../controllers/tmdbController.js";
 import authMiddleware from "../middlewares/authMiddleware.js";
 import apicache from "apicache";
 
@@ -21,5 +21,6 @@ router.get("/discover", cache("30 minutes"), discoverTMDB);
 router.get("/:media/:id/:related", relatedContent);
 router.get("/collection/:id", collectionTMDB);
 router.get("/person/:id", getPersonDetails);
+router.get("/ratings/:imdbId", cache("30 minutes"), getEpisodeRatings);
 
 export default router;
