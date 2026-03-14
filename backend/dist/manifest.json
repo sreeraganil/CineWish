@@ -1,0 +1,22 @@
+{
+  "name": "CineWish – Movie & Series Tracker",
+  "short_name": "CineWish",
+  "description": "Track movies and TV shows, manage your watchlist, and discover top-rated content.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+
+  "background_color": "#020617",
+  "theme_color": "#0f172a",
+
+  "orientation": "portrait-primary",
+
+  "icons": [
+    {
+      "src": "/logo/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

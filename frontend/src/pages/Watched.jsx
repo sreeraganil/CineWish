@@ -258,7 +258,9 @@ const Watched = () => {
         </div>
 
         {loading && page === 1 ? (
-          <Loader />
+          <div className="h-[calc(100vh-200px)]">
+            <Loader />
+          </div>
         ) : watched?.length === 0 ? (
           <div className="w-full flex flex-col items-center justify-center gap-4">
             <DotLottieReact

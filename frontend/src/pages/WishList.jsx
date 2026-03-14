@@ -265,7 +265,9 @@ const WishList = () => {
         </div>
 
         {loading ? (
-          <Loader />
+          <div className="h-[calc(100vh-200px)]">
+            <Loader />
+          </div>
         ) : wishlist?.length === 0 ? (
           <>
             <div className="relative w-full flex flex-col items-center justify-center gap-4">
