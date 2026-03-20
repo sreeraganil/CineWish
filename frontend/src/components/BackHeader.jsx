@@ -1,14 +1,13 @@
-import { useNavigate, useNavigationType } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const BackHeader = ({ title }) => {
   const navigate = useNavigate();
-  const navigationType = useNavigationType();
 
   const handleBack = () => {
-    if (navigationType === "POP") {
-      navigate("/", { replace: true });
-    } else {
+    if (window.history.state && window.history.state.idx > 0) {
       navigate(-1);
+    } else {
+      navigate("/", { replace: true });
     }
   };
 

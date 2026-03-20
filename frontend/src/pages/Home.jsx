@@ -10,6 +10,8 @@ import RecommendationSection from "../components/RecommendationSection";
 import DiscoverRow from "../components/DiscoverRow";
 import useHomeRowStore from "../store/homeRowStore";
 import discoverRows from "../utilities/discoverRows.config";
+import userStore from "../store/userStore";
+import HeroSlider from "../components/HeroSlider";
 
 // Lazy load ONLY below-the-fold sections
 const TrendingSection = lazy(() => import("../components/TrendingSection"));
@@ -25,6 +27,7 @@ const SectionLoader = () => (
 
 const Home = () => {
   const { clearLastRowScroll, getLastRowScroll } = useHomeRowStore();
+  const { user } = userStore();
 
   useEffect(() => {
     const last = getLastRowScroll();
@@ -42,7 +45,7 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black text-white pb-20 md:pb-0">
       <Header />
-      <HeroSection />
+      { user ? <HeroSlider /> : <HeroSection /> }
 
       {/* <StatsSection /> */}
       <Watching />

@@ -145,8 +145,8 @@ export const getDetails = async (req, res) => {
         language: "en-US",
         append_to_response:
           media === "tv"
-            ? "aggregate_credits,external_ids"
-            : "credits,external_ids",
+            ? "aggregate_credits,external_ids,videos"
+            : "credits,external_ids,videos",
       },
     });
 

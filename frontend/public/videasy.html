@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Player</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: #0f0f0f;
+        color: #ffffffe6;
+        font-family: "Ubuntu", Arial, sans-serif;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      /* Header */
+      .player-header {
+        background-color: #000c;
+        padding: 0 16px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-shrink: 0;
+      }
+
+      .show-title {
+        font-size: 18px;
+        font-family: "Ubuntu", sans-serif;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 60%;
+        cursor: pointer;
+      }
+
+      .show-title:hover {
+        text-decoration: underline;
+      }
+
+      .header-buttons {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      /* Buttons */
+      .icon-button {
+        width: 40px;
+        height: 40px;
+        border: none;
+        cursor: pointer;
+        background-color: transparent;
+        color: #ffffffe6;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s;
+      }
+
+      .icon-button:hover svg {
+        transform: scale(1.2);
+      }
+      .icon-button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+      .icon-button:disabled svg {
+        transform: scale(1) !important;
+      }
+      .icon-button.hidden {
+        visibility: hidden;
+      }
+
+      /* iframe */
+      .player-content {
+        flex: 1;
+        overflow: hidden;
+      }
+
+      #videoFrame {
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+
+      /* Popover */
+      .popover-wrapper {
+        position: relative;
+      }
+
+      .popover-panel {
+        display: none;
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        width: 420px;
+        height: 520px;
+        background-color: #0d0d0d;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 100;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .popover-panel.active {
+        display: flex;
+      }
+
+      .popover-header {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        gap: 12px;
+        height: 52px;
+        flex-shrink: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      }
+
+      .popover-title {
+        flex: 1;
+        font-size: 16px;
+        font-weight: bold;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .popover-list {
+        flex: 1;
+        overflow-y: auto;
+        list-style: none;
+      }
+
+      .popover-list::-webkit-scrollbar {
+        width: 6px;
+      }
+      .popover-list::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .popover-list::-webkit-scrollbar-thumb {
+        background: #444;
+        border-radius: 3px;
+      }
+      .popover-list::-webkit-scrollbar-thumb:hover {
+        background: #666;
+      }
+
+      .popover-list li {
+        padding: 10px 16px;
+        cursor: pointer;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      }
+
+      .popover-list li:hover {
+        background-color: #1e1e1e;
+      }
+      .popover-list li.current {
+        background-color: #1a2a2a;
+        border-left: 3px solid #009689;
+      }
+
+      .item-name {
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .item-details {
+        font-size: 11px;
+        color: #999;
+        margin-top: 2px;
+        font-style: italic;
+      }
+
+      @media (max-width: 600px) {
+        .popover-panel {
+          width: 90vw;
+          right: -8px;
+        }
+        .show-title {
+          font-size: 14px;
+          max-width: 50%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="player-header">
+      <!-- Left: back button -->
+      <div class="header-buttons">
+        <!-- <button class="icon-button" id="back-button" title="Go Back" onclick="history.back()">
+                <svg stroke="#fff" fill="#fff" stroke-width="0" viewBox="0 0 16 16" height="24px" width="24px" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                </svg>
+            </button> -->
+      </div>
+
+      <!-- Center: title -->
+      <h2 class="show-title" id="title">Loading...</h2>
+
+      <!-- Right: episode selector + next ep -->
+      <div class="header-buttons">
+        <div class="popover-wrapper">
+          <button
+            class="icon-button hidden"
+            id="epselect-button"
+            title="Episode Selection"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+            >
+              <path
+                fill-rule="evenodd"
+                clip-rule="evenodd"
+                d="M8 5H22V13H24V5C24 3.89543 23.1046 3 22 3H8V5ZM18 9H4V7H18C19.1046 7 20 7.89543 20 9V17H18V9ZM0 13C0 11.8954 0.895431 11 2 11H14C15.1046 11 16 11.8954 16 13V19C16 20.1046 15.1046 21 14 21H2C0.895431 21 0 20.1046 0 19V13ZM14 19V13H2V19H14Z"
+                fill="white"
+              />
+            </svg>
+          </button>
+          <div class="popover-panel" id="popover-panel">
+            <div class="popover-header">
+              <button
+                class="icon-button"
+                id="popover-back"
+                style="display: none"
+                title="Back to seasons"
+              >
+                <svg
+                  stroke="#fff"
+                  fill="#fff"
+                  stroke-width="0"
+                  viewBox="0 0 16 16"
+                  height="20px"
+                  width="20px"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
+                  />
+                </svg>
+              </button>
+              <div class="popover-title" id="popover-title"></div>
+              <button class="icon-button" id="popover-close" title="Close">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  width="22"
+                  height="22"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <ul class="popover-list" id="seasons-list"></ul>
+            <ul
+              class="popover-list"
+              id="episodes-list"
+              style="display: none"
+            ></ul>
+          </div>
+        </div>
+
+        <button
+          class="icon-button hidden"
+          id="nextep-button"
+          title="Next Episode"
+        >
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M22 3H20V21H22V3ZM4.28615 3.61729C3.28674 3.00228 2 3.7213 2 4.89478V19.1052C2 20.2787 3.28674 20.9977 4.28615 20.3827L15.8321 13.2775C16.7839 12.6918 16.7839 11.3082 15.8321 10.7225L4.28615 3.61729ZM4 18.2104V5.78956L14.092 12L4 18.2104Z"
+              fill="white"
+            />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="player-content">
+      <iframe
+        id="videoFrame"
+        allowfullscreen
+        allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+      ></iframe>
+    </main>
+
+    <script>
+      const iframe = document.getElementById("videoFrame");
+      const titleEl = document.getElementById("title");
+      const nextEpButton = document.getElementById("nextep-button");
+      const epSelectButton = document.getElementById("epselect-button");
+      const popoverPanel = document.getElementById("popover-panel");
+      const popoverBack = document.getElementById("popover-back");
+      const popoverClose = document.getElementById("popover-close");
+      const popoverTitle = document.getElementById("popover-title");
+      const seasonsList = document.getElementById("seasons-list");
+      const episodesList = document.getElementById("episodes-list");
+
+      const TMDB_TOKEN =
+        "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwYTk1NzRmZDcxMjRkNmI5ZTUyNjA4ZWEzNWQ2NzdiNCIsIm5iZiI6MTczNzU5MDQ2NC4zMjUsInN1YiI6IjY3OTE4NmMwZThiNjdmZjgzM2ZhNjM4OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.kWqK74FSN41PZO7_ENZelydTtX0u2g6dCkAW0vFs4jU";
+      const TMDB_HEADERS = {
+        Authorization: `Bearer ${TMDB_TOKEN}`,
+        accept: "application/json",
+      };
+
+      // ── URL Params ────────────────────────────────────────────────────────────────
+
+      function getParams() {
+        const p = new URLSearchParams(window.location.search);
+        const type = p.get("type");
+        const id = p.get("id");
+        if (type === "movie" && id) {
+          return { type, id };
+        }
+        if (type === "tv" && id && p.get("s") && p.get("e")) {
+          return { type, id, season: p.get("s"), episode: p.get("e") };
+        }
+        return null;
+      }
+
+      // ── Videasy URL ───────────────────────────────────────────────────────────────
+
+      function getVideasyUrl(params) {
+        if (params.type === "movie") {
+          return `https://player.videasy.net/movie/${params.id}`;
+        }
+        return `https://player.videasy.net/tv/${params.id}/${params.season}/${params.episode}?nextEpisode=true&episodeSelector=true`;
+      }
+
+      // ── TMDB Fetch ────────────────────────────────────────────────────────────────
+
+      async function fetchTMDB(url) {
+        const res = await fetch(url, { headers: TMDB_HEADERS });
+        if (!res.ok) throw new Error(`TMDB fetch failed: ${url}`);
+        return res.json();
+      }
+
+      async function fetchShowData(params) {
+        if (params.type === "movie") {
+          const data = await fetchTMDB(
+            `https://api.themoviedb.org/3/movie/${params.id}?language=en-US`,
+          );
+          return { title: data.original_title };
+        }
+        const data = await fetchTMDB(
+          `https://api.themoviedb.org/3/tv/${params.id}?language=en-US`,
+        );
+        const result = { title: data.name, seasons: [], episodeCounts: {} };
+        for (const s of data.seasons) {
+          result.episodeCounts[s.season_number] = s.episode_count;
+          if (s.season_number !== 0) result.seasons.push(s.season_number);
+        }
+        return result;
+      }
+
+      async function fetchSeasonData(params, showData) {
+        const result = {};
+        for (const season of showData.seasons) {
+          const data = await fetchTMDB(
+            `https://api.themoviedb.org/3/tv/${params.id}/season/${season}?language=en-US`,
+          );
+          result[season] = {
+            name: data.name,
+            air_date: data.air_date,
+            episodes: data.episodes.map((ep) => ({
+              episode_number: ep.episode_number,
+              name: ep.name,
+              air_date: ep.air_date,
+              runtime: ep.runtime,
+            })),
+          };
+        }
+        return result;
+      }
+
+      // ── Next Episode ──────────────────────────────────────────────────────────────
+
+      function getNextEp(season, episode, episodeCounts) {
+        const s = parseInt(season);
+        const e = parseInt(episode);
+        if (e < episodeCounts[s]) return [s, e + 1];
+        if (episodeCounts[s + 1] !== undefined) return [s + 1, 1];
+        return [null, null];
+      }
+
+      function navigateToEpisode(params, season, episode) {
+        const url = new URL(window.location.href);
+        url.searchParams.set("s", season);
+        url.searchParams.set("e", episode);
+        window.location.href = url.toString();
+      }
+
+      // ── Popover ───────────────────────────────────────────────────────────────────
+
+      let popoverView = "seasons"; // 'seasons' | 'episodes'
+      let seasonData = null;
+      let showData = null;
+      let currentParams = null;
+
+      function showSeasonsView() {
+        popoverView = "seasons";
+        seasonsList.style.display = "block";
+        episodesList.style.display = "none";
+        popoverBack.style.display = "none";
+        popoverTitle.textContent = showData.title;
+        seasonsList.scrollTop = 0;
+      }
+
+      function showEpisodesView(season) {
+        popoverView = "episodes";
+        seasonsList.style.display = "none";
+        episodesList.style.display = "block";
+        popoverBack.style.display = "flex";
+        popoverTitle.textContent = seasonData[season].name;
+        episodesList.scrollTop = 0;
+
+        const currentSeason = parseInt(currentParams.season);
+        const currentEpisode = parseInt(currentParams.episode);
+
+        episodesList.innerHTML = seasonData[season].episodes
+          .map((ep) => {
+            const isCurrent =
+              parseInt(season) === currentSeason &&
+              ep.episode_number === currentEpisode;
+            return `
+            <li data-season="${season}" data-episode="${ep.episode_number}" class="${isCurrent ? "current" : ""}">
+                <div class="item-name">E${ep.episode_number} — ${ep.name}</div>
+                <div class="item-details">${ep.air_date || ""}${ep.runtime ? `&nbsp;&nbsp;${ep.runtime}m` : ""}</div>
+            </li>
+        `;
+          })
+          .join("");
+      }
+
+      function buildSeasonsView() {
+        const currentSeason = parseInt(currentParams.season);
+        seasonsList.innerHTML = showData.seasons
+          .map(
+            (s) => `
+        <li data-season="${s}" class="${s === currentSeason ? "current" : ""}">
+            <div class="item-name">${seasonData[s].name}</div>
+            <div class="item-details">${seasonData[s].air_date || ""}</div>
+        </li>
+    `,
+          )
+          .join("");
+      }
+
+      function openPopoverToCurrentSeason() {
+        showSeasonsView();
+        // Auto-drill into current season
+        setTimeout(() => {
+          const li = seasonsList.querySelector(
+            `li[data-season="${currentParams.season}"]`,
+          );
+          if (li) li.click();
+        }, 0);
+      }
+
+      // ── Init ──────────────────────────────────────────────────────────────────────
+
+      window.onload = async () => {
+        const params = getParams();
+        currentParams = params;
+
+        if (!params) {
+          titleEl.textContent = "Invalid URL";
+          return;
+        }
+
+        // Load iframe immediately — don't wait for TMDB
+        iframe.src = getVideasyUrl(params);
+
+        // Fetch show metadata
+        try {
+          showData = await fetchShowData(params);
+
+          if (params.type === "movie") {
+            titleEl.textContent = showData.title;
+          } else {
+            titleEl.textContent = `${showData.title} S${params.season} E${params.episode}`;
+
+            // Next episode button
+            const [nextS, nextE] = getNextEp(
+              params.season,
+              params.episode,
+              showData.episodeCounts,
+            );
+            nextEpButton.classList.remove("hidden");
+            if (nextS !== null) {
+              nextEpButton.title = `Next: S${nextS} E${nextE}`;
+              nextEpButton.disabled = false;
+              nextEpButton.addEventListener("click", () =>
+                navigateToEpisode(params, nextS, nextE),
+              );
+            } else {
+              nextEpButton.title = "No next episode";
+              nextEpButton.disabled = true;
+            }
+
+            // Episode selector button
+            epSelectButton.classList.remove("hidden");
+            epSelectButton.addEventListener("click", (e) => {
+              e.stopPropagation();
+              popoverPanel.classList.toggle("active");
+              if (popoverPanel.classList.contains("active") && seasonData) {
+                openPopoverToCurrentSeason();
+              }
+            });
+
+            // Close popover on outside click
+            document.addEventListener("click", (e) => {
+              if (
+                !popoverPanel.contains(e.target) &&
+                e.target !== epSelectButton
+              ) {
+                popoverPanel.classList.remove("active");
+              }
+            });
+
+            // Popover back button
+            popoverBack.addEventListener("click", () => showSeasonsView());
+
+            // Popover close button
+            popoverClose.addEventListener("click", () =>
+              popoverPanel.classList.remove("active"),
+            );
+
+            // Season click
+            seasonsList.addEventListener("click", (e) => {
+              const li = e.target.closest("li");
+              if (li) showEpisodesView(li.dataset.season);
+            });
+
+            // Episode click
+            episodesList.addEventListener("click", (e) => {
+              const li = e.target.closest("li");
+              if (li)
+                navigateToEpisode(
+                  params,
+                  li.dataset.season,
+                  li.dataset.episode,
+                );
+            });
+
+            // Load season data in background (don't block)
+            fetchSeasonData(params, showData)
+              .then((data) => {
+                seasonData = data;
+                buildSeasonsView();
+                // If popover was opened before data loaded, populate it now
+                if (popoverPanel.classList.contains("active")) {
+                  openPopoverToCurrentSeason();
+                }
+              })
+              .catch((err) => console.error("Season data failed:", err));
+          }
+
+          // Title click → TMDB page
+          titleEl.addEventListener("click", () => {
+            window.open(
+              `https://www.themoviedb.org/${params.type}/${params.id}`,
+              "_blank",
+            );
+          });
+        } catch (err) {
+          console.error("Failed to load show data:", err);
+          titleEl.textContent = "Player";
+        }
+      };
+    </script>
+  </body>
+</html>

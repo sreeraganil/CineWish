@@ -8,6 +8,7 @@ import Loader from "../components/Loader";
 import userStore from "../store/userStore";
 import SimilarContent from "../components/SimilarContent";
 import { useMemo } from "react";
+import MediaVideos from "../components/MediaVideos";
 
 const Details = () => {
   const { media, id } = useParams();
@@ -112,7 +113,7 @@ const Details = () => {
       }
     };
     fetchDetails();
-    fetchProgress();
+    user && fetchProgress();
   }, [media, id]);
 
   const formatVotes = (v) => {
@@ -918,6 +919,7 @@ const Details = () => {
           </div>
         )}
       </div>
+      <MediaVideos data={item} />
       <SimilarContent key={item?.id} media={media} id={id} />
     </div>
   );
