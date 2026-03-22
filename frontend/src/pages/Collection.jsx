@@ -184,33 +184,10 @@ const Collection = () => {
                     new Date(a.release_date || 0) - new Date(b.release_date || 0),
                 )
                 .map((movie, index) => (
-                  <div
-                    key={movie.id}
-                    className="group relative transform transition-all duration-500 hover:scale-105 hover:z-10 animate-slideUp"
-                    style={{
-                      animationDelay: `${index * 40}ms`,
-                      animationFillMode: 'backwards'
-                    }}
-                  >
-                    {/* Card Glow on Hover - Teal */}
-                    <div className="hidden md:block absolute -inset-1 bg-gradient-to-r from-teal-600 to-cyan-600 rounded-lg opacity-0 group-hover:opacity-20 blur transition duration-500" />
                     
-                    <div className="relative">
-                      <TrendingCard {...movie} media_type="movie" />
-                      
-                      {/* Release Year Badge - Compact */}
-                      {movie.release_date && (
-                        <div className="mt-2 text-center">
-                          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-gray-800 to-gray-900 backdrop-blur-sm px-2 sm:px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-semibold text-gray-200 border border-gray-700 shadow-lg">
-                            <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-teal-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            {new Date(movie.release_date).getFullYear()}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                    <>
+                      <TrendingCard key={index} {...movie} media_type="movie" />
+                    </>
                 ))}
             </div>
 

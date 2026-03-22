@@ -127,7 +127,7 @@ export const saveProgress = async (req, res) => {
         },
         $setOnInsert: { title, poster, backdrop },
       },
-      { upsert: true, new: true, setDefaultsOnInsert: true }
+      { upsert: true, new: true, setDefaultsOnInsert: true },
     );
 
     // Prevent repeated completion triggers
@@ -146,7 +146,7 @@ export const saveProgress = async (req, res) => {
           $set: { status: "watched" },
           $setOnInsert: { title, poster, year, genre },
         },
-        { upsert: true }
+        { upsert: true },
       );
 
       return res.sendStatus(204);
@@ -186,7 +186,7 @@ export const saveProgress = async (req, res) => {
               lastWatchedAt: new Date(),
             },
           },
-          { upsert: true }
+          { upsert: true },
         );
       } else {
         // No next episode = full show completed
@@ -196,7 +196,7 @@ export const saveProgress = async (req, res) => {
             $set: { status: "watched" },
             $setOnInsert: { title, poster, year, genre },
           },
-          { upsert: true }
+          { upsert: true },
         );
       }
     }
@@ -211,51 +211,99 @@ export const saveProgress = async (req, res) => {
 export const getAllWatchProgress = async (req, res) => {
   const userId = req.user.id;
 
-  const list = await WatchProgress.find({ userId })
-    .select(
-      "mediaType mediaId season episode status progressSeconds durationSeconds lastWatchedAt title poster backdrop"
-    )
-    .sort({ lastWatchedAt: -1 })
-    .lean();
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 20;
 
-  res.json(list);
+  const skip = (page - 1) * limit;
+
+  const [list, total] = await Promise.all([
+    WatchProgress.find({ userId })
+      .select(
+        "mediaType mediaId season episode status progressSeconds durationSeconds lastWatchedAt title poster backdrop",
+      )
+      .sort({ lastWatchedAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+
+    WatchProgress.countDocuments({ userId }),
+  ]);
+
+  res.json({
+    data: list,
+    page,
+    totalPages: Math.ceil(total / limit),
+    total,
+  });
 };
-
 
 export const getContinueWatching = async (req, res) => {
   const userId = req.user.id;
 
-  const list = await WatchProgress.find({
-    userId,
-    status: "watching",
-  })
-    .select(
-      "mediaType mediaId season episode progressSeconds durationSeconds lastWatchedAt title poster backdrop"
-    )
-    .sort({ lastWatchedAt: -1 })
-    .limit(20)
-    .lean();
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
 
-  res.json(list);
+  const skip = (page - 1) * limit;
+
+  const [list, total] = await Promise.all([
+    WatchProgress.find({
+      userId,
+      status: "watching",
+    })
+      .select(
+        "mediaType mediaId season episode progressSeconds durationSeconds lastWatchedAt title poster backdrop"
+      )
+      .sort({ lastWatchedAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+
+    WatchProgress.countDocuments({
+      userId,
+      status: "watching",
+    }),
+  ]);
+
+  res.json({
+    data: list,
+    page,
+    totalPages: Math.ceil(total / limit),
+  });
 };
-
 
 export const getCompletedWatchList = async (req, res) => {
   const userId = req.user.id;
 
-  const list = await WatchProgress.find({
-    userId,
-    status: "completed",
-  })
-    .select(
-      "mediaType mediaId season episode lastWatchedAt title poster backdrop"
-    )
-    .sort({ lastWatchedAt: -1 })
-    .lean();
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 20;
 
-  res.json(list);
+  const skip = (page - 1) * limit;
+
+  const [list, total] = await Promise.all([
+    WatchProgress.find({
+      userId,
+      status: "completed",
+    })
+      .select(
+        "mediaType mediaId season episode lastWatchedAt title poster backdrop"
+      )
+      .sort({ lastWatchedAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean(),
+
+    WatchProgress.countDocuments({
+      userId,
+      status: "completed",
+    }),
+  ]);
+
+  res.json({
+    data: list,
+    page,
+    totalPages: Math.ceil(total / limit),
+  });
 };
-
 
 export const getWatchProgressByMedia = async (req, res) => {
   const userId = req.user.id;
@@ -279,7 +327,7 @@ export const getWatchProgressByMedia = async (req, res) => {
 
   const result = await WatchProgress.find(query)
     .select(
-      "mediaType mediaId season episode status progressSeconds durationSeconds lastWatchedAt title poster backdrop"
+      "mediaType mediaId season episode status progressSeconds durationSeconds lastWatchedAt title poster backdrop",
     )
     .sort({ lastWatchedAt: -1 })
     .lean();

@@ -19,7 +19,7 @@ const Header = () => {
       <header className="sticky top-0 z-50 bg-gray-900 text-white border-b border-gray-800 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
           <div className="relative flex items-center gap-2">
-            <img className="h-10" src="/logo/logo.png" alt="logo" />
+            <img className="h-10" src="/logo/logo-new.png" alt="logo" />
             <h1 className="text-xl font-bold">
               Cine<span className="text-teal-400 relative z-50">Wish</span>
             </h1>

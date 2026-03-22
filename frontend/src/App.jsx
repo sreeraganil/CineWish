@@ -5,6 +5,7 @@ import { Toaster } from "react-hot-toast";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GuestRoute from "./components/GuestRoute";
 import PageLoader from "./components/PageLoader";
+import Footer from "./components/Footer";
 
 /* ---------- Lazy Pages ---------- */
 const Login = lazy(() => import("./pages/Login"));
@@ -136,6 +137,7 @@ export default function App() {
 
             <Route path="*" element={<NotFound />} />
           </Routes>
+          {/* <Footer /> */}
         </div>
       </Suspense>
 

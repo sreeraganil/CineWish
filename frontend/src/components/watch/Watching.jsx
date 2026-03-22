@@ -4,14 +4,14 @@ import ContinueWatching from "./ContinueWatching";
 import userStore from "../../store/userStore";
 
 const Watching = () => {
-  const { continueWatching, loading, fetchWatchProgress, removeFromHistory } =
+  const { continueWatching, loading, fetchContinueWatching, removeFromHistory } =
     watchStore();
 
   const { user } = userStore();
 
   useEffect(() => {
-    user && fetchWatchProgress();
-  }, [fetchWatchProgress]);
+    user && fetchContinueWatching();
+  }, [fetchContinueWatching]);
 
   if (loading || !continueWatching.length) return null;
 

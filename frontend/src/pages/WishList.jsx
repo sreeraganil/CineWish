@@ -30,26 +30,25 @@ const WishList = () => {
   const [ratingFilter, setRatingFilter] = useState("");
   const [page, setPage] = useState(1);
   const [loadingMore, setLoadingMore] = useState(false);
-
-  const activeFilterCount = [
-    typeFilter,
-    genreFilter,
-    yearFilter,
-    ratingFilter,
-  ].filter(Boolean).length;
+  const [activeFilterCount, setActiveFilterCount] = useState(0);
 
   const clearFilters = () => {
     setTypeFilter("");
     setGenreFilter("");
     setYearFilter("");
     setRatingFilter("");
+    setActiveFilterCount(0);
     setPage(1);
-    fetchData();
+    fetchData(true);
   };
 
   const applyFilters = () => {
     setPage(1);
     fetchData();
+    setActiveFilterCount(
+      [typeFilter, genreFilter, yearFilter, ratingFilter].filter(Boolean)
+        .length,
+    );
     setShowFilter(false);
   };
 
@@ -97,7 +96,7 @@ const WishList = () => {
     navigate(`/details/${media}/${id}`);
   };
 
-  const fetchData = async () => {
+  const fetchData = async (reset = false) => {
     if (page === 1) {
       setLoading(true);
     } else {
@@ -105,10 +104,10 @@ const WishList = () => {
     }
 
     const queries = new URLSearchParams({
-      t: typeFilter,
-      g: genreFilter,
-      y: yearFilter,
-      r: ratingFilter,
+      t: reset ? "" : typeFilter,
+      g: reset ? "" : genreFilter,
+      y: reset ? "" : yearFilter,
+      r: reset ? "" : ratingFilter,
     }).toString();
 
     await fetchWishlist(queries, page);

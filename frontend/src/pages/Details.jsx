@@ -19,6 +19,7 @@ const Details = () => {
   const [openSeason, setOpenSeason] = useState(1);
   const [progress, setProgress] = useState(null);
   const detailpageRef = useRef();
+  const [error, setError] = useState(null);
 
   const { addToWishlist } = wishlistStore();
   const { user } = userStore();
@@ -91,8 +92,10 @@ const Details = () => {
       try {
         const { data } = await API.get(`/tmdb/details/${media}/${id}`);
         setItem(data);
+        setError(false);
       } catch (err) {
         console.error("Failed to fetch details:", err);
+        setError(true);
       } finally {
         setLoading(false);
       }
@@ -153,17 +156,17 @@ const Details = () => {
     return map;
   }, [progress]);
 
-  if (loading)
-    return (
-      <div className="h-screen">
-        <Loader />
-      </div>
-    );
-
-  if (!item)
+  if (error)
     return (
       <div className="h-screen flex items-center justify-center text-white">
         Failed to load details
+      </div>
+    );
+
+  if (loading || !item)
+    return (
+      <div className="h-screen">
+        <Loader />
       </div>
     );
 
@@ -300,8 +303,17 @@ const Details = () => {
                  border border-indigo-500/70
                  transition-all"
                 >
-                  <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" > <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.93 8.719c-.783-.57-.38-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.119-3.292z" /> </svg> 
-                  <span className="h-full flex items-center mb-0.5">Episode-wise Ratings</span>
+                  <svg
+                    className="w-5 h-5 text-yellow-400"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    {" "}
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.93 8.719c-.783-.57-.38-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.119-3.292z" />{" "}
+                  </svg>
+                  <span className="h-full flex items-center mb-0.5">
+                    Episode-wise Ratings
+                  </span>
                 </Link>
               </div>
             )}
@@ -801,7 +813,37 @@ const Details = () => {
                         </p>
                       </div>
 
-                      <span className="text-xl">{isOpen ? "▲" : "▼"}</span>
+                      <span className="text-xl">
+                        {isOpen ? (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            width="24"
+                            height="24"
+                          >
+                            <path d="M18 15l-6-6-6 6" />
+                          </svg>
+                        ) : (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            width="24"
+                            height="24"
+                          >
+                            <path d="M6 9l6 6 6-6" />
+                          </svg>
+                        )}
+                      </span>
                     </div>
 
                     {/* EPISODES */}

@@ -1,10 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import API from "../config/axios";
 
 const HeroSlider = () => {
   const [items, setItems] = useState([]);
   const [index, setIndex] = useState(0);
+
+  // Touch tracking refs
+  const touchStartX = useRef(null);
+  const touchStartY = useRef(null);
+  const isDragging = useRef(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,12 +55,53 @@ const HeroSlider = () => {
     return () => clearInterval(interval);
   }, [items]);
 
+  // Touch handlers
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+    isDragging.current = false;
+  };
+
+  const handleTouchMove = (e) => {
+    if (touchStartX.current === null) return;
+    const dx = Math.abs(e.touches[0].clientX - touchStartX.current);
+    const dy = Math.abs(e.touches[0].clientY - touchStartY.current);
+    // Mark as horizontal drag only if X movement dominates
+    if (dx > dy && dx > 5) {
+      isDragging.current = true;
+    }
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null || !isDragging.current) return;
+
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    const SWIPE_THRESHOLD = 50;
+
+    if (deltaX < -SWIPE_THRESHOLD) {
+      // Swipe left → next
+      setIndex((prev) => (prev + 1) % items.length);
+    } else if (deltaX > SWIPE_THRESHOLD) {
+      // Swipe right → prev
+      setIndex((prev) => (prev - 1 + items.length) % items.length);
+    }
+
+    touchStartX.current = null;
+    touchStartY.current = null;
+    isDragging.current = false;
+  };
+
   if (!items.length) return null;
 
   const currentItem = items[index];
 
   return (
-    <div className="relative w-full h-[70vh] overflow-hidden bg-gray-950">
+    <div
+      className="group/slider relative w-full h-[60vh] md:h-[70vh] overflow-hidden bg-gray-950"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* Slides */}
       {items.map((item, i) => (
         <div
@@ -67,7 +113,7 @@ const HeroSlider = () => {
           <img
             src={`https://image.tmdb.org/t/p/original/${item.backdrop_path}`}
             alt={item.title || item.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-[center_10%]"
           />
 
           {/* Multi-layer gradient overlay */}
@@ -119,7 +165,7 @@ const HeroSlider = () => {
             <div className="flex gap-3 pt-2">
               <Link
                 to={`/details/movie/${currentItem.id}`}
-                className="bg-teal-500 hover:bg-teal-400 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-300 shadow-lg shadow-teal-500/30 hover:shadow-teal-400/50 hover:-translate-y-0.5 flex items-center gap-2"
+                className="bg-teal-500 hover:bg-teal-400 text-white font-semibold text-sm px-3 py-2 rounded-lg transition-all duration-300 shadow-lg shadow-teal-500/30 hover:shadow-teal-400/50 hover:-translate-y-0.5 flex items-center gap-2"
               >
                 <svg
                   width="20"
@@ -142,19 +188,19 @@ const HeroSlider = () => {
         </div>
       </div>
 
-      {/* Navigation arrows */}
+      {/* Navigation arrows — hidden on mobile, visible on hover for desktop */}
       <button
         onClick={() =>
           setIndex((prev) => (prev - 1 + items.length) % items.length)
         }
-        className="absolute left-6 top-1/2 -translate-y-1/2 z-20 bg-gray-900/70 backdrop-blur-sm hover:bg-gray-800 border border-gray-700 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 opacity-0 hover:opacity-100 group-hover/slider:opacity-100"
+        className="absolute left-6 top-1/2 -translate-y-1/2 z-20 bg-gray-900/70 backdrop-blur-sm hover:bg-gray-800 border border-gray-700 w-12 h-12 rounded-full items-center justify-center transition-all duration-300 hover:scale-110 hidden md:flex opacity-0 group-hover/slider:opacity-90 text-teal-500"
       >
         <svg
           width="24"
           height="24"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="white"
+          stroke="currentColor"
           strokeWidth="2.5"
           strokeLinecap="round"
         >
@@ -164,14 +210,14 @@ const HeroSlider = () => {
 
       <button
         onClick={() => setIndex((prev) => (prev + 1) % items.length)}
-        className="absolute right-6 top-1/2 -translate-y-1/2 z-20 bg-gray-900/70 backdrop-blur-sm hover:bg-gray-800 border border-gray-700 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 opacity-0 hover:opacity-100 group-hover/slider:opacity-100"
+        className="absolute right-6 top-1/2 -translate-y-1/2 z-20 bg-gray-900/70 backdrop-blur-sm hover:bg-gray-800 border border-gray-700 w-12 h-12 rounded-full items-center justify-center transition-all duration-300 hover:scale-110 hidden md:flex opacity-0 group-hover/slider:opacity-90 text-teal-500"
       >
         <svg
           width="24"
           height="24"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="white"
+          stroke="currentColor"
           strokeWidth="2.5"
           strokeLinecap="round"
         >
@@ -193,9 +239,6 @@ const HeroSlider = () => {
           />
         ))}
       </div>
-
-      {/* Add group class for arrow visibility */}
-      <div className="group/slider absolute inset-0 pointer-events-none" />
     </div>
   );
 };

@@ -25,25 +25,25 @@ const Watched = () => {
   const [yearFilter, setYearFilter] = useState("");
   const [ratingFilter, setRatingFilter] = useState("");
 
-  const activeFilterCount = [
-    typeFilter,
-    genreFilter,
-    yearFilter,
-    ratingFilter,
-  ].filter(Boolean).length;
+  const [activeFilterCount, setActiveFilterCount] = useState(0);
 
   const clearFilters = () => {
     setTypeFilter("");
     setGenreFilter("");
     setYearFilter("");
     setRatingFilter("");
+    setActiveFilterCount(0);
     setPage(1);
-    fetchData();
+    fetchData(true);
   };
 
   const applyFilters = () => {
     setPage(1);
     fetchData();
+    setActiveFilterCount(
+      [typeFilter, genreFilter, yearFilter, ratingFilter].filter(Boolean)
+        .length,
+    );
     setShowFilter(false);
   };
 
@@ -56,7 +56,7 @@ const Watched = () => {
     1,
   );
 
-  const fetchData = async () => {
+  const fetchData = async (reset = false) => {
     if (page === 1) {
       setLoading(true);
     } else {
@@ -64,10 +64,10 @@ const Watched = () => {
     }
 
     const queries = new URLSearchParams({
-      t: typeFilter,
-      g: genreFilter,
-      y: yearFilter,
-      r: ratingFilter,
+      t: reset ? "" : typeFilter,
+      g: reset ? "" : genreFilter,
+      y: reset ? "" : yearFilter,
+      r: reset ? "" : ratingFilter,
     }).toString();
 
     await fetchWatched(page, queries);
