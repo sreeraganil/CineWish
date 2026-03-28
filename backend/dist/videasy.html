@@ -3,46 +3,120 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Player</title>
+    <title>TMDB Player</title>
+
     <link
-      href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap"
+      rel="icon"
+      href="https://cinewish.deno.dev/logo/logo-new.png"
+      sizes="16x16"
+    />
+    <link
+      rel="icon"
+      href="https://cinewish.deno.dev/logo/logo-new.png"
+      sizes="48x48"
+    />
+    <link
+      rel="icon"
+      href="https://cinewish.deno.dev/logo/logo-new.png"
+      sizes="128x128"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Ubuntu&family=El+Messiri&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
     <style>
-      * {
+      /* General Styles */
+      body {
         margin: 0;
         padding: 0;
-        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+        background-color: #0f0f0f; /* Webpage background color */
+        color: #ffffffe6; /* All font text color */
       }
 
-      body {
-        background-color: #0f0f0f;
-        color: #ffffffe6;
-        font-family: "Ubuntu", Arial, sans-serif;
-        height: 100vh;
+      /* Content Wrapper */
+      .content-wrapper {
+        display: flex;
+        padding: 24px;
+        gap: 24px;
+        height: calc(100vh - 48px); /* Full height minus padding */
+      }
+
+      /* Primary Content */
+      .primary-content {
+        flex: 1;
         display: flex;
         flex-direction: column;
-        overflow: hidden;
       }
 
-      /* Header */
+      /* Player Header */
       .player-header {
         background-color: #000c;
-        padding: 0 16px;
-        height: 56px;
+        margin: 0 0 16px;
+        padding: 12px 16px;
+        border-radius: 8px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        flex-shrink: 0;
+        justify-content: space-between; /* Ensure space between header-buttons and nextep-button */
+        height: 40px; /* Fixed height for player-header */
+      }
+
+      .header-buttons {
+        display: flex;
+        align-items: center;
+        gap: 16px; /* Add some spacing between the buttons */
+      }
+
+      .git-button,
+      .bug-button,
+      .nextep-button,
+      .epselect-button {
+        width: 40px;
+        height: 40px;
+        font-size: 13px;
+        font-family: Arial;
+        border: none;
+        cursor: pointer;
+        background-color: #000c; /* Button background color */
+        color: #ffffffe6; /* Button text color */
+        border-radius: 20px; /* Added border radius for buttons */
+        display: flex;
+        align-items: center;
+        justify-content: center; /* Center content horizontally and vertically */
+        transition:
+          background-color 0.2s,
+          transform 0.2s; /* Smooth transitions */
+        text-decoration: none; /* Remove underline from links */
+      }
+
+      .git-button i {
+        font-size: 40px; /* Adjusted GitHub icon size */
+      }
+
+      .bug-button {
+        font-size: 30px;
+      }
+
+      .git-button:hover,
+      .bug-button:hover {
+        transform: translateY(-4px); /* Slight upward movement */
       }
 
       .show-title {
-        font-size: 18px;
-        font-family: "Ubuntu", sans-serif;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        font-size: 20px;
+        font-family: "Ubuntu", "El Messiri", sans-serif;
+        margin: 0;
+        text-align: center;
+        white-space: nowrap; /* Prevents the title from wrapping */
         max-width: 60%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        margin: 0 16px; /* Add some margin to prevent overlap */
         cursor: pointer;
       }
 
@@ -50,45 +124,41 @@
         text-decoration: underline;
       }
 
-      .header-buttons {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      /* Buttons */
-      .icon-button {
-        width: 40px;
-        height: 40px;
-        border: none;
-        cursor: pointer;
-        background-color: transparent;
-        color: #ffffffe6;
-        border-radius: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: transform 0.2s;
-      }
-
-      .icon-button:hover svg {
-        transform: scale(1.2);
-      }
-      .icon-button:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-      }
-      .icon-button:disabled svg {
-        transform: scale(1) !important;
-      }
-      .icon-button.hidden {
+      .nextep-button,
+      .epselect-button {
+        cursor: default;
         visibility: hidden;
       }
 
-      /* iframe */
+      .nextep-button svg,
+      .epselect-button svg {
+        width: 40px;
+        height: 40px;
+        transition: transform 0.2s ease;
+      }
+
+      .nextep-button:hover svg,
+      .epselect-button:hover svg {
+        transform: scale(1.3); /* Makes the SVG 20% bigger */
+      }
+
+      .nextep-button:disabled,
+      .epselect-button:disabled {
+        cursor: not-allowed; /* Change cursor to indicate it's not clickable */
+        opacity: 0.4; /* Optional: Reduce opacity to make it look disabled */
+      }
+
+      .nextep-button:disabled svg,
+      .epselect-button:disabled svg {
+        transform: scale(1); /* Makes the SVG 20% bigger */
+      }
+
+      /* Player Content */
       .player-content {
-        flex: 1;
+        border-radius: 8px;
         overflow: hidden;
+        flex: 1;
+        background-color: #1f1f1f; /* Background color for player content */
       }
 
       #videoFrame {
@@ -97,512 +167,914 @@
         border: none;
       }
 
-      /* Popover */
-      .popover-wrapper {
-        position: relative;
-      }
-
-      .popover-panel {
-        display: none;
-        position: absolute;
-        top: calc(100% + 8px);
-        right: 0;
-        width: 420px;
-        height: 520px;
-        background-color: #0d0d0d;
-        border-radius: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        z-index: 100;
-        flex-direction: column;
+      /* Secondary Content */
+      .secondary-content {
+        width: 400px; /* Adjusted width for secondary-content */
         overflow: hidden;
+        background-color: transparent; /* Transparent background for secondary-content */
       }
 
-      .popover-panel.active {
+      /* Sidebar */
+      .sidebar {
+        height: 100%;
+        background-color: #1f1f1f; /* Background color for sidebar */
+        border-radius: 12px; /* Added border radius for sidebar */
+      }
+
+      .servers {
+        padding: 16px;
+        height: 100%;
+        box-sizing: border-box;
+        background-color: transparent; /* Transparent background for movie-servers */
+      }
+
+      .servers-title {
+        font-size: 14px;
+        font-family: "Ubuntu", "El Messiri", sans-serif;
+        margin: 0 0 16px;
+      }
+
+      /* Server Grid */
+      .server-grid {
         display: flex;
+        flex-direction: column;
+        gap: 8px;
       }
 
+      .server-card {
+        height: 62px;
+        padding: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.05); /* Border color for server-card */
+        border-radius: 8px;
+        background-color: #ffffff05; /* Transparent background for server-card */
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        transition:
+          background-color 0.2s,
+          border-color 0.2s,
+          transform 0.2s; /* Smooth transitions */
+      }
+
+      .server-card:hover {
+        background: #ffffff0a;
+        border-color: #ffffff1a;
+        transform: translateY(-1px);
+      }
+
+      .server-card.selected {
+        background: #ffffff0d;
+        border-color: #ffffff30;
+      }
+
+      .server-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .server-name {
+        font-size: 14px;
+        font-family: "Ubuntu", "El Messiri", sans-serif;
+        color: #ffffffe6; /* Font color for server-name */
+      }
+
+      .server-label {
+        font-size: 11px;
+        font-family: Arial;
+        margin-top: 3px;
+        color: #ffffffb3; /* Font color for server-label */
+      }
+
+      /* Popover Styles */
+      .popover-container {
+        position: relative;
+        display: inline-block;
+      }
+
+      .popover-content {
+        visibility: hidden;
+        width: 450px;
+        height: 564px;
+        background-color: #0d0d0d;
+        color: #ffffff;
+        text-align: left;
+        border-radius: 8px;
+        padding: 0;
+        position: absolute;
+        z-index: 1;
+        top: 100%;
+        transform: translateX(-78%);
+        margin-top: 41px;
+        opacity: 0;
+        font-size: 16px;
+        font-family: "Ubuntu", "El Messiri", sans-serif;
+        overflow: hidden;
+        /*border: 1px solid rgba(255, 255, 255, 0.1);*/
+      }
+
+      .popover-container.active .popover-content {
+        visibility: visible;
+        opacity: 0.97;
+      }
+
+      /* Header */
       .popover-header {
         display: flex;
         align-items: center;
-        padding: 12px 16px;
-        gap: 12px;
-        height: 52px;
-        flex-shrink: 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        padding: 12px 20px;
+        gap: 20px; /* Gap between back button and title */
+        height: 36px;
       }
 
-      .popover-title {
-        flex: 1;
-        font-size: 16px;
-        font-weight: bold;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .popover-list {
-        flex: 1;
-        overflow-y: auto;
-        list-style: none;
-      }
-
-      .popover-list::-webkit-scrollbar {
-        width: 6px;
-      }
-      .popover-list::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      .popover-list::-webkit-scrollbar-thumb {
-        background: #444;
-        border-radius: 3px;
-      }
-      .popover-list::-webkit-scrollbar-thumb:hover {
-        background: #666;
-      }
-
-      .popover-list li {
-        padding: 10px 16px;
+      .popover-back-button {
+        display: none; /* Hidden by default */
         cursor: pointer;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        transition:
+          background-color 0.2s,
+          transform 0.2s; /* Smooth transitions */
       }
 
-      .popover-list li:hover {
-        background-color: #1e1e1e;
-      }
-      .popover-list li.current {
-        background-color: #1a2a2a;
-        border-left: 3px solid #009689;
-      }
-
-      .item-name {
-        font-size: 14px;
-        white-space: nowrap;
+      .popover-header-title {
+        flex-grow: 1; /* Allow title to take up remaining space */
+        font-size: 18px;
+        font-family: "Ubuntu", "El Messiri", sans-serif;
+        font-weight: bold;
+        color: #ffffff;
         overflow: hidden;
-        text-overflow: ellipsis;
+        white-space: nowrap; /* Prevents the title from wrapping */
+        text-overflow: ellipsis; /* Add ellipsis if title is too long */
       }
 
-      .item-details {
-        font-size: 11px;
+      .popover-close-button {
+        cursor: pointer;
+        margin-left: auto; /* Push close button to the right */
+        transition:
+          background-color 0.2s,
+          transform 0.2s; /* Smooth transitions */
+      }
+
+      .popover-back-button:hover svg,
+      .popover-close-button:hover svg {
+        transform: scale(1.3); /* Makes the SVG 20% bigger */
+      }
+
+      /* List Container */
+      .popover-list-container {
+        height: calc(
+          564px - 60px
+        ); /* Subtract header height from total height */
+        overflow-y: auto; /* Enable vertical scrolling */
+      }
+
+      /* Custom Scrollbar */
+      .popover-list-container::-webkit-scrollbar {
+        width: 8px; /* Width of the scrollbar */
+      }
+
+      .popover-list-container::-webkit-scrollbar-track {
+        background: transparent; /* Make the track invisible */
+      }
+
+      .popover-list-container::-webkit-scrollbar-thumb {
+        background: #444; /* Thumb color */
+        border-radius: 4px;
+      }
+
+      .popover-list-container::-webkit-scrollbar-thumb:hover {
+        background: #666; /* Thumb color on hover */
+      }
+
+      /* List Styles */
+      .popover-content ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .popover-content ul li {
+        padding: 12px 20px;
+        cursor: pointer;
+        height: 32px;
+        align-items: center;
+        display: block;
+      }
+
+      .popover-content ul li:hover {
+        background-color: #333;
+      }
+
+      .season-name,
+      .episode-name {
+        display: block; /* Ensures it takes up full width */
+        white-space: nowrap; /* Prevents the title from wrapping */
+        text-overflow: ellipsis; /* Add ellipsis if title is too long */
+        overflow: hidden;
+      }
+
+      .season-details,
+      .episode-details {
+        display: block; /* Ensures it is on a new line */
         color: #999;
+        font-size: 13px;
         margin-top: 2px;
         font-style: italic;
+        opacity: 0.8;
+        white-space: nowrap; /* Prevents the title from wrapping */
+        text-overflow: ellipsis; /* Add ellipsis if title is too long */
+        overflow: hidden;
       }
 
-      @media (max-width: 600px) {
-        .popover-panel {
-          width: 90vw;
-          right: -8px;
+      @media (max-width: 1200px) {
+        body {
+          overflow-y: auto; /* Allow the entire webpage to scroll vertically */
         }
+
+        .content-wrapper {
+          flex-direction: column; /* Stack primary and secondary content vertically */
+          gap: 16px; /* Reduce gap between sections */
+          height: auto; /* Allow the content-wrapper to grow based on its content */
+        }
+
+        .primary-content {
+          width: 100%; /* Make primary content take full width */
+        }
+
+        .secondary-content {
+          width: 100%; /* Make secondary content take full width */
+          height: auto; /* Allow secondary content to grow based on its content */
+          overflow: visible; /* Ensure no internal scrolling */
+        }
+
+        .sidebar {
+          height: auto; /* Allow sidebar to grow based on its content */
+        }
+
+        .servers {
+          height: auto; /* Allow servers to grow based on its content */
+        }
+
+        .server-grid {
+          height: auto; /* Allow server-grid to grow based on its content */
+        }
+
+        .player-content {
+          position: relative;
+          width: 100%;
+          padding-top: 56.25%; /* 16:9 aspect ratio (9 / 16 = 0.5625 or 56.25%) */
+        }
+
+        #videoFrame {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      /* Media Query for screens smaller than 768px */
+      @media (max-width: 768px) {
         .show-title {
-          font-size: 14px;
+          font-size: 16px;
           max-width: 50%;
+        }
+
+        .header-buttons {
+          gap: 4px;
+        }
+
+        .git-button i {
+          font-size: 30px; /* Adjusted GitHub icon size */
+        }
+
+        .bug-button {
+          font-size: 20px;
+        }
+
+        .nextep-button svg,
+        .epselect-button svg {
+          width: 25px;
+          height: 25px;
+          transition: transform 0.2s ease;
+        }
+
+        .popover-content {
+          width: 70vw; /* Scales width */
+          height: calc(75vw * (492 / 450)); /* Maintains aspect ratio */
+          right: -47px; /* Keeps a fixed distance from the right side */
+          left: auto; /* Ensures it does not interfere with positioning */
+          transform: none; /* Remove translateX to avoid shifting issues */
+          font-size: 15px;
+        }
+
+        .popover-list-container {
+          height: calc(
+            calc(75vw * (492 / 450)) - 36px - 12px - 12px
+          ); /* Subtract header height */
+        }
+
+        .popover-header-title {
+          font-size: 16px;
+        }
+
+        .popover-content ul li {
+          padding-right: 8px;
+        }
+
+        .season-details,
+        .episode-details {
+          font-size: 12px;
         }
       }
     </style>
   </head>
   <body>
-    <header class="player-header">
-      <!-- Left: back button -->
-      <div class="header-buttons">
-        <!-- <button class="icon-button" id="back-button" title="Go Back" onclick="history.back()">
-                <svg stroke="#fff" fill="#fff" stroke-width="0" viewBox="0 0 16 16" height="24px" width="24px" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-                </svg>
-            </button> -->
-      </div>
-
-      <!-- Center: title -->
-      <h2 class="show-title" id="title">Loading...</h2>
-
-      <!-- Right: episode selector + next ep -->
-      <div class="header-buttons">
-        <div class="popover-wrapper">
-          <button
-            class="icon-button hidden"
-            id="epselect-button"
-            title="Episode Selection"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              width="24"
-              height="24"
+    <div class="content-wrapper">
+      <div class="primary-content">
+        <header class="player-header">
+          <div class="header-buttons">
+            <a
+              href="https://cinewish.deno.dev/""
+              class="git-button"
+              title="GitHub"
             >
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M8 5H22V13H24V5C24 3.89543 23.1046 3 22 3H8V5ZM18 9H4V7H18C19.1046 7 20 7.89543 20 9V17H18V9ZM0 13C0 11.8954 0.895431 11 2 11H14C15.1046 11 16 11.8954 16 13V19C16 20.1046 15.1046 21 14 21H2C0.895431 21 0 20.1046 0 19V13ZM14 19V13H2V19H14Z"
-                fill="white"
-              />
-            </svg>
-          </button>
-          <div class="popover-panel" id="popover-panel">
-            <div class="popover-header">
+              <img src="https://cinewish.deno.dev/logo/logo-new.png" alt="logo" height="30">
+            </a>
+            
+          </div>
+          <h2 class="show-title" id="title"></h2>
+          <div class="header-buttons">
+            <div class="popover-container">
               <button
-                class="icon-button"
-                id="popover-back"
-                style="display: none"
-                title="Back to seasons"
+                class="epselect-button"
+                title="Episode Selection"
+                id="epselect-button"
               >
-                <svg
-                  stroke="#fff"
-                  fill="#fff"
-                  stroke-width="0"
-                  viewBox="0 0 16 16"
-                  height="20px"
-                  width="20px"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
-                  />
-                </svg>
-              </button>
-              <div class="popover-title" id="popover-title"></div>
-              <button class="icon-button" id="popover-close" title="Close">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
+                  role="img"
                   viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  width="22"
-                  height="22"
+                  width="24"
+                  height="24"
+                  data-icon="EpisodesStandard"
+                  aria-hidden="true"
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M8 5H22V13H24V5C24 3.89543 23.1046 3 22 3H8V5ZM18 9H4V7H18C19.1046 7 20 7.89543 20 9V17H18V9ZM0 13C0 11.8954 0.895431 11 2 11H14C15.1046 11 16 11.8954 16 13V19C16 20.1046 15.1046 21 14 21H2C0.895431 21 0 20.1046 0 19V13ZM14 19V13H2V19H14Z"
+                    fill="white"
+                  ></path>
                 </svg>
               </button>
+              <div class="popover-content">
+                <div class="popover-header">
+                  <div class="popover-back-button">
+                    <svg
+                      stroke="#fff"
+                      fill="#fff"
+                      stroke-width="0"
+                      viewBox="0 0 16 16"
+                      height="28px"
+                      width="28px"
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-7 h-7"
+                      style="
+                        filter: drop-shadow(rgba(0, 0, 0, 0.4) 1px 1px 1px);
+                      "
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div class="popover-header-title"></div>
+                  <div
+                    class="popover-close-button"
+                    onclick="popoverContainer.classList.remove('active')"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      width="28"
+                      height="28"
+                      class="w-6 h-6"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M6 18L18 6M6 6l12 12"
+                      ></path>
+                    </svg>
+                  </div>
+                </div>
+                <div class="popover-list-container">
+                  <ul class="seasons-list"></ul>
+                  <ul class="episodes-list" style="display: none"></ul>
+                </div>
+              </div>
             </div>
-            <ul class="popover-list" id="seasons-list"></ul>
-            <ul
-              class="popover-list"
-              id="episodes-list"
-              style="display: none"
-            ></ul>
+            <button
+              class="nextep-button"
+              title="Next Episode"
+              id="nextep-button"
+            >
+              <svg
+                width="36"
+                height="36"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M22 3H20V21H22V3ZM4.28615 3.61729C3.28674 3.00228 2 3.7213 2 4.89478V19.1052C2 20.2787 3.28674 20.9977 4.28615 20.3827L15.8321 13.2775C16.7839 12.6918 16.7839 11.3082 15.8321 10.7225L4.28615 3.61729ZM4 18.2104V5.78956L14.092 12L4 18.2104Z"
+                  fill="white"
+                />
+              </svg>
+            </button>
+          </div>
+        </header>
+        <main class="player-content">
+          <iframe
+            id="videoFrame" 
+            allowfullscreen
+          >
+        </iframe>
+        </main>
+      </div>
+      <div class="secondary-content">
+        <div class="sidebar">
+          <div class="servers">
+            <h3 class="servers-title">AVAILABLE SERVERS</h3>
+            <div class="server-grid">
+              <button
+                class="server-card"
+                id="server1"
+                onclick="changeServer(1)"
+              >
+                <div class="server-info">
+                  <span class="server-name">Rakan</span>
+                  <span class="server-label">Generally better quality.</span>
+                </div>
+              </button>
+              <button
+                class="server-card"
+                id="server2"
+                onclick="changeServer(2)"
+              >
+                <div class="server-info">
+                  <span class="server-name">Bard</span>
+                  <span class="server-label"
+                    >Recommended for recently released movies.</span
+                  >
+                </div>
+              </button>
+              <button
+                class="server-card"
+                id="server3"
+                onclick="changeServer(3)"
+              >
+                <div class="server-info">
+                  <span class="server-name">Xayah</span>
+                  <span class="server-label"
+                    >Recommended for recently released movies.</span
+                  >
+                </div>
+              </button>
+              <button
+                class="server-card"
+                id="server4"
+                onclick="changeServer(4)"
+              >
+                <div class="server-info">
+                  <span class="server-name">Ekko</span>
+                  <span class="server-label"
+                    >No ads. May have 4k movies. Generally better quality.</span
+                  >
+                </div>
+              </button>
+              <button
+                class="server-card"
+                id="server5"
+                onclick="changeServer(5)"
+              >
+                <div class="server-info">
+                  <span class="server-name">Naafiri</span>
+                  <span class="server-label"
+                    >No ads. Generally better quality.</span
+                  >
+                </div>
+              </button>
+              <button
+                class="server-card"
+                id="server6"
+                onclick="changeServer(6)"
+              >
+                <div class="server-info">
+                  <span class="server-name">Ryze</span>
+                  <span class="server-label">Generally better quality.</span>
+                </div>
+              </button>
+            </div>
           </div>
         </div>
-
-        <button
-          class="icon-button hidden"
-          id="nextep-button"
-          title="Next Episode"
-        >
-          <svg
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M22 3H20V21H22V3ZM4.28615 3.61729C3.28674 3.00228 2 3.7213 2 4.89478V19.1052C2 20.2787 3.28674 20.9977 4.28615 20.3827L15.8321 13.2775C16.7839 12.6918 16.7839 11.3082 15.8321 10.7225L4.28615 3.61729ZM4 18.2104V5.78956L14.092 12L4 18.2104Z"
-              fill="white"
-            />
-          </svg>
-        </button>
       </div>
-    </header>
-
-    <main class="player-content">
-      <iframe
-        id="videoFrame"
-        allowfullscreen
-        allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
-      ></iframe>
-    </main>
-
+    </div>
     <script>
+      // Define the elements
       const iframe = document.getElementById("videoFrame");
-      const titleEl = document.getElementById("title");
+      const title = document.getElementById("title");
+      const server_buttons = document.querySelectorAll(".server-grid button");
       const nextEpButton = document.getElementById("nextep-button");
-      const epSelectButton = document.getElementById("epselect-button");
-      const popoverPanel = document.getElementById("popover-panel");
-      const popoverBack = document.getElementById("popover-back");
-      const popoverClose = document.getElementById("popover-close");
-      const popoverTitle = document.getElementById("popover-title");
-      const seasonsList = document.getElementById("seasons-list");
-      const episodesList = document.getElementById("episodes-list");
+      const epSelectButton = document.querySelector(".epselect-button");
+      const popoverContainer = document.querySelector(".popover-container");
+      const popoverContent = document.querySelector(".popover-content");
+      const seasonsList = document.querySelector(".seasons-list");
+      const episodesList = document.querySelector(".episodes-list");
+      const popoverTitle = document.querySelector(".popover-header-title");
+      const popoverBackButton = document.querySelector(".popover-back-button");
+      const popoverCloseButton = document.querySelector(
+        ".popover-close-button",
+      );
+      const popoverListContainer = document.querySelector(
+        ".popover-list-container",
+      );
 
-      const TMDB_TOKEN =
-        "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwYTk1NzRmZDcxMjRkNmI5ZTUyNjA4ZWEzNWQ2NzdiNCIsIm5iZiI6MTczNzU5MDQ2NC4zMjUsInN1YiI6IjY3OTE4NmMwZThiNjdmZjgzM2ZhNjM4OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.kWqK74FSN41PZO7_ENZelydTtX0u2g6dCkAW0vFs4jU";
-      const TMDB_HEADERS = {
-        Authorization: `Bearer ${TMDB_TOKEN}`,
-        accept: "application/json",
-      };
+      // Utility Functions
+      function getURLParams() {
+        const params = new URLSearchParams(window.location.search);
+        const type = params.get("type");
+        const id = params.get("id");
+        const server = params.get("server"); // Get the optional server parameter
 
-      // ── URL Params ────────────────────────────────────────────────────────────────
-
-      function getParams() {
-        const p = new URLSearchParams(window.location.search);
-        const type = p.get("type");
-        const id = p.get("id");
-        if (type === "movie" && id) {
-          return { type, id };
-        }
-        if (type === "tv" && id && p.get("s") && p.get("e")) {
-          return { type, id, season: p.get("s"), episode: p.get("e") };
-        }
-        return null;
-      }
-
-      // ── Videasy URL ───────────────────────────────────────────────────────────────
-
-      function getVideasyUrl(params) {
-        if (params.type === "movie") {
-          return `https://player.videasy.net/movie/${params.id}`;
-        }
-        return `https://player.videasy.net/tv/${params.id}/${params.season}/${params.episode}?nextEpisode=true&episodeSelector=true`;
-      }
-
-      // ── TMDB Fetch ────────────────────────────────────────────────────────────────
-
-      async function fetchTMDB(url) {
-        const res = await fetch(url, { headers: TMDB_HEADERS });
-        if (!res.ok) throw new Error(`TMDB fetch failed: ${url}`);
-        return res.json();
-      }
-
-      async function fetchShowData(params) {
-        if (params.type === "movie") {
-          const data = await fetchTMDB(
-            `https://api.themoviedb.org/3/movie/${params.id}?language=en-US`,
-          );
-          return { title: data.original_title };
-        }
-        const data = await fetchTMDB(
-          `https://api.themoviedb.org/3/tv/${params.id}?language=en-US`,
-        );
-        const result = { title: data.name, seasons: [], episodeCounts: {} };
-        for (const s of data.seasons) {
-          result.episodeCounts[s.season_number] = s.episode_count;
-          if (s.season_number !== 0) result.seasons.push(s.season_number);
-        }
-        return result;
-      }
-
-      async function fetchSeasonData(params, showData) {
         const result = {};
-        for (const season of showData.seasons) {
-          const data = await fetchTMDB(
-            `https://api.themoviedb.org/3/tv/${params.id}/season/${season}?language=en-US`,
-          );
-          result[season] = {
-            name: data.name,
-            air_date: data.air_date,
-            episodes: data.episodes.map((ep) => ({
-              episode_number: ep.episode_number,
-              name: ep.name,
-              air_date: ep.air_date,
-              runtime: ep.runtime,
-            })),
-          };
+
+        // Add server to the result if it exists
+        if (server) {
+          result.server = server;
         }
+
+        if (type === "movie" && id) {
+          result.type = "movie";
+          result.id = id;
+        } else if (type === "tv" && id && params.get("s") && params.get("e")) {
+          result.type = "tv";
+          result.id = id;
+          result.season = params.get("s");
+          result.episode = params.get("e");
+        } else {
+          return null; // Return null if required parameters are missing
+        }
+
         return result;
       }
 
-      // ── Next Episode ──────────────────────────────────────────────────────────────
+      function getSelectedServerButtonId() {
+        // Loop through the buttons to find the one with the 'selected' class
+        for (const button of server_buttons) {
+          if (button.classList.contains("selected")) {
+            const id = button.id.replace("server", "");
+            return parseInt(id, 10); // Convert the extracted string to a number
+          }
+        }
 
-      function getNextEp(season, episode, episodeCounts) {
-        const s = parseInt(season);
-        const e = parseInt(episode);
-        if (e < episodeCounts[s]) return [s, e + 1];
-        if (episodeCounts[s + 1] !== undefined) return [s + 1, 1];
+        return null; // Return null if no button is selected
+      }
+
+      function changeServer(serverNumber) {
+        const params = getURLParams();
+        if (!params) return;
+
+        iframe.src = "";
+
+        let src = "";
+        if (params.type === "movie") {
+          switch (serverNumber) {
+            case 1:
+              src = `https://vidsrc.cc/v3/embed/movie/${params.id}?autoPlay=false`;
+              break; // Rakan
+            case 2:
+              src = `https://moviesapi.club/movie/${params.id}`;
+              break; // Bard
+            case 3:
+              src = `https://vidsrc.me/embed/movie?tmdb=${params.id}`;
+              break; // Xayah
+            case 4:
+              src = `https://player.videasy.net/movie/${params.id}`;
+              break; // Ekko
+            case 5:
+              src = `https://vidsrc.su/embed/movie/${params.id}`;
+              break; // Naafiri
+            case 6:
+              src = `https://vidlink.pro/movie/${params.id}?title=true&poster=true&autoplay=false`;
+              break; // Ryze
+          }
+        } else if (params.type === "tv") {
+          switch (serverNumber) {
+            case 1:
+              src = `https://vidsrc.cc/v3/embed/tv/${params.id}/${params.season}/${params.episode}?autoPlay=false`;
+              break; // Rakan
+            case 2:
+              src = `https://moviesapi.club/tv/${params.id}-${params.season}-${params.episode}`;
+              break; // Bard
+            case 3:
+              src = `https://vidsrc.me/embed/tv?tmdb=${params.id}&season=${params.season}&episode=${params.episode}`;
+              break; // Xayah
+            case 4:
+              src = `https://player.videasy.net/tv/${params.id}/${params.season}/${params.episode}?nextEpisode=true&episodeSelector=true`;
+              break; // Ekko
+            case 5:
+              src = `https://vidsrc.su/embed/tv/${params.id}/${params.season}/${params.episode}`;
+              break; // Naafiri
+            case 6:
+              src = `https://vidlink.pro/tv/${params.id}/${params.season}/${params.episode}?title=true&poster=true&autoplay=false&nextbutton=true`;
+              break; // Ryze
+          }
+        }
+
+        iframe.src = src;
+
+        // Highlight the selected server button
+        server_buttons.forEach((button) => button.classList.remove("selected"));
+        document
+          .getElementById(`server${serverNumber}`)
+          .classList.add("selected");
+      }
+
+      async function fetchTMDBData(params) {
+        const result = {};
+
+        try {
+          let url;
+          const headers = {
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwYTk1NzRmZDcxMjRkNmI5ZTUyNjA4ZWEzNWQ2NzdiNCIsIm5iZiI6MTczNzU5MDQ2NC4zMjUsInN1YiI6IjY3OTE4NmMwZThiNjdmZjgzM2ZhNjM4OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.kWqK74FSN41PZO7_ENZelydTtX0u2g6dCkAW0vFs4jU`,
+            accept: "application/json",
+          };
+
+          if (params.type === "movie") {
+            url = `https://api.themoviedb.org/3/movie/${params.id}?language=en-US`;
+            const response = await fetch(url, {
+              method: "GET",
+              headers: headers,
+            });
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const data = await response.json();
+            result["title"] = data.original_title;
+          } else if (params.type === "tv") {
+            url = `https://api.themoviedb.org/3/tv/${params.id}?language=en-US`;
+            const response = await fetch(url, {
+              method: "GET",
+              headers: headers,
+            });
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const data = await response.json();
+            result.title = data.name;
+            const seasons = data.seasons;
+            result.seasons = [];
+            for (const season of seasons) {
+              result[season.season_number] = season.episode_count;
+              // Exclude Season 0 (Specials) from the list
+              if (season.season_number !== 0) {
+                result.seasons.push(season.season_number);
+              }
+            }
+          } else {
+            throw new Error("Invalid type specified");
+          }
+          return result;
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          throw error; // Re-throw the error if you want the caller to handle it
+        }
+      }
+
+      function getNextEp(currentSeason, currentEpisode, tmdbData) {
+        const currentSeasonEps = tmdbData[currentSeason];
+        if (currentEpisode < currentSeasonEps) {
+          return [parseInt(currentSeason), parseInt(currentEpisode) + 1];
+        }
+        const nextSeasonEps = tmdbData[parseInt(currentSeason) + 1];
+        if (nextSeasonEps !== undefined) {
+          return [parseInt(currentSeason) + 1, 1];
+        }
         return [null, null];
       }
 
-      function navigateToEpisode(params, season, episode) {
-        const url = new URL(window.location.href);
-        url.searchParams.set("s", season);
-        url.searchParams.set("e", episode);
-        window.location.href = url.toString();
+      // Fetch TV show episodes data from TMDB API
+      async function fetchEpSelectionData(params, tmdbData) {
+        const result = {};
+        let url;
+        const headers = {
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwYTk1NzRmZDcxMjRkNmI5ZTUyNjA4ZWEzNWQ2NzdiNCIsIm5iZiI6MTczNzU5MDQ2NC4zMjUsInN1YiI6IjY3OTE4NmMwZThiNjdmZjgzM2ZhNjM4OCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.kWqK74FSN41PZO7_ENZelydTtX0u2g6dCkAW0vFs4jU`,
+          accept: "application/json",
+        };
+
+        for (const season of tmdbData.seasons) {
+          url = `https://api.themoviedb.org/3/tv/${params.id}/season/${season}?language=en-US`;
+          const response = await fetch(url, {
+            method: "GET",
+            headers: headers,
+          });
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          const seasonData = await response.json();
+
+          result[season] = {};
+          result[season].name = seasonData.name;
+          result[season].air_date = seasonData.air_date;
+          result[season].poster_path = seasonData.poster_path;
+          result[season].episodes = [];
+
+          for (const ep of seasonData.episodes) {
+            const episode = {};
+            episode.name = ep.name;
+            episode.episode_number = ep.episode_number;
+            episode.season_number = ep.season_number;
+            episode.air_date = ep.air_date;
+            episode.runtime = ep.runtime;
+            episode.still_path = ep.still_path;
+            result[season].episodes.push(episode);
+          }
+        }
+        return result;
       }
 
-      // ── Popover ───────────────────────────────────────────────────────────────────
-
-      let popoverView = "seasons"; // 'seasons' | 'episodes'
-      let seasonData = null;
-      let showData = null;
-      let currentParams = null;
-
-      function showSeasonsView() {
-        popoverView = "seasons";
+      // Episode Selection Popover show: seasons list
+      function showSeasons(tvShowTitle) {
         seasonsList.style.display = "block";
         episodesList.style.display = "none";
-        popoverBack.style.display = "none";
-        popoverTitle.textContent = showData.title;
-        seasonsList.scrollTop = 0;
+        popoverBackButton.style.display = "none";
+        popoverTitle.innerText = tvShowTitle;
+        popoverListContainer.scrollTop = 0;
       }
 
-      function showEpisodesView(season) {
-        popoverView = "episodes";
+      // Episode Selection Popover show: episodes list
+      function showEpisodes(seasonName) {
         seasonsList.style.display = "none";
         episodesList.style.display = "block";
-        popoverBack.style.display = "flex";
-        popoverTitle.textContent = seasonData[season].name;
-        episodesList.scrollTop = 0;
-
-        const currentSeason = parseInt(currentParams.season);
-        const currentEpisode = parseInt(currentParams.episode);
-
-        episodesList.innerHTML = seasonData[season].episodes
-          .map((ep) => {
-            const isCurrent =
-              parseInt(season) === currentSeason &&
-              ep.episode_number === currentEpisode;
-            return `
-            <li data-season="${season}" data-episode="${ep.episode_number}" class="${isCurrent ? "current" : ""}">
-                <div class="item-name">E${ep.episode_number} — ${ep.name}</div>
-                <div class="item-details">${ep.air_date || ""}${ep.runtime ? `&nbsp;&nbsp;${ep.runtime}m` : ""}</div>
-            </li>
-        `;
-          })
-          .join("");
+        popoverBackButton.style.display = "block";
+        popoverTitle.innerText = seasonName;
+        popoverListContainer.scrollTop = 0;
       }
 
-      function buildSeasonsView() {
-        const currentSeason = parseInt(currentParams.season);
-        seasonsList.innerHTML = showData.seasons
+      // Load Popover container with seasons and episodes
+      async function loadPopoverSelectEpisode(params, tmdbData) {
+        // Get episode data
+        const epSelectionData = await fetchEpSelectionData(params, tmdbData);
+
+        // Populate seasons list
+        seasonsList.innerHTML = tmdbData.seasons
           .map(
-            (s) => `
-        <li data-season="${s}" class="${s === currentSeason ? "current" : ""}">
-            <div class="item-name">${seasonData[s].name}</div>
-            <div class="item-details">${seasonData[s].air_date || ""}</div>
+            (season) => `
+        <li data-season="${season}">
+            <div class="season-name">${epSelectionData[season].name}</div>
+            <div class="season-details">${epSelectionData[season].air_date ? epSelectionData[season].air_date : ""}</div>
         </li>
     `,
           )
           .join("");
+
+        // Handle season click
+        seasonsList.addEventListener("click", (e) => {
+          const li = e.target.closest("li");
+          if (li) {
+            const season = li.getAttribute("data-season");
+            const episodes = epSelectionData[season].episodes;
+            episodesList.innerHTML = episodes
+              .map(
+                (ep) => `
+                <li data-season="${season}" data-episode="${ep.episode_number}">
+                    <div class="episode-name">E${ep.episode_number} - ${ep.name}</div>
+                    <div class="episode-details">${ep.air_date ? ep.air_date : ""}&nbsp;&nbsp;&nbsp;${ep.runtime ? `(${ep.runtime}m)` : ""}</div>
+                </li>
+            `,
+              )
+              .join("");
+            showEpisodes(epSelectionData[season].name);
+          }
+        });
+
+        // Handle episode click
+        episodesList.addEventListener("click", (e) => {
+          const li = e.target.closest("li");
+          if (li) {
+            const season = li.getAttribute("data-season");
+            const episode = li.getAttribute("data-episode");
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set("s", season);
+            currentUrl.searchParams.set("e", episode);
+            currentUrl.searchParams.set("server", getSelectedServerButtonId());
+            window.location.href = currentUrl.toString();
+          }
+        });
+        showSeasons(tmdbData.title);
       }
 
-      function openPopoverToCurrentSeason() {
-        showSeasonsView();
-        // Auto-drill into current season
-        setTimeout(() => {
-          const li = seasonsList.querySelector(
-            `li[data-season="${currentParams.season}"]`,
-          );
-          if (li) li.click();
-        }, 0);
-      }
-
-      // ── Init ──────────────────────────────────────────────────────────────────────
-
+      // Initialize popover data
       window.onload = async () => {
-        const params = getParams();
-        currentParams = params;
-
+        const params = getURLParams();
         if (!params) {
-          titleEl.textContent = "Invalid URL";
+        //   window.location.href = "https://cinewish.deno.dev/";
           return;
         }
 
-        // Load iframe immediately — don't wait for TMDB
-        iframe.src = getVideasyUrl(params);
-
-        // Fetch show metadata
         try {
-          showData = await fetchShowData(params);
+          const tmdbData = await fetchTMDBData(params);
+
+          title.addEventListener("click", () => {
+            window.location.href = `https://www.themoviedb.org/${params.type}/${params.id}`;
+          });
 
           if (params.type === "movie") {
-            titleEl.textContent = showData.title;
+            title.innerText = `${tmdbData.title}`;
           } else {
-            titleEl.textContent = `${showData.title} S${params.season} E${params.episode}`;
+            title.innerText = `${tmdbData.title} S${params.season} E${params.episode}`;
 
-            // Next episode button
-            const [nextS, nextE] = getNextEp(
+            // Next Episode
+            const [nextEpS, nextEpE] = getNextEp(
               params.season,
               params.episode,
-              showData.episodeCounts,
+              tmdbData,
             );
-            nextEpButton.classList.remove("hidden");
-            if (nextS !== null) {
-              nextEpButton.title = `Next: S${nextS} E${nextE}`;
+            if (nextEpS !== null) {
+              nextEpButton.title = `Next Episode: S${nextEpS} E${nextEpE}`;
+              nextEpButton.style.display = "flex";
+              nextEpButton.style.cursor = "pointer";
+              nextEpButton.style.visibility = "visible";
               nextEpButton.disabled = false;
-              nextEpButton.addEventListener("click", () =>
-                navigateToEpisode(params, nextS, nextE),
-              );
+              nextEpButton.addEventListener("click", () => {
+                const currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set("s", nextEpS);
+                currentUrl.searchParams.set("e", nextEpE);
+                currentUrl.searchParams.set(
+                  "server",
+                  getSelectedServerButtonId(),
+                );
+                window.location.href = currentUrl.toString();
+              });
             } else {
-              nextEpButton.title = "No next episode";
+              nextEpButton.title = `No Next Episode`;
+              nextEpButton.style.display = "flex";
+              nextEpButton.style.visibility = "visible";
               nextEpButton.disabled = true;
             }
 
-            // Episode selector button
-            epSelectButton.classList.remove("hidden");
+            // Episode Selection
+            epSelectButton.style.display = "flex";
+            epSelectButton.style.cursor = "pointer";
+            epSelectButton.style.visibility = "visible";
+            epSelectButton.disabled = false;
+            // Open popover in current season when clicking the button
             epSelectButton.addEventListener("click", (e) => {
               e.stopPropagation();
-              popoverPanel.classList.toggle("active");
-              if (popoverPanel.classList.contains("active") && seasonData) {
-                openPopoverToCurrentSeason();
+              const currentSeasonLi = seasonsList.querySelector(
+                `li[data-season="${params.season}"]`,
+              );
+              if (currentSeasonLi) {
+                currentSeasonLi.click();
               }
+              popoverContainer.classList.toggle("active");
             });
-
-            // Close popover on outside click
+            // Close popover when clicking outside
             document.addEventListener("click", (e) => {
-              if (
-                !popoverPanel.contains(e.target) &&
-                e.target !== epSelectButton
-              ) {
-                popoverPanel.classList.remove("active");
+              if (!popoverContainer.contains(e.target)) {
+                popoverContainer.classList.remove("active");
+                showSeasons(tmdbData.title);
               }
             });
-
-            // Popover back button
-            popoverBack.addEventListener("click", () => showSeasonsView());
-
-            // Popover close button
-            popoverClose.addEventListener("click", () =>
-              popoverPanel.classList.remove("active"),
-            );
-
-            // Season click
-            seasonsList.addEventListener("click", (e) => {
-              const li = e.target.closest("li");
-              if (li) showEpisodesView(li.dataset.season);
+            // Show seasons list when click Back Button
+            popoverBackButton.addEventListener("click", (e) => {
+              showSeasons(tmdbData.title);
             });
-
-            // Episode click
-            episodesList.addEventListener("click", (e) => {
-              const li = e.target.closest("li");
-              if (li)
-                navigateToEpisode(
-                  params,
-                  li.dataset.season,
-                  li.dataset.episode,
-                );
-            });
-
-            // Load season data in background (don't block)
-            fetchSeasonData(params, showData)
-              .then((data) => {
-                seasonData = data;
-                buildSeasonsView();
-                // If popover was opened before data loaded, populate it now
-                if (popoverPanel.classList.contains("active")) {
-                  openPopoverToCurrentSeason();
-                }
-              })
-              .catch((err) => console.error("Season data failed:", err));
+            loadPopoverSelectEpisode(params, tmdbData); // dont await to not block the page load
           }
+        } catch (error) {
+          console.error("Error loading data:", error);
+          title.innerText = "Title";
+        }
 
-          // Title click → TMDB page
-          titleEl.addEventListener("click", () => {
-            window.open(
-              `https://www.themoviedb.org/${params.type}/${params.id}`,
-              "_blank",
-            );
-          });
-        } catch (err) {
-          console.error("Failed to load show data:", err);
-          titleEl.textContent = "Player";
+        if (params.server) {
+          changeServer(parseInt(params.server));
+        } else {
+          changeServer(1);
         }
       };
+
     </script>
   </body>
 </html>

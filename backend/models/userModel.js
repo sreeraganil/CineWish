@@ -19,8 +19,18 @@ const userSchema = new mongoose.Schema(
       required: true,
       minlength: 6,
     },
+    pushSubscriptions: [
+      {
+        endpoint: { type: String, unique: true },
+        expirationTime: Number,
+        keys: {
+          p256dh: String,
+          auth: String,
+        },
+      },
+    ],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const User = mongoose.model("User", userSchema);

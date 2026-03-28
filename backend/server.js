@@ -8,6 +8,7 @@ import tmdbRoutes from './routes/tmdbRoutes.js'
 import wishListRoutes from './routes/wishlistRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import watchRoutes from './routes/watchRoutes.js'
+import pushRoutes from "./routes/pushRoutes.js";
 import './utilities/fetchFrequently.js';
 import './utilities/sleepPreventer.js'
 import path from 'path';
@@ -23,6 +24,7 @@ connectDB();
 
 const allowedOrigins = [
   "http://localhost:5173",
+  "http://localhost:4173",
   "https://cinewish.deno.dev",
   "http://localhost:5000",
   "https://cinewish-web.onrender.com",
@@ -55,6 +57,8 @@ app.use("/api/tmdb", tmdbRoutes);
 app.use("/api/wishlist", wishListRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/watch", watchRoutes);
+
+app.use("/api/push", pushRoutes);
 
 
 app.get("/ping", (req, res) => {

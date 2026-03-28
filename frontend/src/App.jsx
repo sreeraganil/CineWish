@@ -46,10 +46,15 @@ export default function App() {
     const t = setTimeout(() => {
       sessionStorage.setItem("cw_intro_seen", "1");
       setShowIntro(false);
-    }, 4000);
+    }, 3000);
 
     return () => clearTimeout(t);
   }, [showIntro]);
+
+  useEffect(()=>{
+    if(showIntro) document.documentElement.style.overflow = 'hidden';
+    else document.documentElement.style.overflow = 'auto';
+  },[showIntro])
 
   return (
     <>
@@ -57,7 +62,7 @@ export default function App() {
         {showIntro && <PageLoader />}
 
         {/* Always render routes so lazy imports resolve in the background */}
-        <div style={{ visibility: showIntro ? "hidden" : "visible" }}>
+        <div style={{ visibility: showIntro ? "hidden" : "visible"}}>
           <Routes>
             <Route path="/" element={<Home />} />
 

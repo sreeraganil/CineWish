@@ -15,17 +15,19 @@ const formatDate = (dateString) => {
   });
 };
 
+// Helper to convert VAPID string to Uint8Array for the browser
+const urlBase64ToUint8Array = (base64String) => {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const rawData = window.atob(base64);
+  return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
+};
+
 /* ---------------- ICONS ---------------- */
 const Icons = {
   Verified: () => (
     <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M9 12L11 14L15 10M12 3L13.9101 4.87147L16.5 4.20577L17.2184 6.78155L19.7942 7.5L19.1285 10.0899L21 12L19.1285 13.9101L19.7942 16.5L17.2184 17.2184L16.5 19.7942L13.9101 19.1285L12 21L10.0899 19.1285L7.5 19.7942L6.78155 17.2184L4.20577 16.5L4.87147 13.9101L3 12L4.87147 10.0899L4.20577 7.5L6.78155 6.78155L7.5 4.20577L10.0899 4.87147L12 3Z"/>
-    </svg>
-  ),
-  Film: () => (
-    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M19.82 2H4.18C2.97602 2 2 2.97602 2 4.18V19.82C2 21.024 2.97602 22 4.18 22H19.82C21.024 22 22 21.024 22 19.82V4.18C22 2.97602 21.024 2 19.82 2Z"/>
-      <path d="M7 2V22M17 2V22M2 12H22M2 7H7M2 17H7M17 17H22M17 7H22"/>
     </svg>
   ),
   Bookmark: () => (
@@ -41,6 +43,11 @@ const Icons = {
   Clock: () => (
     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 8V12L15 15M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"/>
+    </svg>
+  ),
+  Bell: () => (
+    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" />
     </svg>
   ),
   Logout: () => (
@@ -67,6 +74,7 @@ const Profile = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isSubscribing, setIsSubscribing] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -96,6 +104,45 @@ const Profile = () => {
     setShowDeleteModal(false);
   };
 
+  /* ── NOTIFICATION HANDLER ── */
+  const handleEnableNotifications = async () => {
+    setIsSubscribing(true);
+    try {
+      const permission = await Notification.requestPermission();
+
+      if (permission !== "granted") {
+        alert("Notifications are blocked by your browser. Please enable them in your site settings.");
+        return;
+      }
+
+      // 1. Get Service Worker
+      const registration = await navigator.serviceWorker.ready;
+
+      // 2. Check for existing subscription
+      let subscription = await registration.pushManager.getSubscription();
+
+      // 3. If no subscription, create one
+      if (!subscription) {
+        subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(
+            "BBGhZLprpWwS596bo9Jdj0Uvr5mHPT3wIuSjO6xFpf8gppnu1vJQ_1zyPv31zs_tN9nob01zLpmoN3jTZUYV61c"
+          ),
+        });
+      }
+
+      // 4. Send to backend
+      await API.post("/push/subscribe", subscription);
+      alert("Push notifications enabled!");
+      
+    } catch (err) {
+      console.error("Subscription failed:", err);
+      alert("Failed to enable notifications. Is your Service Worker registered?");
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
+
   useEffect(() => {
     if (!user && !loading) navigate("/login");
   }, [user, loading, navigate]);
@@ -119,12 +166,9 @@ const Profile = () => {
 
         {/* ── USER CARD ── */}
         <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-6 flex items-center gap-5">
-          {/* Avatar */}
           <div className="shrink-0 w-14 h-14 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-2xl font-bold text-white shadow-lg shadow-teal-900/40">
             {loading ? "" : user?.username?.charAt(0).toUpperCase()}
           </div>
-
-          {/* Info */}
           <div className="flex-1 min-w-0">
             {loading ? (
               <>
@@ -140,8 +184,6 @@ const Profile = () => {
               </>
             )}
           </div>
-
-          {/* Badge */}
           {!loading && (
             <div className="shrink-0 hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-teal-500/10 border border-teal-500/20 text-[10px] font-semibold text-teal-400 uppercase tracking-wider whitespace-nowrap">
               <Icons.Verified />
@@ -175,11 +217,26 @@ const Profile = () => {
 
         {/* ── NAVIGATION ── */}
         <div>
-          <p className="text-[10px] uppercase tracking-[0.25em] text-gray-600 font-semibold mb-3 px-1">Library</p>
-          <div className="grid grid-cols-3 gap-3">
-            <NavTile title="Wishlist"  path="/wishlist"       icon={<Icons.Bookmark />} accent="hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-amber-400"  />
-            <NavTile title="Watched"   path="/watched"        icon={<Icons.Check />}   accent="hover:border-emerald-500/40 hover:bg-emerald-500/5 hover:text-emerald-400" />
-            <NavTile title="History"   path="/watch/history"  icon={<Icons.Clock />}   accent="hover:border-purple-500/40 hover:bg-purple-500/5 hover:text-purple-400"  />
+          <p className="text-[10px] uppercase tracking-[0.25em] text-gray-600 font-semibold mb-3 px-1">Library & Alerts</p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <NavTile title="Wishlist" path="/wishlist" icon={<Icons.Bookmark />} accent="hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-amber-400" />
+            <NavTile title="Watched" path="/watched" icon={<Icons.Check />} accent="hover:border-emerald-500/40 hover:bg-emerald-500/5 hover:text-emerald-400" />
+            <NavTile title="History" path="/watch/history" icon={<Icons.Clock />} accent="hover:border-purple-500/40 hover:bg-purple-500/5 hover:text-purple-400" />
+            
+            {/* Notification Button Tile */}
+            <button
+              onClick={handleEnableNotifications}
+              disabled={isSubscribing}
+              className={`group flex flex-col items-center gap-2.5 py-5 px-3 rounded-2xl border border-white/8 bg-white/[0.03] text-gray-500 transition-all duration-200 hover:border-blue-500/40 hover:bg-blue-500/5 hover:text-blue-400 active:scale-[0.97] ${isSubscribing ? 'opacity-50' : ''}`}
+            >
+              <div className="transition-colors duration-200">
+                <Icons.Bell />
+              </div>
+              <div className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider">
+                <span>{isSubscribing ? "Wait..." : "Alerts"}</span>
+                <Icons.Arrow />
+              </div>
+            </button>
           </div>
         </div>
 
@@ -203,7 +260,6 @@ const Profile = () => {
             </button>
           </div>
         </div>
-
       </main>
 
       <DeleteConfirmModal isOpen={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={handleLogout} msg="Logout" description="Are you sure you want to log out of CineWish?" />

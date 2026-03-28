@@ -10,8 +10,8 @@ const genreStore = create((set, get) => ({
   totalPages: 1,
   loading: false,
 
-  scrollPosition: 0, 
-  
+  scrollPosition: 0,
+
   setScrollPosition: (val) => set({ scrollPosition: val }),
 
   resetGenre: () =>
@@ -22,9 +22,18 @@ const genreStore = create((set, get) => ({
       totalPages: 1,
     }),
 
-  fetchGenre: async ({ genreId, media = "movie", page = 1 }) => {
+  fetchGenre: async ({
+    genreId,
+    media = "movie",
+    page = 1,
+    year,
+    rating,
+    sort = "popularity.desc",
+  }) => {
     const { loading } = get();
-    if (loading) return;
+
+    // prevent duplicate scroll calls (but allow fresh filter calls)
+    if (loading && page !== 1) return;
 
     set({ loading: true });
 
@@ -34,6 +43,15 @@ const genreStore = create((set, get) => ({
           media,
           with_genres: genreId,
           page,
+          sort_by: sort,
+
+          ...(rating && { "vote_average.gte": rating }),
+
+          ...(year && {
+            [media === "movie"
+              ? "primary_release_year"
+              : "first_air_date_year"]: year,
+          }),
         },
       });
 
@@ -42,10 +60,10 @@ const genreStore = create((set, get) => ({
         media,
         page: data.page,
         totalPages: data.total_pages,
-        items:
-          page === 1
-            ? data.results
-            : [...state.items, ...data.results],
+
+        filters: { year, rating, sort },
+
+        items: page === 1 ? data.results : [...state.items, ...data.results],
       }));
     } catch (err) {
       console.error("Failed to fetch genre:", err.message);
