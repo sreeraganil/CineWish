@@ -86,10 +86,8 @@ const Watch = () => {
     // Safety fallback: Ensure player shows even if handshake is slow
     const fallback = setTimeout(() => setIsLoading(false), 8000);
 
-    window.addEventListener('keydown', (e) => {
-      if(e.code === 'KeyN'){
-        window.location.href = `https://cinewish.deno.dev//videasy.html?type=${media}&id=${id}&s=${s}&e=${e}`;
-      }
+    window.addEventListener('dblclick', () => {
+        window.location.href = `https://cinewish.deno.dev/videasy.html?type=${media}&id=${id}&s=${s}&e=${e}`;
     })
 
     return () => {
@@ -121,7 +119,7 @@ const Watch = () => {
         allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
         allowFullScreen
         sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"
-        onLoad={() => setTimeout(() => setIsLoading(false), 1500)}
+        onLoad={() => setTimeout(() => setIsLoading(false), 1000)}
       />
     </div>
   );

@@ -1,12 +1,15 @@
 {
   "deploy": {
-    "name": "",
+    "project": "cinewish",
+    "org": "sreeraganil",
+    "entrypoint": "deploy.js",
     "exclude": [
-      "**/node_modules"
-    ],
-    "include": [],
-    "entrypoint": "deploy.js"
+      "**/node_modules",
+      ".eslintrc.cjs",
+      ".eslint*",
+      "*.log",
+      ".git",
+      ".gitignore"
+    ]
   }
 }
-
-

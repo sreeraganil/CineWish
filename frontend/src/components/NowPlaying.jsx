@@ -22,7 +22,7 @@ const NowPlaying = () => {
 
   if (nowPlaying?.length == 0)
     return (
-      <SectionSkeleton title="Upcoming Releases" CardSkeleton={CardSkeleton} />
+      <SectionSkeleton title="Now Playing" CardSkeleton={CardSkeleton} />
     );
 
   return (

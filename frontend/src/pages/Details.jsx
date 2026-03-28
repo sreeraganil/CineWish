@@ -90,6 +90,7 @@ const Details = () => {
   useEffect(() => {
     const fetchDetails = async () => {
       try {
+        setItem(null);
         const { data } = await API.get(`/tmdb/details/${media}/${id}`);
         setItem(data);
         setError(false);

@@ -37,5 +37,3 @@ cron.schedule("1 0 * * *", async () => {
     console.error("❌ Failed to update Now Playing:", err.code || err.message);
   }
 });
-
-updateNowPlaying();
