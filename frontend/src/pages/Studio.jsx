@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import TrendingCard from "../components/TrendingCard";
 import CardSkeleton from "../components/CardSkeleton";
 import studios from "../utilities/studios.json";
-import BackHeader from "../components/Backheader";
+import BackHeader from "../components/BackHeader";
 import studioStore from "../store/studioStore";
 
 const Studio = () => {

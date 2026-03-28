@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import API from "../config/axios";
 import TrendingCard from "../components/TrendingCard";
 import CardSkeleton from "../components/CardSkeleton";
-import BackHeader from "../components/Backheader";
+import BackHeader from "../components/BackHeader";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 
 const BIO_LIMIT = 280;

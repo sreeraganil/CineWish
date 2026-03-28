@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import BackHeader from "../components/Backheader";
+import BackHeader from "../components/BackHeader";
 import API from "../config/axios";
 
 const Watch = () => {

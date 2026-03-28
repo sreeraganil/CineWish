@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import API from "../config/axios";
 import { useParams } from "react-router-dom";
-import BackHeader from "../components/Backheader";
+import BackHeader from "../components/BackHeader";
 
 /* ──────────────────────────────────────────────── */
 /* Rating tiers */

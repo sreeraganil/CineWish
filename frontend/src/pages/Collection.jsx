@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import API from "../config/axios";
 import TrendingCard from "../components/TrendingCard";
-import BackHeader from "../components/Backheader";
+import BackHeader from "../components/BackHeader";
 
 const Collection = () => {
   const { id } = useParams();

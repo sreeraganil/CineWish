@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import userStore from "../store/userStore";
 import API from "../config/axios";
-import BackHeader from "../components/Backheader";
+import BackHeader from "../components/BackHeader";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
 
 /* ---------------- UTIL ---------------- */

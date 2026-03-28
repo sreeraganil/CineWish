@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import TrendingCard from "../components/TrendingCard";
 import CardSkeleton from "../components/CardSkeleton";
-import BackHeader from "../components/Backheader";
+import BackHeader from "../components/BackHeader";
 import networkStore from "../store/networkStore";
 import networks from "../utilities/networks.json";
 

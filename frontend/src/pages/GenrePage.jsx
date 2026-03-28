@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import genreStore from "../store/genreStore";
 import GenreGrid from "../components/GenreGrid";
-import BackHeader from "../components/Backheader";
 import GENRE from "../utilities/genres.json";
+import BackHeader from "../components/BackHeader"
 
 const GenrePage = () => {
   const { id } = useParams();

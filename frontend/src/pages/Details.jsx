@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import API from "../config/axios";
 import wishlistStore from "../store/wishlistStore";
 import toast from "react-hot-toast";
-import BackHeader from "../components/Backheader";
+import BackHeader from "../components/BackHeader";
 import Loader from "../components/Loader";
 import userStore from "../store/userStore";
 import SimilarContent from "../components/SimilarContent";
