@@ -4,6 +4,7 @@ import userStore from "../store/userStore";
 import API from "../config/axios";
 import BackHeader from "../components/BackHeader";
 import DeleteConfirmModal from "../components/DeleteConfirmModal";
+import toast from "react-hot-toast";
 
 /* ---------------- UTIL ---------------- */
 const formatDate = (dateString) => {
@@ -111,7 +112,7 @@ const Profile = () => {
       const permission = await Notification.requestPermission();
 
       if (permission !== "granted") {
-        alert("Notifications are blocked by your browser. Please enable them in your site settings.");
+        toast.error("Notifications are blocked by your browser. Please enable them in your site settings.");
         return;
       }
 
@@ -133,11 +134,11 @@ const Profile = () => {
 
       // 4. Send to backend
       await API.post("/push/subscribe", subscription);
-      alert("Push notifications enabled!");
+      toast.success("Push notifications enabled!");
       
     } catch (err) {
       console.error("Subscription failed:", err);
-      alert("Failed to enable notifications. Is your Service Worker registered?");
+      toast.error("Failed to enable notifications. Is your Service Worker registered?");
     } finally {
       setIsSubscribing(false);
     }

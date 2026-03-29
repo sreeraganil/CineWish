@@ -32,8 +32,8 @@ export const subscribe = async (req, res) => {
 
 // ➜ Send push to ALL users (Admin)
 export const sendPush = async (req, res) => {
-  const { title, body } = req.body;
-  const payload = JSON.stringify({ title, body });
+  const { title, body, url, image } = req.body;
+  const payload = JSON.stringify({ title, body, url, image });
 
   try {
     // Get all users who have at least one subscription

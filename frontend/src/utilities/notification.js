@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import API from "../config/axios";
 
 export const enableNotifications = async () => {
@@ -5,7 +6,7 @@ export const enableNotifications = async () => {
     const permission = await Notification.requestPermission();
 
     if (permission !== "granted") {
-      alert("Notifications blocked");
+      toast.error("Notifications blocked");
       return;
     }
 
@@ -23,9 +24,9 @@ export const enableNotifications = async () => {
     // use your interceptor
     await API.post("/push/subscribe", subscription);
 
-    console.log("Subscribed:", subscription);
+    toast.success("Subscribed:", subscription);
   } catch (err) {
-    console.error("Subscription failed:", err);
+    toast.error("Subscription failed:", err);
   }
 };
 
