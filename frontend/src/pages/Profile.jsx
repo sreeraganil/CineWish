@@ -107,42 +107,49 @@ const Profile = () => {
 
   /* ── NOTIFICATION HANDLER ── */
   const handleEnableNotifications = async () => {
-    setIsSubscribing(true);
-    try {
-      const permission = await Notification.requestPermission();
-
-      if (permission !== "granted") {
-        toast.error("Notifications are blocked by your browser. Please enable them in your site settings.");
-        return;
-      }
-
-      // 1. Get Service Worker
-      const registration = await navigator.serviceWorker.ready;
-
-      // 2. Check for existing subscription
-      let subscription = await registration.pushManager.getSubscription();
-
-      // 3. If no subscription, create one
-      if (!subscription) {
-        subscription = await registration.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(
-            "BBGhZLprpWwS596bo9Jdj0Uvr5mHPT3wIuSjO6xFpf8gppnu1vJQ_1zyPv31zs_tN9nob01zLpmoN3jTZUYV61c"
-          ),
-        });
-      }
-
-      // 4. Send to backend
-      await API.post("/push/subscribe", subscription);
-      toast.success("Push notifications enabled!");
-      
-    } catch (err) {
-      console.error("Subscription failed:", err);
-      toast.error("Failed to enable notifications. Is your Service Worker registered?");
-    } finally {
-      setIsSubscribing(false);
+  setIsSubscribing(true);
+  try {
+    // 1. Check if Service Workers are supported
+    if (!('serviceWorker' in navigator)) {
+       toast.error("Browser does not support service workers.");
+       return;
     }
-  };
+
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") {
+      toast.error("Notifications blocked by browser.");
+      return;
+    }
+
+    // 2. Wait for registration
+    const registration = await navigator.serviceWorker.ready;
+    
+    // 3. Ensure the pushManager exists
+    if (!registration.pushManager) {
+      toast.error("Push messaging is not supported in this browser.");
+      return;
+    }
+
+    // 4. Proceed with subscription
+    let subscription = await registration.pushManager.getSubscription();
+
+    if (!subscription) {
+      subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array("BBGhZLprpWwS596bo9Jdj0Uvr5mHPT3wIuSjO6xFpf8gppnu1vJQ_1zyPv31zs_tN9nob01zLpmoN3jTZUYV61c"),
+      });
+    }
+
+    await API.post("/push/subscribe", subscription);
+    toast.success("Push notifications enabled!");
+    
+  } catch (err) {
+    console.error("FULL ERROR:", err); // Look at this in F12!
+    toast.error(`Failed: ${err.message}`);
+  } finally {
+    setIsSubscribing(false);
+  }
+};
 
   useEffect(() => {
     if (!user && !loading) navigate("/login");

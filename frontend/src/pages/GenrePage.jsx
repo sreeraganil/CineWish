@@ -309,6 +309,8 @@ const GenrePage = () => {
                 <div className="absolute z-50 top-full mt-1 left-0 w-36 bg-gray-900 border border-gray-700 rounded-xl shadow-xl overflow-hidden">
                   {[
                     { value: "", label: "Any rating" },
+                    { value: "5", label: "5+" },
+                    { value: "6", label: "6+" },
                     { value: "7", label: "7+" },
                     { value: "8", label: "8+" },
                     { value: "9", label: "9+" },

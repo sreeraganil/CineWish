@@ -11,17 +11,38 @@ self.addEventListener("activate", () => {
 });
 
 self.addEventListener('push', (event) => {
-  const data = event.data?.json() || {};
-  self.registration.showNotification(data.title || 'Cinewish', {
+  let data = {};
+
+  if (event.data) {
+    try {
+      // Try to parse the incoming stream as JSON
+      data = event.data.json();
+    } catch (e) {
+      // If parsing fails (Unexpected token 'T' error), treat it as plain text
+      console.warn("Received non-JSON push data:", event.data.text());
+      data = {
+        title: 'Cinewish',
+        body: event.data.text()
+      };
+    }
+  }
+
+  const title = data.title || 'Cinewish';
+  const options = {
     body: data.body || 'Click to open',
     icon: data.icon || '/logo/pwa-192x192.png',
     image: data.image || null,
+    badge: '/logo/pwa-64x64.png', // Recommended for mobile status bars
     data: {
-      url: data.url ? `https://cinewish.deno.dev/${data.url}` : null,
+      // Ensure the URL is absolute or fallback to base
+      url: data.url ? `https://cinewish.deno.dev/${data.url}` : 'https://cinewish.deno.dev',
     },
-  });
-});
+  };
 
+  event.waitUntil(
+    self.registration.showNotification(title, options)
+  );
+});
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();

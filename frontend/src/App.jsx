@@ -53,7 +53,7 @@ export default function App() {
 
   useEffect(()=>{
     if(showIntro) document.documentElement.style.overflow = 'hidden';
-    else document.documentElement.style.overflow = 'auto';
+    else document.documentElement.style.overflow = 'initial';
   },[showIntro])
 
   return (
