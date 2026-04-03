@@ -13,6 +13,7 @@ import './utilities/fetchFrequently.js';
 import './utilities/sleepPreventer.js'
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { sendOTTPushNotifications } from './controllers/pushController.js';
 
 const PORT = process.env.PORT || 4000
 
@@ -63,6 +64,10 @@ app.use("/api/push", pushRoutes);
 
 app.get("/ping", (req, res) => {
     res.json({ message: "Server Ping"})
+})
+
+app.get("/notification/ott", (req, res) => {
+  sendOTTPushNotifications()
 })
 
 app.get('/{*any}', (req, res) => {

@@ -793,7 +793,7 @@ export const getEpisodeRatings = async (req, res) => {
       // stop when no more seasons
       if (!data.Episodes) break;
 
-      const episodes = data.Episodes.map(ep => ({
+      const episodes = data.Episodes.map((ep) => ({
         season,
         episode: Number(ep.Episode),
         title: ep.Title,

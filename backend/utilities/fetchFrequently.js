@@ -5,6 +5,7 @@ import {
   updateTrending,
   updateUpcoming,
 } from "../controllers/tmdbController.js";
+import { sendOTTPushNotifications } from "../controllers/pushController.js";
 
 cron.schedule("1 0 * * *", async () => {
   console.log(`⏰ [${new Date().toISOString()}] Running content cache...`);
@@ -36,4 +37,9 @@ cron.schedule("1 0 * * *", async () => {
   } catch (err) {
     console.error("❌ Failed to update Now Playing:", err.code || err.message);
   }
+});
+
+cron.schedule("0 9 * * *", async () => {
+  console.log("[CRON] Running OTT push...");
+  await sendOTTPushNotifications();
 });

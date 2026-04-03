@@ -1,5 +1,6 @@
 import User from "../models/userModel.js";
 import { webpush } from "../services/push.js";
+import { getTodayOTTList } from "../utilities/latestNews.js";
 
 // ➜ Subscribe user (Saves to DB)
 export const subscribe = async (req, res) => {
@@ -108,5 +109,55 @@ export const testPush = async (req, res) => {
   } catch (err) {
     console.error("Test push failed:", err);
     res.status(500).send("Error sending push");
+  }
+};
+
+
+export const sendOTTPushNotifications = async () => {
+  try {
+    const ottList = await getTodayOTTList();
+
+    if (!ottList || ottList.length === 0) {
+      console.warn("[OTT Push] No OTT items to push today.");
+      return;
+    }
+
+    const users = await User.find({ "pushSubscriptions.0": { $exists: true } });
+
+    for (const item of ottList) {
+      const payload = JSON.stringify({
+        title: `🎬 Now Streaming: ${item.title}`,
+        body: `Available on ${item.platforms.slice(0, 2).join(", ")} ${
+          item.vote_average ? `· ⭐ ${item.vote_average.toFixed(1)}` : ""
+        }`,
+        url: `/${item.media_type}/${item.id}`,
+        image: item.poster_path
+          ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+          : null,
+      });
+
+      for (const user of users) {
+        const remainingSubs = [];
+
+        for (const sub of user.pushSubscriptions) {
+          try {
+            await webpush.sendNotification(sub, payload);
+            remainingSubs.push(sub);
+          } catch (err) {
+            if (err.statusCode !== 410 && err.statusCode !== 404) {
+              remainingSubs.push(sub);
+            }
+            console.error(`[OTT Push] Failed for ${user.username}:`, err.statusCode);
+          }
+        }
+
+        user.pushSubscriptions = remainingSubs;
+        await user.save();
+      }
+    }
+
+    console.log(`[OTT Push] Sent ${ottList.length} notifications to ${users.length} users.`);
+  } catch (err) {
+    console.error("[OTT Push] Broadcast failed:", err.message);
   }
 };
