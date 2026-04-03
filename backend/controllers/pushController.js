@@ -1,7 +1,7 @@
 import SentNotification from "../models/SentNotification.js";
 import User from "../models/userModel.js";
 import { webpush } from "../services/push.js";
-import { getTodayOTTList } from "../utilities/latestNews.js";
+import { enrichWithGemini, getTodayOTTList } from "../utilities/latestNews.js";
 
 // ➜ Subscribe user (Saves to DB)
 export const subscribe = async (req, res) => {
