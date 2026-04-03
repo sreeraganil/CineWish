@@ -122,14 +122,13 @@ export const sendOTTPushNotifications = async () => {
       return;
     }
 
-    // Pick one random item
     const item = ottList[Math.floor(Math.random() * ottList.length)];
 
     const payload = JSON.stringify({
       title: `🎬 Now Streaming: ${item.title}`,
-      body: `Available on ${item.platforms.slice(0, 2).join(", ")}${
-        item.vote_average ? ` · ⭐ ${item.vote_average.toFixed(1)}` : ""
-      }`,
+      body: item.vote_average
+        ? `⭐ ${item.vote_average.toFixed(1)} · Watch now`
+        : `Watch now`,
       url: `/${item.media_type}/${item.id}`,
       image: item.poster_path
         ? `https://image.tmdb.org/t/p/w500${item.poster_path}`

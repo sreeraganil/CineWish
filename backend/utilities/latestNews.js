@@ -126,8 +126,8 @@ function cleanTitleForSearch(title) {
 }
 
 /**
- * Resolves a Gemini-supplied title to a full TMDB item with OTT providers.
- * Falls back to /search/multi if the typed search returns nothing.
+ * Resolves a Gemini-supplied title to a full TMDB item.
+ * Falls back to /search/multi if typed search returns nothing.
  */
 async function resolveTMDBItem(title, media_type) {
   if (!["movie", "tv"].includes(media_type)) {
@@ -137,17 +137,19 @@ async function resolveTMDBItem(title, media_type) {
   const cleanedTitle = cleanTitleForSearch(title);
 
   // Primary search
-  const searchUrl = `${BASE_URL}/search/${media_type}?api_key=${TMDB_KEY}&query=${encodeURIComponent(cleanedTitle)}`;
-  const { data: searchData } = await axios.get(searchUrl);
-  const primaryResults = searchData?.results;
+  const { data: searchData } = await axios.get(
+    `${BASE_URL}/search/${media_type}?api_key=${TMDB_KEY}&query=${encodeURIComponent(cleanedTitle)}`
+  );
 
-  if (primaryResults?.length) {
-    return resolveProviders({ ...primaryResults[0], media_type });
+  if (searchData?.results?.length) {
+    return normalizeItem({ ...searchData.results[0], media_type });
   }
 
   // Fallback: multi-search (catches wrong media_type from Gemini)
-  const fallbackUrl = `${BASE_URL}/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(cleanedTitle)}`;
-  const { data: fallbackData } = await axios.get(fallbackUrl);
+  const { data: fallbackData } = await axios.get(
+    `${BASE_URL}/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(cleanedTitle)}`
+  );
+
   const fallback = fallbackData?.results?.find((r) =>
     ["movie", "tv"].includes(r.media_type)
   );
@@ -156,38 +158,20 @@ async function resolveTMDBItem(title, media_type) {
     throw new Error(`No TMDB results for "${cleanedTitle}"`);
   }
 
-  return resolveProviders(fallback);
+  return normalizeItem(fallback);
 }
 
 /**
- * Fetches watch providers for a TMDB item and aggregates them globally.
+ * Normalizes a raw TMDB result into a clean item shape.
  */
-async function resolveProviders(item) {
-  const { id, media_type } = item;
-
-  const providerUrl = `${BASE_URL}/${media_type}/${id}/watch/providers?api_key=${TMDB_KEY}`;
-  const { data: providerData } = await axios.get(providerUrl);
-
-  const countryResults = providerData.results ?? {};
-
-  const platformSet = new Set(
-    Object.values(countryResults)
-      .flatMap((country) => country.flatrate ?? [])
-      .map((p) => p.provider_name)
-  );
-
-  if (platformSet.size === 0) {
-    throw new Error(`No flatrate providers globally for "${item.title ?? item.name}"`);
-  }
-
+function normalizeItem(item) {
   return {
-    id,
-    media_type,
+    id: item.id,
+    media_type: item.media_type,
     title: item.title ?? item.name ?? item.original_title ?? item.original_name,
     release_date: item.release_date ?? item.first_air_date ?? null,
     poster_path: item.backdrop_path ?? item.poster_path ?? null,
     vote_average: item.vote_average ?? null,
-    platforms: [...platformSet],
   };
 }
 
