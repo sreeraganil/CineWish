@@ -1,3 +1,4 @@
+import SentNotification from "../models/SentNotification.js";
 import User from "../models/userModel.js";
 import { webpush } from "../services/push.js";
 import { getTodayOTTList } from "../utilities/latestNews.js";
@@ -124,11 +125,12 @@ export const sendOTTPushNotifications = async () => {
 
     const item = ottList[Math.floor(Math.random() * ottList.length)];
 
+    // Gemini writes the notification hook
+    const hook = await enrichWithGemini(item);
+
     const payload = JSON.stringify({
-      title: `🎬 Now Streaming: ${item.title}`,
-      body: item.vote_average
-        ? `⭐ ${item.vote_average.toFixed(1)} · Watch now`
-        : `Watch now`,
+      title: `🎬 ${item.title}`,
+      body: hook,
       url: `/${item.media_type}/${item.id}`,
       image: item.poster_path
         ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
@@ -156,7 +158,10 @@ export const sendOTTPushNotifications = async () => {
       await user.save();
     }
 
-    console.log(`[OTT Push] Sent "${item.title}" to ${users.length} users.`);
+    // Mark as sent so it won't be picked again
+    await SentNotification.create({ tmdb_id: item.id, title: item.title }).catch(() => {});
+
+    console.log(`[OTT Push] Sent "${item.title}" → "${hook}" to ${users.length} users.`);
   } catch (err) {
     console.error("[OTT Push] Broadcast failed:", err.message);
   }
