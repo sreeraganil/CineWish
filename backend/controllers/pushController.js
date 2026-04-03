@@ -122,41 +122,42 @@ export const sendOTTPushNotifications = async () => {
       return;
     }
 
+    // Pick one random item
+    const item = ottList[Math.floor(Math.random() * ottList.length)];
+
+    const payload = JSON.stringify({
+      title: `🎬 Now Streaming: ${item.title}`,
+      body: `Available on ${item.platforms.slice(0, 2).join(", ")}${
+        item.vote_average ? ` · ⭐ ${item.vote_average.toFixed(1)}` : ""
+      }`,
+      url: `/${item.media_type}/${item.id}`,
+      image: item.poster_path
+        ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+        : null,
+    });
+
     const users = await User.find({ "pushSubscriptions.0": { $exists: true } });
 
-    for (const item of ottList) {
-      const payload = JSON.stringify({
-        title: `🎬 Now Streaming: ${item.title}`,
-        body: `Available on ${item.platforms.slice(0, 2).join(", ")} ${
-          item.vote_average ? `· ⭐ ${item.vote_average.toFixed(1)}` : ""
-        }`,
-        url: `/${item.media_type}/${item.id}`,
-        image: item.poster_path
-          ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
-          : null,
-      });
+    for (const user of users) {
+      const remainingSubs = [];
 
-      for (const user of users) {
-        const remainingSubs = [];
-
-        for (const sub of user.pushSubscriptions) {
-          try {
-            await webpush.sendNotification(sub, payload);
+      for (const sub of user.pushSubscriptions) {
+        try {
+          await webpush.sendNotification(sub, payload);
+          remainingSubs.push(sub);
+        } catch (err) {
+          if (err.statusCode !== 410 && err.statusCode !== 404) {
             remainingSubs.push(sub);
-          } catch (err) {
-            if (err.statusCode !== 410 && err.statusCode !== 404) {
-              remainingSubs.push(sub);
-            }
-            console.error(`[OTT Push] Failed for ${user.username}:`, err.statusCode);
           }
+          console.error(`[OTT Push] Failed for ${user.username}:`, err.statusCode);
         }
-
-        user.pushSubscriptions = remainingSubs;
-        await user.save();
       }
+
+      user.pushSubscriptions = remainingSubs;
+      await user.save();
     }
 
-    console.log(`[OTT Push] Sent ${ottList.length} notifications to ${users.length} users.`);
+    console.log(`[OTT Push] Sent "${item.title}" to ${users.length} users.`);
   } catch (err) {
     console.error("[OTT Push] Broadcast failed:", err.message);
   }

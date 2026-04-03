@@ -4,6 +4,9 @@ import axios from "axios";
 if (!process.env.GEMINI_API_KEY) {
   throw new Error("GEMINI_API_KEY is not set in environment");
 }
+if (!process.env.TMDB_KEY) {
+  throw new Error("TMDB_KEY is not set in environment");
+}
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
@@ -15,6 +18,8 @@ const OTT_CONFIG = {
   RECENCY_DAYS: 10,
   FALLBACK_RECENCY_DAYS: 30,
 };
+
+// ─── Main Export ─────────────────────────────────────────────────────────────
 
 export const getTodayOTTList = async () => {
   const today = new Date().toISOString().split("T")[0];
@@ -40,12 +45,16 @@ Strict rules:
 - NO duplicates
 - NO upcoming/unreleased titles
 - NO theatrical-only releases (must be streamable on OTT)
-- Use the exact title as it appears on TMDB (e.g. "Heeramandi: The Diamond Bazaar" not "Heeramandi")
+- Use ONLY the base title as it appears on TMDB — NO season suffixes
+  ✅ "Severance"     ❌ "Severance: Season 2"
+  ✅ "The Crown"     ❌ "The Crown: Season 7"
+- Do NOT invent or guess titles. If unsure whether a title exists on TMDB, omit it.
+- Prefer well-known titles from major studios over obscure ones.
 
 Return ONLY a raw JSON array. No markdown, no explanation, no code fences, no trailing commas.
 
 [
-  { "title": "exact TMDB title", "media_type": "movie" | "tv" },
+  { "title": "exact base TMDB title", "media_type": "movie" | "tv" },
   ...
 ]`;
 
@@ -61,9 +70,7 @@ Return ONLY a raw JSON array. No markdown, no explanation, no code fences, no tr
     try {
       list = JSON.parse(match[0]);
     } catch {
-      throw new Error(
-        `JSON parse failed. Raw response: ${rawText.slice(0, 200)}`,
-      );
+      throw new Error(`JSON parse failed. Raw response: ${rawText.slice(0, 200)}`);
     }
 
     if (!Array.isArray(list) || list.length === 0) {
@@ -75,8 +82,8 @@ Return ONLY a raw JSON array. No markdown, no explanation, no code fences, no tr
         resolveTMDBItem(title, media_type).catch((err) => {
           console.warn(`[OTT] Skipping "${title}": ${err.message}`);
           return null;
-        }),
-      ),
+        })
+      )
     );
 
     const resolved = results.filter(Boolean);
@@ -91,7 +98,7 @@ Return ONLY a raw JSON array. No markdown, no explanation, no code fences, no tr
     if (filtered.length === 0) {
       console.warn(
         `[OTT] No items within ${OTT_CONFIG.RECENCY_DAYS} days. ` +
-          `Falling back to ${OTT_CONFIG.FALLBACK_RECENCY_DAYS}-day window.`,
+          `Falling back to ${OTT_CONFIG.FALLBACK_RECENCY_DAYS}-day window.`
       );
       return filterByRecency(resolved, OTT_CONFIG.FALLBACK_RECENCY_DAYS);
     }
@@ -103,54 +110,89 @@ Return ONLY a raw JSON array. No markdown, no explanation, no code fences, no tr
   }
 };
 
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
 /**
- * Fetches a single title from TMDB and resolves its OTT providers globally.
- * Aggregates flatrate providers across ALL available countries and deduplicates.
+ * Strips season/episode suffixes so TMDB search works reliably.
+ * "Severance: Season 2" → "Severance"
+ * "The Crown S07"       → "The Crown"
+ */
+function cleanTitleForSearch(title) {
+  return title
+    .replace(/:\s*Season\s*\d+/i, "")
+    .replace(/\s*Season\s*\d+/i, "")
+    .replace(/\s*S\d{2}/i, "")
+    .trim();
+}
+
+/**
+ * Resolves a Gemini-supplied title to a full TMDB item with OTT providers.
+ * Falls back to /search/multi if the typed search returns nothing.
  */
 async function resolveTMDBItem(title, media_type) {
   if (!["movie", "tv"].includes(media_type)) {
     throw new Error(`Invalid media_type: "${media_type}"`);
   }
 
-  const searchUrl = `${BASE_URL}/search/${media_type}?api_key=${TMDB_KEY}&query=${encodeURIComponent(title)}`;
-  const { data: searchData } = await axios.get(searchUrl);
+  const cleanedTitle = cleanTitleForSearch(title);
 
-  const results = searchData?.results;
-  if (!results?.length) {
-    throw new Error(`No TMDB results for "${title}"`);
+  // Primary search
+  const searchUrl = `${BASE_URL}/search/${media_type}?api_key=${TMDB_KEY}&query=${encodeURIComponent(cleanedTitle)}`;
+  const { data: searchData } = await axios.get(searchUrl);
+  const primaryResults = searchData?.results;
+
+  if (primaryResults?.length) {
+    return resolveProviders({ ...primaryResults[0], media_type });
   }
 
-  const best = results[0];
+  // Fallback: multi-search (catches wrong media_type from Gemini)
+  const fallbackUrl = `${BASE_URL}/search/multi?api_key=${TMDB_KEY}&query=${encodeURIComponent(cleanedTitle)}`;
+  const { data: fallbackData } = await axios.get(fallbackUrl);
+  const fallback = fallbackData?.results?.find((r) =>
+    ["movie", "tv"].includes(r.media_type)
+  );
 
-  const providerUrl = `${BASE_URL}/${media_type}/${best.id}/watch/providers?api_key=${TMDB_KEY}`;
+  if (!fallback) {
+    throw new Error(`No TMDB results for "${cleanedTitle}"`);
+  }
+
+  return resolveProviders(fallback);
+}
+
+/**
+ * Fetches watch providers for a TMDB item and aggregates them globally.
+ */
+async function resolveProviders(item) {
+  const { id, media_type } = item;
+
+  const providerUrl = `${BASE_URL}/${media_type}/${id}/watch/providers?api_key=${TMDB_KEY}`;
   const { data: providerData } = await axios.get(providerUrl);
 
   const countryResults = providerData.results ?? {};
 
-  // Collect all flatrate provider names across every country, deduplicated
   const platformSet = new Set(
     Object.values(countryResults)
       .flatMap((country) => country.flatrate ?? [])
-      .map((p) => p.provider_name),
+      .map((p) => p.provider_name)
   );
 
   if (platformSet.size === 0) {
-    throw new Error(`No flatrate providers globally for "${title}"`);
+    throw new Error(`No flatrate providers globally for "${item.title ?? item.name}"`);
   }
 
   return {
-    id: best.id,
+    id,
     media_type,
-    title: best.title ?? best.name ?? best.original_title ?? best.original_name,
-    release_date: best.release_date ?? best.first_air_date ?? null,
-    poster_path: best.backdrop_path ?? best.poster_path ?? null,
-    vote_average: best.vote_average ?? null,
+    title: item.title ?? item.name ?? item.original_title ?? item.original_name,
+    release_date: item.release_date ?? item.first_air_date ?? null,
+    poster_path: item.backdrop_path ?? item.poster_path ?? null,
+    vote_average: item.vote_average ?? null,
     platforms: [...platformSet],
   };
 }
 
 /**
- * Filters items to only those released within the last `days` days.
+ * Keeps only items released within the last `days` days.
  */
 function filterByRecency(items, days) {
   const now = new Date();
@@ -163,5 +205,3 @@ function filterByRecency(items, days) {
     return release >= cutoff && release <= now;
   });
 }
-
-// getTodayOTTList().then(data => console.log(data))
