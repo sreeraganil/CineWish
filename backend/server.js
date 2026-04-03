@@ -66,8 +66,9 @@ app.get("/ping", (req, res) => {
     res.json({ message: "Server Ping"})
 })
 
-app.get("/notification/ott", (req, res) => {
-  sendOTTPushNotifications()
+app.get("/notification/ott", async (req, res) => {
+  await sendOTTPushNotifications();
+  res.json({ message: "Notification Send"})
 })
 
 app.get('/{*any}', (req, res) => {
