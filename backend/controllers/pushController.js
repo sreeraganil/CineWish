@@ -131,7 +131,7 @@ export const sendOTTPushNotifications = async () => {
     const payload = JSON.stringify({
       title: `🎬 ${item.title}`,
       body: hook,
-      url: `/${item.media_type}/${item.id}`,
+      url: `${item.media_type}/${item.id}`,
       image: item.poster_path
         ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
         : null,
