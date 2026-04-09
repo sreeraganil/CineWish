@@ -314,7 +314,7 @@ export const getRecommendations = async (req, res) => {
         headers: {
           Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
         },
-        params: { language: "en-US" },
+        // params: { language: "en-US" },
       },
     );
 
@@ -334,7 +334,7 @@ export const getRecommendations = async (req, res) => {
         params: {
           with_genres: genreQuery,
           sort_by: "popularity.desc",
-          language: "en-US",
+          // language: "en-US",
           page: 1,
         },
       },

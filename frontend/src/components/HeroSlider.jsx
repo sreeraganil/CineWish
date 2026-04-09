@@ -56,7 +56,7 @@ const HeroSlider = () => {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [items]);
+  }, [items, index]);
 
   const today = () => new Date().toISOString().split("T")[0];
 
@@ -133,13 +133,13 @@ const HeroSlider = () => {
 
           {/* ✅ Animated content */}
           <div
-            className={`absolute inset-0 z-20 flex items-end transition-all duration-700 ${
+            className={`absolute inset-0 md:ml-15 z-20 flex items-end transition-all duration-700 ${
               i === index
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-12"
             }`}
           >
-            <div className="max-w-7xl mx-auto w-full px-6 pb-16">
+            <div className="max-w-8xl mx-auto w-full px-6 pb-16">
               <div className="max-w-2xl space-y-4">
                 {/* 🎬 Title */}
                 <h2

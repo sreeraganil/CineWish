@@ -130,7 +130,7 @@ const WishList = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black text-white pb-20 md:pb-0">
       <Header />
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="max-w-8xl mx-auto px-4 py-6">
         <div className="relative mb-4 flex flex-col items-end">
           <div className="flex items-center justify-between w-full">
             <h2 className="text-2xl font-bold flex items-center justify-center">
@@ -291,7 +291,7 @@ const WishList = () => {
           </>
         ) : (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2 sm:gap-3 md:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8  gap-2 sm:gap-3 md:gap-4">
               {wishlist?.map((item, i) => (
                 <div
                   key={`${item._id}-${i}`}

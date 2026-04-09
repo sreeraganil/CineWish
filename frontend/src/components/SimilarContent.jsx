@@ -71,7 +71,7 @@ const SimilarContent = ({ media, id }) => {
         <div className="st">
           <span ref={sentinelRef} className="block h-1" />
           <section className="bg-gray-950 p-4 text-white relative">
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-8xl mx-auto">
               <h2 className="text-2xl font-bold mb-4 text-teal-400">
                 {`Similar ${media === "tv" ? "TV Shows" : "Movies"}`}
               </h2>

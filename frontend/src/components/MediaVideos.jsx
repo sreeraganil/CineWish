@@ -22,7 +22,7 @@ const MediaVideos = ({ data }) => {
   if (!filteredVideos.length) return null;
 
   return (
-    <section className="px-4 max-w-7xl mx-auto">
+    <section className="px-4 max-w-8xl mx-auto">
       <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-teal-400">
         Videos
       </h2>

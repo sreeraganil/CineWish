@@ -66,7 +66,7 @@ const RecommendationCard = ({
       </div>
 
       {/* Info Section */}
-      <div className="p-3">
+      <div className="px-3 py-1 flex justify-between items-center">
         <h3 className="text-sm font-semibold text-white mb-1 truncate group-hover:text-teal-400 transition-colors">
           {displayTitle}
         </h3>

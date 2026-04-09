@@ -41,7 +41,7 @@ const WatchOverviewPage = () => {
       <Header />
 
       <div className="relative min-h-[calc(100vh-64px)] pb-[80px] bg-gray-950 px-3 sm:px-4 md:px-6 md:pb-6 sm:pb-8 pt-4 sm:pt-6">
-        <div className="max-w-7xl mx-auto space-y-6 sm:space-y-3 md:space-y-5">
+        <div className="max-w-8xl mx-auto space-y-6 sm:space-y-3 md:space-y-5">
           
           {/* Continue Watching */}
           {continueWatching?.length > 0 && (

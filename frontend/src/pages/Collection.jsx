@@ -119,7 +119,7 @@ const Collection = () => {
 
           {/* Content - Better spacing */}
           <div className="relative h-full w-full px-4 sm:px-6 md:px-8 flex items-end pb-5 sm:pb-8 md:pb-12 lg:pb-16">
-            <div className="w-full max-w-7xl mx-auto">
+            <div className="w-full max-w-8xl mx-auto">
               <div className={`max-w-full sm:max-w-3xl md:max-w-4xl animate-fadeIn ${
                 hasShortOverview ? 'space-y-2 sm:space-y-3' : 'space-y-3 sm:space-y-4 md:space-y-5'
               }`}>
@@ -156,7 +156,7 @@ const Collection = () => {
 
         {/* Movies Grid Section - Reduced top padding */}
         <div className="relative w-full px-4 sm:px-6 md:px-8 py-6 sm:py-10 md:py-12 lg:py-16">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-8xl mx-auto">
             {/* Decorative Background Elements - Teal - Hidden on mobile */}
             <div className="hidden lg:block absolute top-20 right-10 w-72 h-72 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
             <div className="hidden lg:block absolute bottom-20 left-10 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -177,7 +177,7 @@ const Collection = () => {
             </div>
 
             {/* Movies Grid - Optimized spacing */}
-            <div className="relative grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 md:gap-5">
+            <div className="relative grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8  gap-3 sm:gap-4 md:gap-5">
               {collection?.parts
                 ?.sort(
                   (a, b) =>

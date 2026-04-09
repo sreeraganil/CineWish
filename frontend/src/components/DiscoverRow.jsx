@@ -107,7 +107,7 @@ const DiscoverRow = ({ title, rowKey, media = "movie", params = {} }) => {
         className="bg-gray-950 p-2 sm:p-4 text-white relative"
         onClickCapture={saveRowPosition}
       >
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-8xl mx-auto">
           <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-teal-400 sm:px-0">
             {title}
           </h2>

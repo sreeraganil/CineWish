@@ -17,7 +17,7 @@ const Watching = () => {
 
   return (
     <div className="bg-gray-950 px-2 sm:px-4 text-white relative">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-8xl mx-auto">
         <ContinueWatching
           items={continueWatching.slice(0, 5)}
           onRemove={removeFromHistory}

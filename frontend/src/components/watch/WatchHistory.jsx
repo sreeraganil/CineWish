@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import watchStore from "../../store/watchStore";
+import { useState } from "react";
 
 const WatchHistory = ({ onRemove }) => {
   const { history, historyPage, historyTotalPages, fetchHistory, loading } =
@@ -9,11 +10,13 @@ const WatchHistory = ({ onRemove }) => {
   const observerRef = useRef(null);
   const observerInstance = useRef(null);
   const fetchingRef = useRef(false); // ✅ added
+  const [showLoader, setshowLoader] = useState(false);
 
   /* ---------- Initial Fetch ---------- */
   useEffect(() => {
     if (history.length === 0) {
-      fetchHistory(1);
+      setshowLoader(true);
+      fetchHistory(1).finally(() => {setshowLoader(false);});
     }
   }, []);
 
@@ -58,7 +61,6 @@ const WatchHistory = ({ onRemove }) => {
     };
   }, [historyPage, historyTotalPages]);
 
-  if (!history?.length && !loading) return null;
 
   return (
     <section>
@@ -70,8 +72,24 @@ const WatchHistory = ({ onRemove }) => {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2 sm:gap-3 md:gap-4">
-        {history.map((item) => {
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8  gap-2 sm:gap-3 md:gap-4">
+        {showLoader &&
+          Array.from({ length: 14 }).map((_, i) => (
+            <div
+              key={i}
+              className="animate-pulse bg-gray-900 border border-gray-800 rounded-lg sm:rounded-xl overflow-hidden"
+            >
+              {/* Poster skeleton */}
+              <div className="w-full aspect-[4/5] sm:aspect-[3/4] bg-gray-800" />
+
+              {/* Meta skeleton */}
+              <div className="p-1.5 sm:p-2.5 space-y-2">
+                <div className="h-3 bg-gray-700 rounded w-3/4" />
+                <div className="h-2 bg-gray-800 rounded w-1/2" />
+              </div>
+            </div>
+          ))}
+        {history?.map((item) => {
           const url =
             item.mediaType === "tv"
               ? `/details/tv/${item.mediaId}`
@@ -142,6 +160,8 @@ const WatchHistory = ({ onRemove }) => {
             </Link>
           );
         })}
+        {/* Sentinel */}
+        <div ref={observerRef} className="h-10 w-full" />
         {loading &&
           historyPage < historyTotalPages &&
           Array.from({ length: 14 }).map((_, i) => (
@@ -159,9 +179,6 @@ const WatchHistory = ({ onRemove }) => {
               </div>
             </div>
           ))}
-          
-        {/* Sentinel */}
-        <div ref={observerRef} className="h-10 w-full" />
       </div>
     </section>
   );

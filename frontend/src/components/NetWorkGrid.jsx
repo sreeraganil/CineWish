@@ -17,7 +17,7 @@ const NetworkGrid = () => {
 
   return (
     <section className="bg-gray-950 text-white p-2 sm:p-4 relative">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-8xl mx-auto">
         <div className="flex justify-between items-center mb-3 sm:mb-4">
           <h2 className="text-xl sm:text-2xl font-bold text-teal-400">
             Networks

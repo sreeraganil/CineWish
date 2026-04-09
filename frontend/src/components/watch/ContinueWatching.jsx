@@ -82,7 +82,7 @@ const ContinueWatching = ({ items, onRemove }) => {
             return (
               <div
                 key={`${item.mediaType}-${item.mediaId}-${item.season}-${item.episode}`}
-                className="group/card flex-none w-[160px] sm:w-[200px] md:w-[240px] lg:w-[280px]"
+                className="group/card flex-none w-[160px] sm:w-[190px] md:w-[220px] lg:w-[250px]"
               >
                 <div className="relative">
                   <Link

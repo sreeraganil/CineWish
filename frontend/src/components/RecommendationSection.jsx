@@ -26,7 +26,7 @@ const RecommendationSection = () => {
 
   return (
     <section className="bg-gray-950 p-2 sm:p-4 text-white pt-3 sm:pt-4 md:pt-5">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-8xl mx-auto">
         <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-5 md:mb-6 text-teal-400">
           Recommended For You
         </h2>

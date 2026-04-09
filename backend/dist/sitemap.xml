@@ -2,27 +2,27 @@
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <sitemap>
-    <loc>https://cinewish.deno.dev/sitemaps/static.xml</loc>
+    <loc>https://cinewish-web.onrender.com/sitemaps/static.xml</loc>
     <lastmod>2026-01-31</lastmod>
   </sitemap>
 
   <sitemap>
-    <loc>https://cinewish.deno.dev/sitemaps/movies.xml</loc>
+    <loc>https://cinewish-web.onrender.com/sitemaps/movies.xml</loc>
     <lastmod>2026-01-31</lastmod>
   </sitemap>
 
   <sitemap>
-    <loc>https://cinewish.deno.dev/sitemaps/tv.xml</loc>
+    <loc>https://cinewish-web.onrender.com/sitemaps/tv.xml</loc>
     <lastmod>2026-01-31</lastmod>
   </sitemap>
 
   <sitemap>
-    <loc>https://cinewish.deno.dev/sitemaps/people.xml</loc>
+    <loc>https://cinewish-web.onrender.com/sitemaps/people.xml</loc>
     <lastmod>2026-01-31</lastmod>
   </sitemap>
 
   <sitemap>
-    <loc>https://cinewish.deno.dev/sitemaps/genres.xml</loc>
+    <loc>https://cinewish-web.onrender.com/sitemaps/genres.xml</loc>
     <lastmod>2026-01-31</lastmod>
   </sitemap>
 

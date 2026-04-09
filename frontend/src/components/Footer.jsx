@@ -1,7 +1,7 @@
 const Footer = () => {
   return (
     <footer className="hidden md:block bg-black text-gray-400 border-t border-gray-800">
-      <div className="max-w-7xl mx-auto px-6 py-12 grid gap-10 sm:grid-cols-2 md:grid-cols-4">
+      <div className="max-w-8xl mx-auto px-6 py-12 grid gap-10 sm:grid-cols-2 md:grid-cols-4">
 
         {/* Brand */}
         <div>
@@ -55,7 +55,7 @@ const Footer = () => {
 
       {/* Bottom */}
       <div className="border-t border-gray-800">
-        <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-600">
+        <div className="max-w-8xl mx-auto px-6 py-5 flex flex-col sm:flex-row justify-between items-center text-xs text-gray-600">
           <p>© {new Date().getFullYear()} CineWish</p>
           <p className="mt-2 sm:mt-0">Data powered by TMDB</p>
         </div>

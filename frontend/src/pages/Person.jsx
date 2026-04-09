@@ -142,7 +142,7 @@ const Person = () => {
 
       {/* ---------------- HERO ---------------- */}
 
-      <section className="max-w-7xl mx-auto px-3 sm:px-6 py-8 sm:py-16 flex flex-col md:flex-row gap-6 md:gap-10">
+      <section className="max-w-8xl mx-auto px-3 sm:px-6 py-8 sm:py-16 flex flex-col md:flex-row gap-6 md:gap-10">
   {/* IMAGE */}
   <div className="relative group flex-shrink-0 self-center md:self-start">
     <img
@@ -227,7 +227,7 @@ const Person = () => {
 
       {/* ---------------- FILTER BAR ---------------- */}
 
-      <section className="max-w-7xl mx-auto px-6 pb-6">
+      <section className="max-w-8xl mx-auto px-6 pb-6">
         <div className="flex flex-wrap gap-4 justify-between items-center">
           <div className="space-y-1">
             <h2 className="text-2xl font-bold text-teal-400">Filmography</h2>
@@ -274,7 +274,7 @@ const Person = () => {
 
       {/* ---------------- GRID ---------------- */}
 
-      <section className="max-w-7xl mx-auto px-6 pb-20">
+      <section className="max-w-8xl mx-auto px-6 pb-20">
         {!items.length && !listLoading && (
           <div className="relative w-full flex flex-col items-center justify-center gap-4">
             <DotLottieReact
@@ -292,7 +292,7 @@ const Person = () => {
             <p className="text-center text-gray-600">No results</p>
           </div>
         )}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8  gap-4">
           {items.map((item) => (
             <TrendingCard key={`${item.id}-${item.media_type}`} {...item} />
           ))}
@@ -320,7 +320,7 @@ export default Person;
 const PersonDetailsSkeleton = () => {
   return (
     <>
-      <section className="max-w-7xl mx-auto px-6 py-16 flex flex-col md:flex-row gap-10 animate-pulse">
+      <section className="max-w-8xl mx-auto px-6 py-16 flex flex-col md:flex-row gap-10 animate-pulse">
         {/* IMAGE */}
         <div className="relative flex-shrink-0 mx-auto md:mx-0">
           <div className="w-56 h-[336px] rounded-xl bg-gray-800 border border-gray-700" />
@@ -358,7 +358,7 @@ const PersonDetailsSkeleton = () => {
           </div>
         </div>
       </section>
-      <section className="max-w-7xl mx-auto px-6 pb-6 animate-pulse">
+      <section className="max-w-8xl mx-auto px-6 pb-6 animate-pulse">
         <div className="flex flex-wrap gap-4 justify-between items-center">
           {/* TITLE */}
           <div className="space-y-2">
@@ -381,7 +381,7 @@ const PersonDetailsSkeleton = () => {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-2 mt-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 mt-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8  gap-4">
           {Array.from({ length: 8 }).map((_, i) => (
             <CardSkeleton key={i} />
           ))}

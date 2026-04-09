@@ -83,7 +83,7 @@ const Network = () => {
           } opacity-60`}
         />
 
-        <div className="relative max-w-7xl mx-auto px-6 py-20">
+        <div className="relative max-w-8xl mx-auto px-6 py-20">
           {network?.image && (
             <img
               src={network.image}
@@ -99,7 +99,7 @@ const Network = () => {
       </section>
 
       {/* CONTENT */}
-      <section className="max-w-7xl mx-auto px-3 sm:px-5 py-6 sm:py-8">
+      <section className="max-w-8xl mx-auto px-3 sm:px-5 py-6 sm:py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-bold">
@@ -129,7 +129,7 @@ const Network = () => {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8  gap-6">
           {items.map((item) => (
             <TrendingCard key={item.id} {...item} />
           ))}
