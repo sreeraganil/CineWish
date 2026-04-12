@@ -26,4 +26,20 @@
     <lastmod>2026-04-09</lastmod>
   </sitemap>
 
+  <!-- NEW -->
+  <sitemap>
+    <loc>https://cinewish-web.onrender.com/sitemaps/studios.xml</loc>
+    <lastmod>2026-04-09</lastmod>
+  </sitemap>
+
+  <sitemap>
+    <loc>https://cinewish-web.onrender.com/sitemaps/providers.xml</loc>
+    <lastmod>2026-04-09</lastmod>
+  </sitemap>
+
+  <sitemap>
+    <loc>https://cinewish-web.onrender.com/sitemaps/collections.xml</loc>
+    <lastmod>2026-04-09</lastmod>
+  </sitemap>
+
 </sitemapindex>

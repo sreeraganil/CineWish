@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+<!-- Popular Movie Collections -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/10</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://cinewish.deno.dev/collection/86311</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://cinewish.deno.dev/collection/1241</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://cinewish.deno.dev/collection/9485</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://cinewish.deno.dev/collection/131292</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://cinewish.deno.dev/collection/295</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Marvel Cinematic Universe -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/86311</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Star Wars Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/10</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- The Dark Knight Trilogy -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/263</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Indiana Jones Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/84</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- The Lord of the Rings Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/119</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- The Hobbit Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/121938</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Harry Potter Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/1241</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Wizarding World (Fantastic Beasts) -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/435259</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- James Bond Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/645</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Fast & Furious Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/9485</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Mission: Impossible Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/87359</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Pirates of the Caribbean Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/295</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Jurassic Park Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/328</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Terminator Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/528</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- The Matrix Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/2344</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Alien Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/8091</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Predator Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/399</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Back to the Future Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/264</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Rocky Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/1575</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Creed Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/553717</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- John Wick Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/404609</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- The Hunger Games Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/131292</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Transformers Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/8650</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- X-Men Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/748</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Spider-Man Collection (Sam Raimi) -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/556</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- The Amazing Spider-Man Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/125574</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Batman (Tim Burton/Joel Schumacher) -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/2806</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Planet of the Apes (Reboot) Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/173710</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Ice Age Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/8354</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Shrek Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/2150</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Toy Story Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/10194</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- How to Train Your Dragon Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/89137</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Despicable Me Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/86066</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Madagascar Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/2806</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- The Godfather Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/230</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Ocean's Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/304</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Bourne Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/31562</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Lethal Weapon Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/945</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Die Hard Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/1570</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Mad Max Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/8945</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Guardians of the Galaxy Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/284433</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Thor Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/131295</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Captain America Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/131296</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Iron Man Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/131292</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Avatar Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/131296</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Zootopia / Encanto / Moana (standalone, skip) -->
+
+  <!-- Kingsman Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/391860</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Deadpool Collection -->
+  <url>
+    <loc>https://cinewish.deno.dev/collection/448150</loc>
+    <lastmod>2026-04-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+</urlset>

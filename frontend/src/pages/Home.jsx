@@ -12,9 +12,9 @@ import useHomeRowStore from "../store/homeRowStore";
 import discoverRows from "../utilities/discoverRows.config";
 import userStore from "../store/userStore";
 import HeroSlider from "../components/HeroSlider";
+import TrendingSection from "../components/TrendingSection";
 
 // Lazy load ONLY below-the-fold sections
-const TrendingSection = lazy(() => import("../components/TrendingSection"));
 const UpcomingSection = lazy(() => import("../components/UpcomingSection"));
 const OTTSection = lazy(() => import("../components/OTTSection"));
 const NowPlaying = lazy(() => import("../components/NowPlaying"));
@@ -50,10 +50,10 @@ const Home = () => {
       {/* <StatsSection /> */}
       <Watching />
       <RecommendationSection />
+      <TrendingSection />
 
       {/* Below-the-fold */}
       <Suspense fallback={<SectionLoader />}>
-        <TrendingSection />
         <UpcomingSection />
         <StudiosGrid />
         <OTTSection />
