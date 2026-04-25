@@ -9,6 +9,7 @@ import userStore from "../store/userStore";
 import SimilarContent from "../components/SimilarContent";
 import { useMemo } from "react";
 import MediaVideos from "../components/MediaVideos";
+import ShareButton from "../components/ShareButton";
 
 const Details = () => {
   const { media, id } = useParams();
@@ -245,7 +246,7 @@ const Details = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-black"></div>
       </div>
-
+      
       <div className="relative z-10 max-w-5xl mx-auto p-6 text-white">
         {/* Rating badge - Improved conditional logic */}
         {primaryRating > 0 && (
@@ -260,8 +261,9 @@ const Details = () => {
         )}
 
         <h1
-          className={`text-2xl sm:text-4xl font-bold st title pt-5 ${!item.tagline && "mb-6"}`}
+          className={`relative text-2xl sm:text-4xl font-bold st title pt-5 ${!item.tagline && "mb-6"}`}
         >
+          <ShareButton />
           {item.title || item.name}
         </h1>
 
