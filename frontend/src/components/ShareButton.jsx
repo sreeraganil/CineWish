@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 
-const ShareButton = () => {
+const ShareButton = ({title}) => {
   const [copied, setCopied] = useState(false);
 
   const handleShare = async () => {
     const shareData = {
-      title: document.title,
+      title: `Cinewish-${title}`,
       text: "Check this out!",
       url: window.location.href,
     };

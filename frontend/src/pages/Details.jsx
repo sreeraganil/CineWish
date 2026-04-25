@@ -263,7 +263,7 @@ const Details = () => {
         <h1
           className={`relative text-2xl sm:text-4xl font-bold st title pt-5 ${!item.tagline && "mb-6"}`}
         >
-          <ShareButton />
+          <ShareButton title={item.title || item.name} />
           {item.title || item.name}
         </h1>
 
