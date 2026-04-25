@@ -3,42 +3,42 @@
 
 <!-- Popular Movie Collections -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/10</loc>
+    <loc>https://cinewish.vercel.app/collection/10</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://cinewish.deno.dev/collection/86311</loc>
+    <loc>https://cinewish.vercel.app/collection/86311</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://cinewish.deno.dev/collection/1241</loc>
+    <loc>https://cinewish.vercel.app/collection/1241</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://cinewish.deno.dev/collection/9485</loc>
+    <loc>https://cinewish.vercel.app/collection/9485</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://cinewish.deno.dev/collection/131292</loc>
+    <loc>https://cinewish.vercel.app/collection/131292</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <url>
-    <loc>https://cinewish.deno.dev/collection/295</loc>
+    <loc>https://cinewish.vercel.app/collection/295</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -46,7 +46,7 @@
 
   <!-- Marvel Cinematic Universe -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/86311</loc>
+    <loc>https://cinewish.vercel.app/collection/86311</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -54,7 +54,7 @@
 
   <!-- Star Wars Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/10</loc>
+    <loc>https://cinewish.vercel.app/collection/10</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -62,7 +62,7 @@
 
   <!-- The Dark Knight Trilogy -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/263</loc>
+    <loc>https://cinewish.vercel.app/collection/263</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -70,7 +70,7 @@
 
   <!-- Indiana Jones Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/84</loc>
+    <loc>https://cinewish.vercel.app/collection/84</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -78,7 +78,7 @@
 
   <!-- The Lord of the Rings Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/119</loc>
+    <loc>https://cinewish.vercel.app/collection/119</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -86,7 +86,7 @@
 
   <!-- The Hobbit Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/121938</loc>
+    <loc>https://cinewish.vercel.app/collection/121938</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -94,7 +94,7 @@
 
   <!-- Harry Potter Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/1241</loc>
+    <loc>https://cinewish.vercel.app/collection/1241</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -102,7 +102,7 @@
 
   <!-- Wizarding World (Fantastic Beasts) -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/435259</loc>
+    <loc>https://cinewish.vercel.app/collection/435259</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -110,7 +110,7 @@
 
   <!-- James Bond Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/645</loc>
+    <loc>https://cinewish.vercel.app/collection/645</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -118,7 +118,7 @@
 
   <!-- Fast & Furious Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/9485</loc>
+    <loc>https://cinewish.vercel.app/collection/9485</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -126,7 +126,7 @@
 
   <!-- Mission: Impossible Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/87359</loc>
+    <loc>https://cinewish.vercel.app/collection/87359</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -134,7 +134,7 @@
 
   <!-- Pirates of the Caribbean Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/295</loc>
+    <loc>https://cinewish.vercel.app/collection/295</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -142,7 +142,7 @@
 
   <!-- Jurassic Park Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/328</loc>
+    <loc>https://cinewish.vercel.app/collection/328</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -150,7 +150,7 @@
 
   <!-- Terminator Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/528</loc>
+    <loc>https://cinewish.vercel.app/collection/528</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -158,7 +158,7 @@
 
   <!-- The Matrix Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/2344</loc>
+    <loc>https://cinewish.vercel.app/collection/2344</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -166,7 +166,7 @@
 
   <!-- Alien Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/8091</loc>
+    <loc>https://cinewish.vercel.app/collection/8091</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -174,7 +174,7 @@
 
   <!-- Predator Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/399</loc>
+    <loc>https://cinewish.vercel.app/collection/399</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -182,7 +182,7 @@
 
   <!-- Back to the Future Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/264</loc>
+    <loc>https://cinewish.vercel.app/collection/264</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -190,7 +190,7 @@
 
   <!-- Rocky Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/1575</loc>
+    <loc>https://cinewish.vercel.app/collection/1575</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -198,7 +198,7 @@
 
   <!-- Creed Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/553717</loc>
+    <loc>https://cinewish.vercel.app/collection/553717</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -206,7 +206,7 @@
 
   <!-- John Wick Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/404609</loc>
+    <loc>https://cinewish.vercel.app/collection/404609</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -214,7 +214,7 @@
 
   <!-- The Hunger Games Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/131292</loc>
+    <loc>https://cinewish.vercel.app/collection/131292</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -222,7 +222,7 @@
 
   <!-- Transformers Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/8650</loc>
+    <loc>https://cinewish.vercel.app/collection/8650</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -230,7 +230,7 @@
 
   <!-- X-Men Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/748</loc>
+    <loc>https://cinewish.vercel.app/collection/748</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -238,7 +238,7 @@
 
   <!-- Spider-Man Collection (Sam Raimi) -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/556</loc>
+    <loc>https://cinewish.vercel.app/collection/556</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -246,7 +246,7 @@
 
   <!-- The Amazing Spider-Man Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/125574</loc>
+    <loc>https://cinewish.vercel.app/collection/125574</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -254,7 +254,7 @@
 
   <!-- Batman (Tim Burton/Joel Schumacher) -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/2806</loc>
+    <loc>https://cinewish.vercel.app/collection/2806</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -262,7 +262,7 @@
 
   <!-- Planet of the Apes (Reboot) Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/173710</loc>
+    <loc>https://cinewish.vercel.app/collection/173710</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -270,7 +270,7 @@
 
   <!-- Ice Age Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/8354</loc>
+    <loc>https://cinewish.vercel.app/collection/8354</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -278,7 +278,7 @@
 
   <!-- Shrek Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/2150</loc>
+    <loc>https://cinewish.vercel.app/collection/2150</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -286,7 +286,7 @@
 
   <!-- Toy Story Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/10194</loc>
+    <loc>https://cinewish.vercel.app/collection/10194</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -294,7 +294,7 @@
 
   <!-- How to Train Your Dragon Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/89137</loc>
+    <loc>https://cinewish.vercel.app/collection/89137</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -302,7 +302,7 @@
 
   <!-- Despicable Me Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/86066</loc>
+    <loc>https://cinewish.vercel.app/collection/86066</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -310,7 +310,7 @@
 
   <!-- Madagascar Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/2806</loc>
+    <loc>https://cinewish.vercel.app/collection/2806</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -318,7 +318,7 @@
 
   <!-- The Godfather Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/230</loc>
+    <loc>https://cinewish.vercel.app/collection/230</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -326,7 +326,7 @@
 
   <!-- Ocean's Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/304</loc>
+    <loc>https://cinewish.vercel.app/collection/304</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -334,7 +334,7 @@
 
   <!-- Bourne Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/31562</loc>
+    <loc>https://cinewish.vercel.app/collection/31562</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -342,7 +342,7 @@
 
   <!-- Lethal Weapon Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/945</loc>
+    <loc>https://cinewish.vercel.app/collection/945</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -350,7 +350,7 @@
 
   <!-- Die Hard Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/1570</loc>
+    <loc>https://cinewish.vercel.app/collection/1570</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -358,7 +358,7 @@
 
   <!-- Mad Max Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/8945</loc>
+    <loc>https://cinewish.vercel.app/collection/8945</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -366,7 +366,7 @@
 
   <!-- Guardians of the Galaxy Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/284433</loc>
+    <loc>https://cinewish.vercel.app/collection/284433</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -374,7 +374,7 @@
 
   <!-- Thor Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/131295</loc>
+    <loc>https://cinewish.vercel.app/collection/131295</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -382,7 +382,7 @@
 
   <!-- Captain America Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/131296</loc>
+    <loc>https://cinewish.vercel.app/collection/131296</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -390,7 +390,7 @@
 
   <!-- Iron Man Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/131292</loc>
+    <loc>https://cinewish.vercel.app/collection/131292</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -398,7 +398,7 @@
 
   <!-- Avatar Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/131296</loc>
+    <loc>https://cinewish.vercel.app/collection/131296</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -408,7 +408,7 @@
 
   <!-- Kingsman Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/391860</loc>
+    <loc>https://cinewish.vercel.app/collection/391860</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
@@ -416,7 +416,7 @@
 
   <!-- Deadpool Collection -->
   <url>
-    <loc>https://cinewish.deno.dev/collection/448150</loc>
+    <loc>https://cinewish.vercel.app/collection/448150</loc>
     <lastmod>2026-04-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>

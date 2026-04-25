@@ -7,4 +7,4 @@ Disallow: /wishlist
 Disallow: /watched
 Disallow: /watch
 
-Sitemap: https://cinewish.deno.dev/sitemap.xml
+Sitemap: https://cinewish.vercel.app/sitemap.xml

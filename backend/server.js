@@ -26,7 +26,7 @@ connectDB();
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:4173",
-  "https://cinewish.deno.dev",
+  "https://cinewish.vercel.app",
   "http://localhost:5000",
   "https://cinewish-web.onrender.com",
   "https://cinewish.vercel.app"

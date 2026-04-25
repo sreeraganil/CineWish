@@ -35,7 +35,7 @@ self.addEventListener('push', (event) => {
     badge: '/logo/pwa-64x64.png', // Recommended for mobile status bars
     data: {
       // Ensure the URL is absolute or fallback to base
-      url: data.url ? `https://cinewish.deno.dev/${data.url}` : 'https://cinewish.deno.dev',
+      url: data.url ? `https://cinewish.vercel.app/${data.url}` : 'https://cinewish.vercel.app',
     },
   };
 
@@ -47,7 +47,7 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  const targetUrl = event.notification.data?.url || 'https://cinewish.deno.dev';
+  const targetUrl = event.notification.data?.url || 'https://cinewish.vercel.app';
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {

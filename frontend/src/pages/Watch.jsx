@@ -87,7 +87,7 @@ const Watch = () => {
     const fallback = setTimeout(() => setIsLoading(false), 8000);
 
     window.addEventListener('dblclick', () => {
-        window.location.href = `https://cinewish.deno.dev/videasy.html?type=${media}&id=${id}&s=${s}&e=${e}`;
+        window.location.href = `https://cinewish.vercel.app/videasy.html?type=${media}&id=${id}&s=${s}&e=${e}`;
     })
 
     return () => {
