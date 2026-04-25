@@ -118,7 +118,6 @@ const Watch = () => {
         className={`w-full h-[calc(100vh-72px)] border-none transition-opacity duration-700 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
         allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
         allowFullScreen
-        sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"
         onLoad={() => setTimeout(() => setIsLoading(false), 1000)}
       />
     </div>

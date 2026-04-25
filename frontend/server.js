@@ -1,16 +1,70 @@
-import { serve } from "https://deno.land/std@0.97.0/http/server.ts";
-import { readFile } from "https://deno.land/std@0.97.0/fs/mod.ts";
+import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 
-const server = serve({ port: 8000 });
+const MIME_TYPES: Record<string, string> = {
+  ".html": "text/html",
+  ".js": "application/javascript",
+  ".css": "text/css",
+  ".json": "application/json",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".svg": "image/svg+xml",
+  ".xml": "application/xml",
+  ".txt": "text/plain",
+  ".woff2": "font/woff2",
+};
 
-console.log("HTTP server running on http://localhost:8000");
+serve(async (req) => {
+  let url = new URL(req.url).pathname;
 
-for await (const req of server) {
-  const url = req.url === "/" ? "/index.html" : req.url;
+  if (url === "/") url = "/index.html";
+
   try {
-    const file = await readFile(`./dist${url}`);
-    req.respond({ status: 200, body: file });
+    const file = await Deno.readFile(`./dist${url}`);
+
+    const ext =
+      Object.keys(MIME_TYPES).find((e) => url.endsWith(e)) || ".html";
+
+    const headers = new Headers({
+      "content-type": MIME_TYPES[ext] || "application/octet-stream",
+    });
+
+    // ✅ caching rules
+    if (ext === ".html") {
+      headers.set(
+        "Cache-Control",
+        "public, max-age=3600, stale-while-revalidate=86400"
+      );
+    } else if ([".xml", ".json"].includes(ext)) {
+      headers.set(
+        "Cache-Control",
+        "public, max-age=3600, stale-while-revalidate=86400"
+      );
+    } else if (ext === ".txt") {
+      headers.set("Cache-Control", "public, max-age=86400");
+    } else {w
+      headers.set(
+        "Cache-Control",
+        "public, max-age=31536000, immutable"
+      );
+    }
+
+    return new Response(file, { status: 200, headers });
   } catch {
-    req.respond({ status: 404, body: "404 Not Found" });
+    // SPA fallback
+    try {
+      const file = await Deno.readFile("./dist/index.html");
+
+      return new Response(file, {
+        status: 200,
+        headers: {
+          "content-type": "text/html",
+          "Cache-Control":
+            "public, max-age=3600, stale-while-revalidate=86400",
+        },
+      });
+    } catch {
+      return new Response("404 Not Found", { status: 404 });
+    }
   }
-}
+});
