@@ -9,6 +9,8 @@ import Footer from "./components/Footer";
 
 /* ---------- Lazy Pages ---------- */
 const Login = lazy(() => import("./pages/Login"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const Register = lazy(() => import("./pages/Register"));
 const Home = lazy(() => import("./pages/Home"));
 const WishList = lazy(() => import("./pages/WishList"));
@@ -51,10 +53,10 @@ export default function App() {
     return () => clearTimeout(t);
   }, [showIntro]);
 
-  useEffect(()=>{
-    if(showIntro) document.documentElement.style.overflow = 'hidden';
-    else document.documentElement.style.overflow = 'initial';
-  },[showIntro])
+  useEffect(() => {
+    if (showIntro) document.documentElement.style.overflow = "hidden";
+    else document.documentElement.style.overflow = "initial";
+  }, [showIntro]);
 
   return (
     <>
@@ -62,7 +64,7 @@ export default function App() {
         {showIntro && <PageLoader />}
 
         {/* Always render routes so lazy imports resolve in the background */}
-        <div style={{ visibility: showIntro ? "hidden" : "visible"}}>
+        <div style={{ visibility: showIntro ? "hidden" : "visible" }}>
           <Routes>
             <Route path="/" element={<Home />} />
 
@@ -71,6 +73,22 @@ export default function App() {
               element={
                 <GuestRoute>
                   <Login />
+                </GuestRoute>
+              }
+            />
+            <Route
+              path="/forgot-password"
+              element={
+                <GuestRoute>
+                  <ForgotPassword />
+                </GuestRoute>
+              }
+            />
+            <Route
+              path="/reset-password/:token"
+              element={
+                <GuestRoute>
+                  <ResetPassword />
                 </GuestRoute>
               }
             />
