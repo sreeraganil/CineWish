@@ -3,43 +3,43 @@
 
   <sitemap>
     <loc>https://cinewish.vercel.app/sitemaps/static.xml</loc>
-    <lastmod>2026-04-09</lastmod>
+    <lastmod>2026-05-02</lastmod>
   </sitemap>
 
   <sitemap>
     <loc>https://cinewish.vercel.app/sitemaps/movies.xml</loc>
-    <lastmod>2026-04-09</lastmod>
+    <lastmod>2026-05-02</lastmod>
   </sitemap>
 
   <sitemap>
     <loc>https://cinewish.vercel.app/sitemaps/tv.xml</loc>
-    <lastmod>2026-04-09</lastmod>
+    <lastmod>2026-05-02</lastmod>
   </sitemap>
 
   <sitemap>
     <loc>https://cinewish.vercel.app/sitemaps/people.xml</loc>
-    <lastmod>2026-04-09</lastmod>
+    <lastmod>2026-05-02</lastmod>
   </sitemap>
 
   <sitemap>
     <loc>https://cinewish.vercel.app/sitemaps/genres.xml</loc>
-    <lastmod>2026-04-09</lastmod>
+    <lastmod>2026-05-02</lastmod>
   </sitemap>
 
   <!-- NEW -->
   <sitemap>
     <loc>https://cinewish.vercel.app/sitemaps/studios.xml</loc>
-    <lastmod>2026-04-09</lastmod>
+    <lastmod>2026-05-02</lastmod>
   </sitemap>
 
   <sitemap>
     <loc>https://cinewish.vercel.app/sitemaps/providers.xml</loc>
-    <lastmod>2026-04-09</lastmod>
+    <lastmod>2026-05-02</lastmod>
   </sitemap>
 
   <sitemap>
     <loc>https://cinewish.vercel.app/sitemaps/collections.xml</loc>
-    <lastmod>2026-04-09</lastmod>
+    <lastmod>2026-05-02</lastmod>
   </sitemap>
 
 </sitemapindex>

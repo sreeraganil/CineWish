@@ -1,6 +1,7 @@
 import mediaMetaModel from "../models/mediaMetaModel.js";
 import WatchList from "../models/watchListModel.js";
 import WatchProgress from "../models/WatchProgressModel.js";
+import { fetchSeasonsFromTMDB } from "../utilities/fetchSeasons.js";
 import { getNextEpisode } from "../utilities/getNextEpisode.js";
 
 // export const saveProgress = async (req, res) => {
@@ -94,9 +95,27 @@ export const saveProgress = async (req, res) => {
     }
 
     /* -----------------------------
-       1) COMPUTE STATUS
+       1) SEED SEASON CACHE (TV only, fire-and-forget)
     ------------------------------ */
+    if (mediaType === "tv") {
+      mediaMetaModel.exists({ mediaId: Number(mediaId), type: "tv" }).then((exists) => {
+        if (!exists) {
+          fetchSeasonsFromTMDB(mediaId)
+            .then((seasons) =>
+              mediaMetaModel.findOneAndUpdate(
+                { mediaId: Number(mediaId), type: "tv" },
+                { $setOnInsert: { seasons } },
+                { upsert: true }
+              )
+            )
+            .catch((err) => console.warn("Season cache seed failed:", err.message));
+        }
+      });
+    }
 
+    /* -----------------------------
+       2) COMPUTE STATUS
+    ------------------------------ */
     const ratio =
       durationSeconds && progressSeconds
         ? progressSeconds / durationSeconds
@@ -105,9 +124,8 @@ export const saveProgress = async (req, res) => {
     const newStatus = ratio >= 0.9 ? "completed" : "watching";
 
     /* -----------------------------
-       2) UPSERT PROGRESS
+       3) UPSERT PROGRESS
     ------------------------------ */
-
     const filter = {
       userId,
       mediaType,
@@ -116,7 +134,7 @@ export const saveProgress = async (req, res) => {
       episode: episode ?? null,
     };
 
-    const progressDoc = await WatchProgress.findOneAndUpdate(
+    await WatchProgress.findOneAndUpdate(
       filter,
       {
         $set: {
@@ -124,21 +142,23 @@ export const saveProgress = async (req, res) => {
           durationSeconds,
           status: newStatus,
           lastWatchedAt: new Date(),
+          // keep metadata fresh on every update (fixes $setOnInsert-only bug)
+          title,
+          poster,
+          backdrop,
         },
-        $setOnInsert: { title, poster, backdrop },
       },
-      { upsert: true, new: true, setDefaultsOnInsert: true },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
     );
 
-    // Prevent repeated completion triggers
+    // Nothing more to do until the episode is completed
     if (newStatus !== "completed") {
       return res.sendStatus(204);
     }
 
     /* -----------------------------
-       3) MOVIES → DIRECT WATCHED
+       4) MOVIES → DIRECT WATCHED
     ------------------------------ */
-
     if (mediaType === "movie") {
       await WatchList.updateOne(
         { userId, tmdbId: mediaId, type: mediaType },
@@ -146,28 +166,30 @@ export const saveProgress = async (req, res) => {
           $set: { status: "watched" },
           $setOnInsert: { title, poster, year, genre },
         },
-        { upsert: true },
+        { upsert: true }
       );
 
       return res.sendStatus(204);
     }
 
     /* -----------------------------
-       4) TV LOGIC (USING MediaMeta)
+       5) TV — ADVANCE OR COMPLETE
     ------------------------------ */
-
     if (mediaType === "tv" && season != null && episode != null) {
-      const meta = await mediaMetaModel.findOne({ mediaId, type: "tv" });
+      const meta = await mediaMetaModel.findOne({
+        mediaId: Number(mediaId),
+        type: "tv",
+      });
 
       if (!meta) {
-        // metadata missing → fail gracefully
+        // Metadata missing (seed hasn't settled yet) — fail gracefully
         return res.sendStatus(204);
       }
 
       const next = getNextEpisode(meta, season, episode);
 
-      // Next episode exists → create watching row
       if (next) {
+        // Pre-create the next episode row so it shows up in continue-watching
         await WatchProgress.updateOne(
           {
             userId,
@@ -179,6 +201,7 @@ export const saveProgress = async (req, res) => {
           {
             $setOnInsert: {
               progressSeconds: 0,
+              durationSeconds: null,
               status: "watching",
               title,
               poster,
@@ -186,17 +209,17 @@ export const saveProgress = async (req, res) => {
               lastWatchedAt: new Date(),
             },
           },
-          { upsert: true },
+          { upsert: true }
         );
       } else {
-        // No next episode = full show completed
+        // Last episode done — mark full show as watched
         await WatchList.updateOne(
           { userId, tmdbId: mediaId, type: mediaType },
           {
             $set: { status: "watched" },
             $setOnInsert: { title, poster, year, genre },
           },
-          { upsert: true },
+          { upsert: true }
         );
       }
     }
