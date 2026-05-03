@@ -113,7 +113,9 @@ const Watch = () => {
       window.removeEventListener("message", handleMessage);
       clearTimeout(fallback);
     };
-  }, [isLoading, syncProgress, state, media, id, navigate]);
+  }, [isLoading, syncProgress, state, media, id]);
+
+
 
   // Reset loading state when switching sources
   const handleSourceSwitch = (source) => {
