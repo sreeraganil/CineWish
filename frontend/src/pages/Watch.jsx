@@ -113,15 +113,19 @@ const Watch = () => {
       window.removeEventListener("message", handleMessage);
       clearTimeout(fallback);
     };
-  }, [isLoading, syncProgress, state, media, id]);
+  }, [isLoading, syncProgress, state, media, id, navigate]);
 
-
+  
 
   // Reset loading state when switching sources
   const handleSourceSwitch = (source) => {
     if (source === activeSource) return;
     setIsLoading(true);
     setActiveSource(source);
+
+    setTimeout(() => {
+      window.history.replaceState(null, "", window.location.href);
+    }, 0);
   };
 
   return (
