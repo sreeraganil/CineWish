@@ -1,8 +1,13 @@
 @import "tailwindcss";
 
+html {
+  -webkit-overflow-scrolling: touch;
+}
+
 body {
   background: #101828;
-  overflow-x: auto;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 .scrollbar-hide::-webkit-scrollbar {
