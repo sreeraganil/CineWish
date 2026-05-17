@@ -56,7 +56,7 @@ const TrendingCard = ({
 
       {!!(vote_average && parseFloat(vote_average) > 0) && (
         <div className="absolute top-1 left-1">
-          <div className="flex items-center gap-0.5 bg-black/60 backdrop-blur-sm px-1.5 py-0.5 rounded-full">
+          <div className="flex items-center gap-0.5 bg-black/60 md:backdrop-blur-sm px-1.5 py-0.5 rounded-full">
             <svg
               className="w-[9px] sm:w-[10px] md:w-3 aspect-square text-yellow-400"
               fill="currentColor"

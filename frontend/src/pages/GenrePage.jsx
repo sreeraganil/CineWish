@@ -107,7 +107,7 @@ const GenrePage = () => {
             {/* Genre Icon (if available) */}
             {genre?.icon && (
               <div className="mb-4 sm:mb-6 flex justify-center md:justify-start">
-                <div className="bg-teal-500/20 backdrop-blur-sm p-4 sm:p-6 rounded-2xl border border-teal-500/30">
+                <div className="bg-teal-500/20 md:backdrop-blur-sm p-4 sm:p-6 rounded-2xl border border-teal-500/30">
                   <span className="text-4xl sm:text-5xl">{genre.icon}</span>
                 </div>
               </div>
@@ -124,7 +124,7 @@ const GenrePage = () => {
             )}
 
             <div className="flex flex-wrap gap-3 sm:gap-4 justify-center md:justify-start text-xs sm:text-sm">
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full">
+              <div className="flex items-center gap-2 bg-white/10 md:backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full">
                 <span className="material-symbols-outlined text-teal-400">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -140,7 +140,7 @@ const GenrePage = () => {
               </div>
 
               {items.length > 0 && (
-                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full">
+                <div className="flex items-center gap-2 bg-white/10 md:backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full">
                   <span className="material-symbols-outlined text-teal-400">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -176,7 +176,7 @@ const GenrePage = () => {
             </h2>
 
             {/* Media Toggle - Mobile Compact */}
-            <div className="relative inline-flex bg-gray-900/50 backdrop-blur-sm rounded-lg p-0.5 border border-gray-800 shrink-0">
+            <div className="relative inline-flex bg-gray-900/50 md:backdrop-blur-sm rounded-lg p-0.5 border border-gray-800 shrink-0">
               {["movie", "tv"].map((m) => (
                 <button
                   key={m}
@@ -210,7 +210,7 @@ const GenrePage = () => {
                 onClick={() =>
                   setOpenDropdown(openDropdown === "year" ? null : "year")
                 }
-                className={`w-full flex items-center justify-between gap-1 appearance-none cursor-pointer bg-gray-900/60 backdrop-blur-sm border rounded-full pl-3 pr-2 py-2 text-xs sm:text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-teal-500/60 ${
+                className={`w-full flex items-center justify-between gap-1 appearance-none cursor-pointer bg-gray-900/60 md:backdrop-blur-sm border rounded-full pl-3 pr-2 py-2 text-xs sm:text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-teal-500/60 ${
                   filters.year
                     ? "border-teal-500/60 text-teal-400"
                     : "border-gray-700/60 text-gray-400 hover:border-gray-600 hover:text-white"
@@ -286,7 +286,7 @@ const GenrePage = () => {
                 onClick={() =>
                   setOpenDropdown(openDropdown === "rating" ? null : "rating")
                 }
-                className={`w-full flex items-center justify-between gap-1 cursor-pointer bg-gray-900/60 backdrop-blur-sm border rounded-full pl-3 pr-2 py-2 text-xs sm:text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-teal-500/60 ${
+                className={`w-full flex items-center justify-between gap-1 cursor-pointer bg-gray-900/60 md:backdrop-blur-sm border rounded-full pl-3 pr-2 py-2 text-xs sm:text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-teal-500/60 ${
                   filters.rating
                     ? "border-teal-500/60 text-teal-400"
                     : "border-gray-700/60 text-gray-400 hover:border-gray-600 hover:text-white"
@@ -336,7 +336,7 @@ const GenrePage = () => {
                 onClick={() =>
                   setOpenDropdown(openDropdown === "sort" ? null : "sort")
                 }
-                className={`w-full flex items-center justify-between gap-1 cursor-pointer bg-gray-900/60 backdrop-blur-sm border rounded-full pl-3 pr-2 py-2 text-xs sm:text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-teal-500/60 ${
+                className={`w-full flex items-center justify-between gap-1 cursor-pointer bg-gray-900/60 md:backdrop-blur-sm border rounded-full pl-3 pr-2 py-2 text-xs sm:text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-1 focus:ring-teal-500/60 ${
                   filters.sort && filters.sort !== "popularity.desc"
                     ? "border-teal-500/60 text-teal-400"
                     : "border-gray-700/60 text-gray-400 hover:border-gray-600 hover:text-white"

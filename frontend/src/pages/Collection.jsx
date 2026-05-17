@@ -124,7 +124,7 @@ const Collection = () => {
                 hasShortOverview ? 'space-y-2 sm:space-y-3' : 'space-y-3 sm:space-y-4 md:space-y-5'
               }`}>
                 {/* Collection Badge - Teal Theme */}
-                <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 backdrop-blur-md px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-teal-400/30 shadow-lg shadow-teal-500/20">
+                <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 md:backdrop-blur-md px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-teal-400/30 shadow-lg shadow-teal-500/20">
                   <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-teal-300 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
                   </svg>

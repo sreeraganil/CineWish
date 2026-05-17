@@ -31,7 +31,7 @@ const MediaVideos = ({ data }) => {
         {filteredVideos.map((video) => (
           <div
             key={video.id}
-            className="group relative rounded-2xl overflow-hidden bg-white/5 backdrop-blur-md border border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+            className="group relative rounded-2xl overflow-hidden bg-white/5 md:backdrop-blur-md border border-white/10 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
           >
             {/* Video */}
             <div className="aspect-video w-full overflow-hidden">

@@ -44,7 +44,7 @@ const HeroSection = () => {
 
           <Link
             to="/wishlist"
-            className="group relative border-2 border-teal-400/30 bg-gray-800/30 backdrop-blur-sm hover:bg-teal-500/10 hover:border-teal-400/60 text-teal-300 hover:text-teal-200 font-semibold py-3 px-8 rounded-lg transition-all duration-300 hover:-translate-y-1"
+            className="group relative border-2 border-teal-400/30 bg-gray-800/30 md:backdrop-blur-sm hover:bg-teal-500/10 hover:border-teal-400/60 text-teal-300 hover:text-teal-200 font-semibold py-3 px-8 rounded-lg transition-all duration-300 hover:-translate-y-1"
           >
             View Wishlist
           </Link>

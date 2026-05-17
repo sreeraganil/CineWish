@@ -116,7 +116,7 @@ const ContinueWatching = ({ items, onRemove }) => {
 
                       {/* Play Icon Overlay */}
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/card:opacity-100 transition-opacity duration-300">
-                        <div className="bg-teal-500/90 backdrop-blur-sm rounded-full p-2 sm:p-3 transform group-hover/card:scale-110 transition-transform duration-300 shadow-xl border border-teal-400/50">
+                        <div className="bg-teal-500/90 md:backdrop-blur-sm rounded-full p-2 sm:p-3 transform group-hover/card:scale-110 transition-transform duration-300 shadow-xl border border-teal-400/50">
                           <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
                           </svg>
@@ -124,7 +124,7 @@ const ContinueWatching = ({ items, onRemove }) => {
                       </div>
 
                       {/* Progress Bar */}
-                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/50 backdrop-blur-sm">
+                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/50 md:backdrop-blur-sm">
                         <div
                           className="h-full bg-gradient-to-r from-teal-400 to-teal-500 transition-all duration-300"
                           style={{ width: `${percent}%` }}
@@ -133,7 +133,7 @@ const ContinueWatching = ({ items, onRemove }) => {
 
                       {/* Media Type Badge */}
                       <div className="absolute top-1 sm:top-1.5 left-1.5 sm:left-2">
-                        <span className="bg-teal-600 backdrop-blur-sm text-white text-[8px] sm:text-[9px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full uppercase shadow-lg border border-white/20">
+                        <span className="bg-teal-600 md:backdrop-blur-sm text-white text-[8px] sm:text-[9px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full uppercase shadow-lg border border-white/20">
                           {item.mediaType === "tv" ? `S${item.season}E${item.episode}` : "Movie"}
                         </span>
                       </div>
@@ -148,7 +148,7 @@ const ContinueWatching = ({ items, onRemove }) => {
                       onRemove?.(item);
                     }}
                     aria-label="Remove from continue watching"
-                    className="absolute top-1.5 sm:top-2 right-1.5 sm:right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-black/70 backdrop-blur-sm text-white text-sm hover:bg-red-600 hover:scale-110 transition-all duration-200 flex items-center justify-center border border-white/20 shadow-lg"
+                    className="absolute top-1.5 sm:top-2 right-1.5 sm:right-2 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-black/70 md:backdrop-blur-sm text-white text-sm hover:bg-red-600 hover:scale-110 transition-all duration-200 flex items-center justify-center border border-white/20 shadow-lg"
                   >
                     <svg className="w-3 sm:w-3.5 h-3 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />

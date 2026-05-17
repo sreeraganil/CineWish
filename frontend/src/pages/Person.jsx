@@ -169,7 +169,7 @@ const Person = () => {
       </h1>
 
       {person?.known_for_department && (
-        <div className="mt-2 sm:mt-3 inline-flex items-center gap-2 px-2.5 py-1 bg-teal-500/20 backdrop-blur-sm rounded-lg border border-teal-400/30">
+        <div className="mt-2 sm:mt-3 inline-flex items-center gap-2 px-2.5 py-1 bg-teal-500/20 md:backdrop-blur-sm rounded-lg border border-teal-400/30">
           <span className="text-teal-300 font-semibold text-xs sm:text-sm">
             {person.known_for_department}
           </span>

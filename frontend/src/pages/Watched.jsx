@@ -304,7 +304,7 @@ const Watched = () => {
 
                     {/* Rating */}
                     <div className="absolute top-1 left-1">
-                      <div className="flex items-center gap-0.5 bg-black/60 backdrop-blur-sm px-1.5 py-0.5 rounded-full">
+                      <div className="flex items-center gap-0.5 bg-black/60 md:backdrop-blur-sm px-1.5 py-0.5 rounded-full">
                         <svg
                           className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-yellow-400"
                           fill="currentColor"

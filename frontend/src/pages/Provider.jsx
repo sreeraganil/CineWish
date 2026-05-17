@@ -97,7 +97,7 @@ const Provider = () => {
         <div className="relative max-w-8xl mx-auto px-4 sm:px-6 py-8 sm:py-10 md:py-12">
           {provider?.image && (
             <div className="mb-4 sm:mb-6 flex justify-center md:justify-start">
-              <div className="bg-white/10 backdrop-blur-sm p-3 sm:p-4 rounded-xl border border-white/15">
+              <div className="bg-white/10 md:backdrop-blur-sm p-3 sm:p-4 rounded-xl border border-white/15">
                 <img
                   src={provider.image}
                   alt={provider.name}
@@ -114,7 +114,7 @@ const Provider = () => {
             </h1>
 
             <div className="flex flex-wrap gap-2 sm:gap-3 justify-center md:justify-start text-[11px] sm:text-xs">
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
+              <div className="flex items-center gap-2 bg-white/10 md:backdrop-blur-sm px-3 py-1.5 rounded-full">
                 <span className="material-symbols-outlined text-teal-400">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -130,7 +130,7 @@ const Provider = () => {
               </div>
 
               {provider?.origin_country && (
-                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                <div className="flex items-center gap-2 bg-white/10 md:backdrop-blur-sm px-3 py-1.5 rounded-full">
                   <span className="material-symbols-outlined text-teal-400">
                     globe
                   </span>
@@ -164,7 +164,7 @@ const Provider = () => {
             </div>
 
             {/* Media Toggle - Mobile Compact */}
-            <div className="relative inline-flex bg-gray-900/50 backdrop-blur-sm rounded-lg p-0.5 border border-gray-800">
+            <div className="relative inline-flex bg-gray-900/50 md:backdrop-blur-sm rounded-lg p-0.5 border border-gray-800">
               {["movie", "tv"].map((m) => (
                 <button
                   key={m}

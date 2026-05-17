@@ -636,7 +636,7 @@ const Details = () => {
                   category.data.length > 0 && (
                     <div
                       key={category.title}
-                      className="bg-gradient-to-br from-gray-800/60 to-gray-900/40 rounded-xl border border-gray-700/30 backdrop-blur-sm hover:border-gray-600/50 transition-all duration-300 overflow-hidden"
+                      className="bg-gradient-to-br from-gray-800/60 to-gray-900/40 rounded-xl border border-gray-700/30 md:backdrop-blur-sm hover:border-gray-600/50 transition-all duration-300 overflow-hidden"
                     >
                       {/* Category Label with Vertical Text */}
                       <div className="flex items-stretch">

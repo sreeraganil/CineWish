@@ -108,7 +108,7 @@ const HeroSlider = () => {
 
   return (
     <div
-      className="group/slider relative w-full h-[60vh] md:h-[70vh] overflow-hidden bg-gray-950"
+      className="group/slider relative w-full h-[60vh] md:h-[70vh] overflow-hidden bg-gray-950 touch-pan-y"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -160,7 +160,7 @@ const HeroSlider = () => {
                   }`}
                 >
                   {currentItem.vote_average && (
-                    <div className="flex items-center gap-1.5 bg-teal-500/20 backdrop-blur-sm px-3 py-1 rounded-full border border-teal-400/30">
+                    <div className="flex items-center gap-1.5 bg-teal-500/20 md:backdrop-blur-sm px-3 py-1 rounded-full border border-teal-400/30">
                       <svg
                         width="16"
                         height="16"
@@ -218,7 +218,7 @@ const HeroSlider = () => {
         onClick={() =>
           setIndex((prev) => (prev - 1 + items.length) % items.length)
         }
-        className="absolute left-6 top-1/2 -translate-y-1/2 z-20 bg-gray-900/70 backdrop-blur-sm hover:bg-gray-800 border border-gray-700 w-12 h-12 rounded-full items-center justify-center transition-all duration-300 hover:scale-110 hidden md:flex opacity-0 group-hover/slider:opacity-90 text-teal-500"
+        className="absolute left-6 top-1/2 -translate-y-1/2 z-20 bg-gray-900/70 md:backdrop-blur-sm hover:bg-gray-800 border border-gray-700 w-12 h-12 rounded-full items-center justify-center transition-all duration-300 hover:scale-110 hidden md:flex opacity-0 group-hover/slider:opacity-90 text-teal-500"
       >
         <svg
           width="24"
@@ -235,7 +235,7 @@ const HeroSlider = () => {
 
       <button
         onClick={() => setIndex((prev) => (prev + 1) % items.length)}
-        className="absolute right-6 top-1/2 -translate-y-1/2 z-20 bg-gray-900/70 backdrop-blur-sm hover:bg-gray-800 border border-gray-700 w-12 h-12 rounded-full items-center justify-center transition-all duration-300 hover:scale-110 hidden md:flex opacity-0 group-hover/slider:opacity-90 text-teal-500"
+        className="absolute right-6 top-1/2 -translate-y-1/2 z-20 bg-gray-900/70 md:backdrop-blur-sm hover:bg-gray-800 border border-gray-700 w-12 h-12 rounded-full items-center justify-center transition-all duration-300 hover:scale-110 hidden md:flex opacity-0 group-hover/slider:opacity-90 text-teal-500"
       >
         <svg
           width="24"

@@ -103,7 +103,7 @@ const Studio = () => {
 
             <div className="flex flex-wrap gap-3 sm:gap-4 justify-center md:justify-start text-xs sm:text-sm text-gray-300">
               {studio?.headquarters && (
-                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full">
+                <div className="flex items-center gap-2 bg-white/10 md:backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full">
                   <span className="material-symbols-outlined text-teal-400">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -126,7 +126,7 @@ const Studio = () => {
                   href={studio.homepage}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full hover:bg-white/20 transition-colors"
+                  className="flex items-center gap-2 bg-white/10 md:backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full hover:bg-white/20 transition-colors"
                 >
                   <span className="material-symbols-outlined text-teal-400">
                     <svg
@@ -167,7 +167,7 @@ const Studio = () => {
               </p>
             </div>
 
-            <div className="relative inline-flex bg-gray-900/50 backdrop-blur-sm rounded-lg p-0.5 border border-gray-800">
+            <div className="relative inline-flex bg-gray-900/50 md:backdrop-blur-sm rounded-lg p-0.5 border border-gray-800">
               <button
                 onClick={() => {
                   setMedia("movie");
