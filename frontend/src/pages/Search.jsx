@@ -248,7 +248,7 @@ const Search = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black text-white pb-20 md:pb-0">
+    <div className="min-h-screen text-white pb-20 md:pb-0">
       <Header />
 
       <div

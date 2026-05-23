@@ -122,7 +122,7 @@ const Watched = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-950 to-black text-white pb-20 md:pb-0">
+    <div className="min-h-screen text-white pb-20 md:pb-0">
       <Header />
       <div className="max-w-8xl mx-auto px-4 py-6">
         <div className="relative mb-4 flex flex-col items-end">
