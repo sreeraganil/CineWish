@@ -14,8 +14,8 @@ body::before {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  right: 0;
+  bottom: 0;
   background: linear-gradient(to bottom right, #111827, #030712, #000000);
   z-index: -1;
   pointer-events: none;
