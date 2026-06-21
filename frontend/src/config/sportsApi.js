@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const SPORTS_API_BASE_URL = 'https://streamed.pk/api';
+const BASE_URL = 'https://streamed.pk';
 
 const sportsClient = axios.create({
   baseURL: SPORTS_API_BASE_URL,
@@ -111,3 +112,7 @@ export const getSportsImageUrl = {
   poster: (homeBadge, awayBadge) => `${SPORTS_API_BASE_URL}/images/poster/${homeBadge}/${awayBadge}.webp`,
   proxy: (posterPath) => `${SPORTS_API_BASE_URL}/images/proxy/${posterPath}.webp`
 };
+
+export const getFullImageUrl = (url) => {
+  return `${BASE_URL}${url}`
+} 

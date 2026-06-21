@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getSportsImageUrl } from '../../config/sportsApi';
+import { getFullImageUrl, getSportsImageUrl } from '../../config/sportsApi';
 import LiveBadge from './LiveBadge';
 import { IconSports, IconEye, IconStar } from './SportsIcons';
 
@@ -13,7 +13,7 @@ const SportsCard = ({ match, layout = 'row' }) => {
   const startDate = match?.date ? new Date(match.date).toLocaleDateString([], { month: 'short', day: 'numeric' }) : '';
 
   // Use poster from stream.pk or fallback to a gradient
-  const posterUrl = !imageError && match?.teams?.home?.badge && match?.teams?.away?.badge 
+  const posterUrl = match.poster ? getFullImageUrl(match.poster) : !imageError && match?.teams?.home?.badge && match?.teams?.away?.badge 
     ? getSportsImageUrl.poster(match.teams.home.badge, match.teams.away.badge)
     : null;
 

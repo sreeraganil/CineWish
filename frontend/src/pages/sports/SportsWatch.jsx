@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
-import { sportsApi } from '../../config/sportsApi';
+import { sportsApi, getSportsImageUrl } from '../../config/sportsApi';
 import useSportsWatchStore from '../../store/sportsWatchStore';
 import StreamSelector from '../../components/sports/StreamSelector';
 import { IconBack, IconVideoOff } from '../../components/sports/SportsIcons';
@@ -12,7 +12,7 @@ const SportsWatch = () => {
   const [match, setMatch] = useState(null);
   const [loadingMatch, setLoadingMatch] = useState(true);
   
-  const { streams, selectedStream, loading: loadingStreams, fetchStreams, setSelectedStream, clearStreams } = useSportsWatchStore();
+  const { sourceGroups, selectedStream, loading: loadingStreams, fetchStreams, setSelectedStream, clearStreams } = useSportsWatchStore();
 
   useEffect(() => {
     const initWatch = async () => {
@@ -24,8 +24,7 @@ const SportsWatch = () => {
            document.title = `Watching: ${matchData.title} - CineWish Sports`;
            // Assuming match has sources array with 'source' and 'id'
            if (matchData.sources && matchData.sources.length > 0) {
-              const firstSource = matchData.sources[0];
-              await fetchStreams(firstSource.source, firstSource.id);
+              await fetchStreams(matchData.sources);
            }
         }
       } catch (error) {
@@ -41,6 +40,19 @@ const SportsWatch = () => {
       clearStreams();
     };
   }, [matchId, fetchStreams, clearStreams]);
+
+  const getPosterUrl = () => {
+    if (!match) return null;
+    if (match.poster) {
+       return `https://streamed.pk${match.poster}`;
+    }
+    if (match.teams?.home?.badge && match.teams?.away?.badge) {
+       return getSportsImageUrl.poster(match.teams.home.badge, match.teams.away.badge);
+    }
+    return null;
+  };
+
+  const posterBg = getPosterUrl();
 
   return (
     <div className="min-h-screen bg-black text-white pb-20 md:pb-0 flex flex-col overflow-x-hidden">
@@ -68,31 +80,41 @@ const SportsWatch = () => {
           <div className="flex-[3] flex flex-col min-h-0">
            {/* Player Container */}
            <div className="w-full aspect-video bg-gray-950 rounded-xl overflow-hidden shadow-2xl border border-gray-800 relative">
+              {/* Background Poster (Only visible when loading or no stream) */}
+              {(!selectedStream || loadingMatch || loadingStreams) && posterBg && (
+                 <div className="absolute inset-0 opacity-20">
+                    <img src={posterBg} alt="Match Poster" className="w-full h-full object-cover blur-sm" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-gray-950/50"></div>
+                 </div>
+              )}
+
               {loadingMatch || loadingStreams ? (
-                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-gray-900">
+                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-10">
                     <div className="w-12 h-12 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
-                    <p className="text-gray-400 font-medium">Loading stream...</p>
+                    <p className="text-gray-300 font-medium tracking-wide">Loading stream...</p>
                  </div>
               ) : selectedStream ? (
                  <iframe
                     src={selectedStream.url || selectedStream.embedUrl}
                     title={match?.title}
-                    className="w-full h-full"
+                    className="w-full h-full relative z-10"
                     allowFullScreen
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                  ></iframe>
               ) : (
-                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-gray-900 text-center p-6">
-                    <IconVideoOff className="w-16 h-16 text-gray-600 mb-2" />
-                    <p className="text-xl font-bold text-gray-300">No stream available</p>
-                    <p className="text-gray-500">We couldn't find a working stream for this match at the moment.</p>
+                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center p-6 z-10">
+                    <div className="bg-gray-900/80 p-4 rounded-full border border-gray-800">
+                      <IconVideoOff className="w-10 h-10 text-gray-500" />
+                    </div>
+                    <p className="text-xl font-bold text-gray-200">No stream available</p>
+                    <p className="text-gray-400 max-w-sm">We couldn't find a working stream for this match right now.</p>
                  </div>
               )}
            </div>
           </div>
 
           {/* Info & Selector Area (Right) */}
-          <div className="flex-[1] flex flex-col gap-4 min-w-[320px] overflow-y-auto scrollbar-hide pb-4">
+          <div className="flex-[1] flex flex-col gap-4 w-full lg:min-w-[320px] lg:max-w-[400px] lg:overflow-y-auto scrollbar-hide pb-4">
              
              {/* Match Info */}
              {match && (
@@ -110,9 +132,9 @@ const SportsWatch = () => {
              )}
 
              {/* Stream Selector */}
-             {!loadingMatch && streams.length > 0 && (
+             {!loadingMatch && sourceGroups && sourceGroups.length > 0 && (
                 <StreamSelector 
-                   streams={streams}
+                   sourceGroups={sourceGroups}
                    selectedStream={selectedStream}
                    onSelectStream={setSelectedStream}
                 />
