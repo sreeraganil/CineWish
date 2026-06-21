@@ -29,6 +29,12 @@ const Provider = lazy(() => import("./pages/Provider"));
 const Person = lazy(() => import("./pages/Person"));
 const EpisodeRatingsPage = lazy(() => import("./pages/EpisodeRatingsPage"));
 
+/* ---------- Sports Pages ---------- */
+const SportsHome = lazy(() => import("./pages/sports/SportsHome"));
+const SportsCategory = lazy(() => import("./pages/sports/SportsCategory"));
+const SportsWatch = lazy(() => import("./pages/sports/SportsWatch"));
+const SportsSearch = lazy(() => import("./pages/sports/SportsSearch"));
+
 const FallbackLoader = () => (
   <div className="flex items-center justify-center min-h-screen bg-black">
     <div className="w-6 h-6 border-2 border-teal-400 border-t-transparent rounded-full animate-spin" />
@@ -157,6 +163,28 @@ export default function App() {
             <Route path="/provider/:id" element={<Provider />} />
             <Route path="/people/:id" element={<Person />} />
             <Route path="/ratings/:imdbId" element={<EpisodeRatingsPage />} />
+
+            {/* Sports Routes */}
+            <Route path="/sports" element={
+               <ProtectedRoute>
+                  <SportsHome />
+               </ProtectedRoute>
+            } />
+            <Route path="/sports/search" element={
+               <ProtectedRoute>
+                  <SportsSearch />
+               </ProtectedRoute>
+            } />
+            <Route path="/sports/watch/:matchId" element={
+               <ProtectedRoute>
+                  <SportsWatch />
+               </ProtectedRoute>
+            } />
+            <Route path="/sports/:sport" element={
+               <ProtectedRoute>
+                  <SportsCategory />
+               </ProtectedRoute>
+            } />
 
             <Route path="*" element={<NotFound />} />
           </Routes>

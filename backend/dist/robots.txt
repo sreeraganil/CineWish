@@ -6,5 +6,6 @@ Disallow: /profile
 Disallow: /wishlist
 Disallow: /watched
 Disallow: /watch
+Disallow: /sports
 
 Sitemap: https://cinewish-web.onrender.com/sitemap.xml

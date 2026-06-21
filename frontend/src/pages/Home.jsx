@@ -18,6 +18,8 @@ import TrendingSection from "../components/TrendingSection";
 const UpcomingSection = lazy(() => import("../components/UpcomingSection"));
 const OTTSection = lazy(() => import("../components/OTTSection"));
 const NowPlaying = lazy(() => import("../components/NowPlaying"));
+const SportsRow = lazy(() => import("../components/sports/SportsRow"));
+import { sportsApi } from "../config/sportsApi";
 
 const SectionLoader = () => (
   <div className="h-40 w-full flex items-center justify-center bg-gray-900/50 animate-pulse rounded-xl">
@@ -59,6 +61,7 @@ const Home = () => {
         <OTTSection />
         <NowPlaying />
         <GenreRow />
+        {/* <SportsRow title="Live Sports" fetchFunction={sportsApi.getLiveMatches} /> */}
         <NetWorkGrid />
         {discoverRows.map((row) => (
           <DiscoverRow
