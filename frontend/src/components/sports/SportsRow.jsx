@@ -70,7 +70,7 @@ const SportsRow = ({ title, fetchFunction, storeSelector, params = {} }) => {
   return (
     <>
       <span ref={sentinelRef} className="block h-[1px] w-full" />
-      <section className="py-2 px-2 sm:px-4 text-white relative">
+      <section className="px-2 sm:px-4 text-white relative">
         <div className="max-w-8xl mx-auto">
           <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-2 sm:mb-4 text-teal-400 capitalize px-0 sm:px-2">
             {title}
@@ -102,7 +102,7 @@ const SportsRow = ({ title, fetchFunction, storeSelector, params = {} }) => {
             {/* Horizontal scroller */}
             <div
               ref={scrollRef}
-              className="flex gap-2 sm:gap-3 md:gap-4 overflow-x-auto scrollbar-hide scroll-smooth px-2 sm:px-3 md:px-5 -mx-2 sm:mx-0 pb-4"
+              className="flex gap-2 sm:gap-3 md:gap-4 overflow-x-auto scrollbar-hide scroll-smooth px-2 sm:px-3 md:px-5 -mx-2 sm:mx-0"
             >
               {data.map((match) => (
                 <SportsCard key={match.id} match={match} />

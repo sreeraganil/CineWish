@@ -141,7 +141,7 @@ const SportsHome = () => {
         </div>
       </section>
 
-      <div className="flex flex-col gap-0 md:gap-2">
+      <div className="flex flex-col gap-0">
         <SportsRow title="Live Now" fetchFunction={sportsApi.getLiveMatches} />
         <SportsRow
           title="Popular Today"
