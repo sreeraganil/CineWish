@@ -209,3 +209,20 @@ body::before {
     opacity: 0;
   }
 }
+
+/* Global button cursor pointer rule */
+button,
+[role="button"],
+input[type="submit"],
+input[type="button"],
+select,
+label[for] {
+  cursor: pointer !important;
+}
+
+button:disabled,
+[role="button"][aria-disabled="true"],
+input[type="submit"]:disabled,
+input[type="button"]:disabled {
+  cursor: not-allowed !important;
+}

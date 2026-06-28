@@ -257,7 +257,7 @@ const Profile = () => {
               className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-white/8 bg-white/[0.03] text-gray-400 text-sm font-medium hover:bg-white/[0.07] hover:text-white transition-all active:scale-[0.98]"
             >
               <Icons.Logout />
-              Sign Out
+              Log Out
             </button>
             <button
               onClick={() => setShowDeleteModal(true)}
