@@ -3,7 +3,7 @@ import useUserStore from '../store/userStore';
 
 // Setup your API instance
 const API = axios.create({
-  baseURL: "https://cinewish-web.onrender.com/api",
+  baseURL: "/api",
   // baseURL: "http://localhost:5000/api",
   withCredentials: true
 });

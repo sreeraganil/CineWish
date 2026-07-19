@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const TrendingCard = ({
@@ -11,18 +12,49 @@ const TrendingCard = ({
   media_type = "movie",
 }) => {
 
+  const [showPlaceholder, setShowPlaceholder] = useState(true);
+
   return (
     <Link
       className="min-w-[120px] sm:min-w-[140px] md:min-w-[160px] my-1 relative bg-gray-900 rounded-xl border border-gray-800 overflow-hidden shadow hover:border-teal-300 transition-all group will-change-transform"
       to={`/details/${media_type}/${id}`}
     >
       <div className="relative w-full aspect-[3/4] overflow-hidden">
+        {showPlaceholder && (
+          <div className="absolute inset-0 flex items-center justify-center bg-slate-900 border-1 border-slate-800">
+            <svg
+              viewBox="0 0 100 100"
+              className="w-10 h-10 opacity-20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <defs>
+                <mask id="cwMask">
+                  <circle cx="50" cy="50" r="47" fill="white" />
+                  <circle cx="60" cy="50" r="38" fill="black" />
+                </mask>
+              </defs>
+
+              {/* Crescent */}
+              <circle
+                cx="50"
+                cy="50"
+                r="47"
+                fill="#475569"
+                mask="url(#cwMask)"
+              />
+
+              {/* Play icon */}
+              <path d="M41 33L41 67L71 50Z" fill="#64748b" />
+            </svg>
+          </div>
+        )}
         <img
           src={`https://image.tmdb.org/t/p/w500${poster_path}`}
           alt={name || title}
           onError={(e) => {
             e.currentTarget.src = "/placeholder.png";
           }}
+          onLoad={() => setShowPlaceholder(false)}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           loading="lazy"
         />

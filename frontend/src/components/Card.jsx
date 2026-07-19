@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Card = ({
@@ -8,6 +9,7 @@ const Card = ({
   media_type = "movie",
 }) => {
   const navigate = useNavigate();
+  const [showPlaceholder, setShowPlaceholder] = useState(true);
 
   const handleClick = (media, id) => {
     navigate(`/details/${media}/${id}`);
@@ -20,6 +22,34 @@ const Card = ({
     >
       {/* Poster */}
       <div className="relative w-full aspect-[3/4] overflow-hidden">
+      {showPlaceholder && (
+          <div className="absolute inset-0 flex items-center justify-center bg-slate-900 border-1 border-slate-800">
+            <svg
+              viewBox="0 0 100 100"
+              className="w-10 h-10 opacity-20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <defs>
+                <mask id="cwMask">
+                  <circle cx="50" cy="50" r="47" fill="white" />
+                  <circle cx="60" cy="50" r="38" fill="black" />
+                </mask>
+              </defs>
+
+              {/* Crescent */}
+              <circle
+                cx="50"
+                cy="50"
+                r="47"
+                fill="#475569"
+                mask="url(#cwMask)"
+              />
+
+              {/* Play icon */}
+              <path d="M41 33L41 67L71 50Z" fill="#64748b" />
+            </svg>
+          </div>
+        )}
         <img
           src={
             poster_path
@@ -28,6 +58,7 @@ const Card = ({
           }
           alt={title}
           loading="lazy"
+          onLoad={() => setShowPlaceholder(false)}
           onError={(e) => {
             e.currentTarget.src = "/placeholder.png";
           }}
