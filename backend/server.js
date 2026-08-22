@@ -29,6 +29,7 @@ const allowedOrigins = [
   "https://cinewish.vercel.app",
   "http://localhost:5000",
   "https://cinewish-web.onrender.com",
+  "https://cinewish-new.onrender.com",
   "https://cinewish.vercel.app"
 ];
 
