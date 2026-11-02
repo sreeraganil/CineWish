@@ -41,7 +41,11 @@ app.use(
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) {
+      if (
+        allowedOrigins.includes(origin) ||
+        origin.endsWith('.local') ||
+        /^https?:\/\/(localhost|127\.0\.0\.1|192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.)(:\d+)?$/.test(origin)
+      ) {
         return callback(null, true);
       } else {
         return callback(new Error("Not allowed by CORS"));
@@ -55,7 +59,7 @@ app.use(express.json());
 
 
 app.use("/api/auth", authRoutes);
-app.use("/api/tmdb", tmdbRoutes);
+app.use("/api/tmdb", cors(), tmdbRoutes);
 app.use("/api/wishlist", wishListRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/watch", watchRoutes);
