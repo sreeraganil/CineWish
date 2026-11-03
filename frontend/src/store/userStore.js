@@ -28,6 +28,7 @@ const userStore = create((set, get) => {
         const res = await API.post("/auth/logout");
         set({ user: null });
         localStorage.removeItem("user");
+        localStorage.removeItem("token");
         msg ? toast.success(msg) : toast.success(res.data.message);
         return true;
       } catch (err) {
@@ -50,6 +51,9 @@ const userStore = create((set, get) => {
         const res = await API.post("/auth/login", formData);
         if (res.data.success) {
           get().setUser(res.data.user);
+          if (res.data.token) {
+            localStorage.setItem("token", res.data.token);
+          }
         }
         return res.data;
       } catch (err) {

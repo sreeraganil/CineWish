@@ -61,7 +61,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/tmdb", cors(), tmdbRoutes);
-app.use("/api/wishlist", wishListRoutes);
+app.use("/api/wishlist", cors(), wishListRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/watch", watchRoutes);
 
