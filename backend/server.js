@@ -9,6 +9,7 @@ import wishListRoutes from './routes/wishlistRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import watchRoutes from './routes/watchRoutes.js'
 import pushRoutes from "./routes/pushRoutes.js";
+import emoRoutes from "./routes/emoRoutes.js";
 import './utilities/fetchFrequently.js';
 import './utilities/sleepPreventer.js'
 import path from 'path';
@@ -65,6 +66,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/watch", watchRoutes);
 
 app.use("/api/push", pushRoutes);
+app.use("/api/emo", cors(), emoRoutes);
 
 
 app.get("/ping", (req, res) => {
