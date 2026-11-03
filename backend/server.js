@@ -59,14 +59,19 @@ app.use(cookieParser());
 app.use(express.json());
 
 
+const openCors = cors({
+  origin: (origin, callback) => callback(null, true),
+  credentials: true
+});
+
 app.use("/api/auth", authRoutes);
-app.use("/api/tmdb", cors(), tmdbRoutes);
-app.use("/api/wishlist", cors(), wishListRoutes);
+app.use("/api/tmdb", openCors, tmdbRoutes);
+app.use("/api/wishlist", openCors, wishListRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/watch", watchRoutes);
 
 app.use("/api/push", pushRoutes);
-app.use("/api/emo", cors(), emoRoutes);
+app.use("/api/emo", openCors, emoRoutes);
 
 
 app.get("/ping", (req, res) => {
