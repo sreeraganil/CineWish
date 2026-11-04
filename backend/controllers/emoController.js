@@ -6,19 +6,13 @@ import Upcoming from "../models/upcomingModel.js";
 import NowPlaying from "../models/nowPlayingModel.js";
 import latestOTT from "../models/latestOTTModel.js";
 
-function calculateDays(dateStr, year) {
-  if (!dateStr && !year) return 0;
+function calculateDays(dateStr) {
+  if (!dateStr || String(dateStr).length < 10) return null;
   const now = new Date();
   now.setHours(0, 0, 0, 0);
 
-  let target = null;
-  if (dateStr && String(dateStr).length >= 10) {
-    target = new Date(dateStr);
-  } else if (year) {
-    target = new Date(Number(year), 0, 1);
-  }
-
-  if (!target || isNaN(target.getTime())) return 0;
+  const target = new Date(dateStr);
+  if (isNaN(target.getTime())) return null;
   target.setHours(0, 0, 0, 0);
 
   const diffMs = target.getTime() - now.getTime();
@@ -55,33 +49,105 @@ export const getEmoFeed = async (req, res) => {
 
     const feed = req.query.feed || (userId ? "wishlist" : "trending");
 
+    // Load cached TMDB lists to cross-reference release dates and genres
+    const [upDoc, npDoc, trDoc, ottDoc] = await Promise.all([
+      Upcoming.findOne().lean(),
+      NowPlaying.findOne().lean(),
+      Trending.findOne().lean(),
+      latestOTT.findOne().lean(),
+    ]);
+
+    const tmdbMap = new Map();
+    const allCached = [
+      ...(upDoc?.data || []),
+      ...(npDoc?.data || []),
+      ...(trDoc?.data || []),
+      ...(ottDoc?.data || []),
+    ];
+    for (const it of allCached) {
+      const idKey = String(it.id || it.tmdbId || "");
+      const relDate = it.release_date || it.first_air_date || "";
+      if (idKey && relDate && !tmdbMap.has(idKey)) {
+        tmdbMap.set(idKey, {
+          date: relDate,
+          rating: it.vote_average || it.rating || 0,
+          genre: it.genre || (it.genre_ids ? it.genre_ids[0] : null)
+        });
+      }
+    }
+
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    const curYear = now.getFullYear();
+
     // 1. Authenticated User Wishlist Mode
     if (userId && (feed === "wishlist" || feed === "watchlist")) {
       const wishlist = await WatchList.find({ userId, status: "towatch" })
         .sort({ updatedAt: -1 })
-        .limit(8);
+        .limit(20)
+        .lean();
 
       const listCount = await WatchList.countDocuments({ userId, status: "towatch" });
       const watchedCount = await WatchList.countDocuments({ userId, status: "watched" });
 
-      const items = wishlist.map((m) => {
+      const parsedItems = wishlist.map((m) => {
         const isTV = m.type === "tv" ? 1 : 0;
-        const d = calculateDays(m.release_date, m.year);
+        const idKey = String(m.tmdbId || m._id || "");
+        const cached = tmdbMap.get(idKey);
+        
+        let relDate = (cached && cached.date) || m.release_date || "";
+        let d = calculateDays(relDate);
+
+        if (d === null) {
+          const y = Number(m.year);
+          if (y > curYear) {
+            d = 60; // future year upcoming
+            relDate = `${y}`;
+          } else if (y === curYear) {
+            d = 30; // current year upcoming
+            relDate = `${y}`;
+          } else if (y) {
+            d = -Math.max(1, Math.round((now - new Date(y, 11, 31)) / (86400000)));
+            relDate = `${y}`;
+          } else {
+            d = 0;
+            relDate = "";
+          }
+        }
+
+        const rating = (cached && cached.rating) ? cached.rating : (m.rating || 0);
+
         return {
           id: String(m._id || m.tmdbId),
           t: formatTitle(m.title),
-          y: m.year ? String(m.year) : (m.release_date ? String(m.release_date).slice(0, 10) : ""),
+          y: relDate ? String(relDate).slice(0, 10) : (m.year ? String(m.year) : ""),
           k: isTV,
           g: formatGenre(m.genre, isTV),
-          r: Number((m.rating || 0).toFixed(1)),
+          r: Number(Number(rating).toFixed(1)),
           d: d,
         };
       });
 
-      // Best pick for Tonight's Pick screen
+      // Split into upcoming and released to give a balanced mix
+      const upcomingItems = parsedItems.filter(it => it.d >= 0).sort((a, b) => a.d - b.d);
+      const releasedItems = parsedItems.filter(it => it.d < 0).sort((a, b) => b.d - a.d); // most recent release first
+
+      // Combine: up to 4 upcoming + up to 4 released
+      const combined = [];
+      const upTake = Math.min(upcomingItems.length, 4);
+      for (let i = 0; i < upTake; i++) combined.push(upcomingItems[i]);
+      const relTake = Math.min(releasedItems.length, 8 - combined.length);
+      for (let i = 0; i < relTake; i++) combined.push(releasedItems[i]);
+      // If still under 8, fill with remaining items
+      for (const it of parsedItems) {
+        if (combined.length >= 8) break;
+        if (!combined.some(x => x.id === it.id)) combined.push(it);
+      }
+
+      // Best pick for Tonight's Pick screen (highest rating among unwatched)
       let pick = { t: "No picks yet", g: "Cinema", r: 0 };
-      if (items.length > 0) {
-        const sorted = [...items].sort((a, b) => b.r - a.r);
+      if (parsedItems.length > 0) {
+        const sorted = [...parsedItems].sort((a, b) => b.r - a.r);
         pick = { t: sorted[0].t, g: sorted[0].g, r: sorted[0].r };
       }
 
@@ -90,34 +156,31 @@ export const getEmoFeed = async (req, res) => {
         linked: true,
         stats: { w: watchedCount, l: listCount },
         pick,
-        items,
+        items: combined,
       });
     }
 
     // 2. Public / Guest Feed Mode (Upcoming, Now-Playing, OTT, Trending)
     let rawList = [];
     if (feed === "upcoming") {
-      const doc = await Upcoming.findOne();
-      if (doc?.data?.length) rawList = doc.data;
+      if (upDoc?.data?.length) rawList = upDoc.data;
     } else if (feed === "now-playing" || feed === "theaters") {
-      const doc = await NowPlaying.findOne();
-      if (doc?.data?.length) rawList = doc.data;
+      if (npDoc?.data?.length) rawList = npDoc.data;
     } else if (feed === "ott") {
-      const doc = await latestOTT.findOne();
-      if (doc?.data?.length) rawList = doc.data;
+      if (ottDoc?.data?.length) rawList = ottDoc.data;
     }
 
     // Default to trending if requested feed is empty
     if (!rawList.length) {
-      const doc = await Trending.findOne();
-      if (doc?.data?.length) rawList = doc.data;
+      if (trDoc?.data?.length) rawList = trDoc.data;
     }
 
-    const items = rawList.slice(0, 8).map((m) => {
+    let parsed = rawList.map((m) => {
       const isTV = m.first_air_date || m.media_type === "tv" ? 1 : 0;
       const title = m.title || m.name || "Untitled";
       const date = m.release_date || m.first_air_date || "";
-      const d = calculateDays(date);
+      let d = calculateDays(date);
+      if (d === null) d = (feed === "upcoming" ? 1 : 0);
 
       return {
         id: String(m.id || ""),
@@ -129,6 +192,13 @@ export const getEmoFeed = async (req, res) => {
         d: d,
       };
     });
+
+    if (feed === "upcoming") {
+      // Sort upcoming by closest release date >= 0
+      parsed = parsed.filter(it => it.d >= 0).sort((a, b) => a.d - b.d);
+    }
+
+    const items = parsed.slice(0, 8);
 
     let pick = { t: "Trending Pick", g: "Cinema", r: 0 };
     if (items.length > 0) {
